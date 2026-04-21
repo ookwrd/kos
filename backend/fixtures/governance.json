@@ -1,0 +1,182 @@
+{
+  "domain": "governance",
+  "description": "Board-level decision under uncertainty — data-sharing agreement with contested dissent",
+
+  "agents": [
+    {
+      "id": "agent-board-chair",
+      "name": "Board Chair (Governance Council)",
+      "agent_type": "institution",
+      "domain": "governance",
+      "competences": ["strategic governance", "fiduciary duty", "stakeholder management"],
+      "beliefs": {"sharing_benefits_outweigh_risks": 0.65},
+      "preferred_outcomes": {"goal-institutional-trust": 1.0, "goal-research-acceleration": 0.7},
+      "authority_scope": ["governance", "all"],
+      "calibration_score": 0.72
+    },
+    {
+      "id": "agent-data-steward",
+      "name": "Dr. Priya Nair (Data Steward)",
+      "agent_type": "human",
+      "domain": "governance",
+      "competences": ["data governance", "privacy law", "GDPR", "data-use agreements"],
+      "beliefs": {"sharing_benefits_outweigh_risks": 0.48, "gdpr_compliant": 0.82},
+      "preferred_outcomes": {"goal-privacy-protection": 1.0},
+      "authority_scope": ["governance"],
+      "calibration_score": 0.88
+    },
+    {
+      "id": "agent-external-partner",
+      "name": "BioNovation Ltd (External Partner)",
+      "agent_type": "institution",
+      "domain": "governance",
+      "competences": ["drug discovery", "genomics", "data analysis"],
+      "beliefs": {"sharing_benefits_outweigh_risks": 0.91},
+      "preferred_outcomes": {"goal-research-acceleration": 0.95},
+      "authority_scope": [],
+      "calibration_score": 0.65
+    },
+    {
+      "id": "agent-legal-counsel",
+      "name": "Legal Counsel",
+      "agent_type": "human",
+      "domain": "governance",
+      "competences": ["contract law", "IP", "data protection", "regulatory compliance"],
+      "beliefs": {"gdpr_compliant": 0.75, "sharing_benefits_outweigh_risks": 0.55},
+      "preferred_outcomes": {"goal-legal-compliance": 1.0},
+      "authority_scope": ["governance"],
+      "calibration_score": 0.82
+    }
+  ],
+
+  "evidence": [
+    {
+      "id": "ev-dpia-report",
+      "source_type": "document",
+      "title": "Data Protection Impact Assessment — Genomic Data Sharing Agreement",
+      "content_ref": "internal://governance/dpia-2024-11.pdf",
+      "media_type": "application/pdf",
+      "domain": "governance",
+      "validated_by": ["agent-data-steward", "agent-legal-counsel"],
+      "uncertainty": 0.25,
+      "tags": ["DPIA", "GDPR", "genomics"]
+    },
+    {
+      "id": "ev-partner-track-record",
+      "source_type": "document",
+      "title": "BioNovation Ltd — Prior partnership audit report",
+      "content_ref": "internal://governance/partner-audit-2023.pdf",
+      "media_type": "application/pdf",
+      "domain": "governance",
+      "validated_by": ["agent-legal-counsel"],
+      "tags": ["audit", "partner", "track-record"]
+    },
+    {
+      "id": "ev-precedent-2021-sharing",
+      "source_type": "document",
+      "title": "2021 Data Sharing Agreement with Genomics Alliance — outcome report",
+      "content_ref": "internal://governance/genomics-alliance-2021-outcome.pdf",
+      "media_type": "application/pdf",
+      "domain": "governance",
+      "validated_by": ["agent-board-chair"],
+      "tags": ["precedent", "data-sharing", "outcome"]
+    }
+  ],
+
+  "goals": [
+    {"id": "goal-institutional-trust", "title": "Maintain public and institutional trust",
+     "status": "active", "horizon": "long", "priority": 1.0,
+     "owner_id": "agent-board-chair", "domain": "governance"},
+    {"id": "goal-research-acceleration", "title": "Accelerate genomic research outcomes",
+     "status": "active", "horizon": "medium", "priority": 0.75,
+     "owner_id": "agent-external-partner", "domain": "governance"},
+    {"id": "goal-privacy-protection", "title": "Protect participant data privacy",
+     "status": "active", "horizon": "long", "priority": 0.95,
+     "owner_id": "agent-data-steward", "domain": "governance"},
+    {"id": "goal-legal-compliance", "title": "Comply with GDPR and national data law",
+     "status": "active", "horizon": "long", "priority": 1.0,
+     "owner_id": "agent-legal-counsel", "domain": "governance"}
+  ],
+
+  "constraints": [
+    {"id": "constraint-gdpr-art9", "description": "Special category genomic data requires explicit consent and DPIA approval before transfer",
+     "constraint_type": "deontic", "deontic_type": "obligatory",
+     "governed_entity_ids": ["goal-research-acceleration"],
+     "contestable": false, "domain": "governance"},
+    {"id": "constraint-no-secondary-use", "description": "Data must not be used for insurance, employment, or law enforcement purposes",
+     "constraint_type": "hard", "deontic_type": "forbidden",
+     "governed_entity_ids": ["goal-research-acceleration"],
+     "contestable": false, "domain": "governance"}
+  ],
+
+  "precedents": [
+    {
+      "id": "prec-genomics-alliance-2021",
+      "decision_trace_id": "dec-board-2021-ref",
+      "statement": "Data sharing with vetted genomics partners is approved when: DPIA completed, contractual data-use restrictions enforced, and annual audit scheduled",
+      "applicability_conditions": [
+        "Partner has clean audit record (last 3 years)",
+        "DPIA approved by Data Steward",
+        "Legal Counsel confirms contract enforceability",
+        "Annual re-authorisation required"
+      ],
+      "domains": ["governance"],
+      "invocation_count": 2,
+      "override_count": 0,
+      "confidence": 0.88
+    }
+  ],
+
+  "decisions": [
+    {
+      "id": "dec-board-data-sharing-2024",
+      "question": "Should the Board approve a 3-year genomic data-sharing agreement with BioNovation Ltd?",
+      "outcome": "approved",
+      "rationale": "DPIA completed and approved by Data Steward. Legal Counsel confirmed GDPR compliance with contractual data-use restrictions. Partner audit clean (2023). Precedent from 2021 Genomics Alliance agreement applied. Annual re-authorisation mechanism included. Data Steward dissent noted and recorded; will be reviewed at 6-month checkpoint.",
+      "evidence_ids": ["ev-dpia-report", "ev-partner-track-record", "ev-precedent-2021-sharing"],
+      "actor_id": "agent-board-chair",
+      "policy_ids": ["constraint-gdpr-art9", "constraint-no-secondary-use"],
+      "precedent_ids": ["prec-genomics-alliance-2021"],
+      "is_exception": false,
+      "domain": "governance"
+    }
+  ],
+
+  "delegations": [
+    {
+      "id": "deleg-steward-review",
+      "delegator_id": "agent-board-chair",
+      "delegatee_id": "agent-data-steward",
+      "scope": "6-month checkpoint review of data use compliance",
+      "reversible": true,
+      "conditions": ["Annual Board ratification required to extend"],
+      "active": true
+    }
+  ],
+
+  "dissent_records": [
+    {
+      "id": "dissent-steward-2024",
+      "actor_id": "agent-data-steward",
+      "target_id": "dec-board-data-sharing-2024",
+      "dissent_type": "normative",
+      "rationale": "The 3-year term is too long for a domain with rapidly evolving genomic privacy risks. Annual re-authorisation is insufficient if regulatory environment changes mid-term. Recommend 18-month maximum with mandatory mid-term review.",
+      "resolution_status": "open",
+      "supporting_evidence_ids": ["ev-dpia-report"],
+      "domain": "governance"
+    }
+  ],
+
+  "uncertainty_annotations": [
+    {"id": "ua-partner-trustworthiness", "target_id": "dec-board-data-sharing-2024",
+     "dimension": "BioNovation long-term data governance practices",
+     "value": 0.45,
+     "method": "expert_elicitation", "annotator_id": "agent-data-steward",
+     "rationale": "Audit covers 2023 only; no visibility into data pipeline practices post-acquisition"},
+    {"id": "ua-regulatory-stability", "target_id": "constraint-gdpr-art9",
+     "dimension": "Regulatory stability of GDPR special category rules over 3-year term",
+     "value": 0.38,
+     "method": "expert_elicitation", "annotator_id": "agent-legal-counsel",
+     "rationale": "EU AI Act and national implementations may change genomic data classification"}
+  ]
+}

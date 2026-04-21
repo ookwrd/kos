@@ -1,0 +1,231 @@
+{
+  "domain": "drug_discovery",
+  "description": "RAS/MAPK signalling pathway — drug discovery context traces and trial approval decision",
+
+  "agents": [
+    {
+      "id": "agent-oncologist-01",
+      "name": "Dr. Sarah Chen",
+      "agent_type": "human",
+      "domain": "drug_discovery",
+      "competences": ["oncology", "clinical trial design", "RAS pathway", "biomarkers"],
+      "beliefs": {
+        "KRAS_G12C_is_druggable": 0.92,
+        "AMG510_crosses_BBB": 0.35
+      },
+      "preferred_outcomes": {"goal-reduce-tumor-burden": 0.9, "goal-patient-safety": 1.0},
+      "authority_scope": ["drug_discovery", "clinical_review"],
+      "calibration_score": 0.84,
+      "tags": ["clinical", "oncology"]
+    },
+    {
+      "id": "agent-chemist-01",
+      "name": "Dr. Marcus Webb",
+      "agent_type": "human",
+      "domain": "drug_discovery",
+      "competences": ["medicinal chemistry", "covalent inhibitors", "KRAS", "structure-based design"],
+      "beliefs": {
+        "KRAS_G12C_is_druggable": 0.97,
+        "AMG510_crosses_BBB": 0.28
+      },
+      "preferred_outcomes": {"goal-drug-selectivity": 0.95},
+      "authority_scope": ["drug_discovery"],
+      "calibration_score": 0.79,
+      "tags": ["chemistry", "structural"]
+    },
+    {
+      "id": "agent-ai-screen-01",
+      "name": "MolScreen-v2",
+      "agent_type": "ai",
+      "domain": "drug_discovery",
+      "competences": ["virtual screening", "docking", "ADMET prediction", "compound library analysis"],
+      "beliefs": {
+        "KRAS_G12C_is_druggable": 0.88,
+        "AMG510_crosses_BBB": 0.41
+      },
+      "preferred_outcomes": {"goal-high-throughput-screening": 0.8},
+      "authority_scope": ["drug_discovery"],
+      "calibration_score": 0.71,
+      "tags": ["ai", "screening"]
+    }
+  ],
+
+  "evidence": [
+    {
+      "id": "ev-kras-structure-2019",
+      "source_type": "document",
+      "title": "Covalent targeting of KRAS G12C by AMG 510 (Sotorasib)",
+      "content_ref": "doi:10.1038/s41586-019-1694-1",
+      "media_type": "application/pdf",
+      "domain": "drug_discovery",
+      "validated_by": ["agent-oncologist-01", "agent-chemist-01"],
+      "tags": ["kras", "sotorasib", "structure"]
+    },
+    {
+      "id": "ev-codebreak100-trial",
+      "source_type": "document",
+      "title": "CodeBreaK 100 Phase II trial data — Sotorasib NSCLC",
+      "content_ref": "doi:10.1056/NEJMoa2103695",
+      "media_type": "application/pdf",
+      "domain": "drug_discovery",
+      "validated_by": ["agent-oncologist-01"],
+      "tags": ["clinical-trial", "sotorasib", "NSCLC"]
+    },
+    {
+      "id": "ev-bbb-assay-results",
+      "source_type": "sensor_window",
+      "title": "BBB permeability assay results for AMG510 analogues",
+      "content_ref": "internal://assays/bbb-2024-03.csv",
+      "media_type": "text/csv",
+      "domain": "drug_discovery",
+      "validated_by": ["agent-chemist-01"],
+      "uncertainty": 0.6,
+      "tags": ["bbb", "permeability", "assay"]
+    }
+  ],
+
+  "entities": [
+    {"id": "ent-KRAS", "label": "KRAS", "entity_type": "protein", "domain": "drug_discovery",
+     "aliases": ["Ki-ras2", "KRAS2"], "attributes": {"gene": "KRAS", "mutation": "G12C"}},
+    {"id": "ent-RAF", "label": "RAF", "entity_type": "protein", "domain": "drug_discovery",
+     "aliases": ["BRAF", "CRAF"], "attributes": {"family": "Ser/Thr kinase"}},
+    {"id": "ent-MEK", "label": "MEK", "entity_type": "protein", "domain": "drug_discovery",
+     "aliases": ["MAP2K1", "MAP2K2"], "attributes": {}},
+    {"id": "ent-ERK", "label": "ERK", "entity_type": "protein", "domain": "drug_discovery",
+     "aliases": ["MAPK1", "MAPK3"], "attributes": {}},
+    {"id": "ent-AMG510", "label": "Sotorasib (AMG510)", "entity_type": "compound", "domain": "drug_discovery",
+     "aliases": ["AMG510", "Lumakras"], "attributes": {"mechanism": "covalent KRAS G12C inhibitor", "fda_approved": true}}
+  ],
+
+  "mechanisms": [
+    {"id": "mech-KRAS-activates-RAF", "name": "KRAS activates RAF", "mechanism_type": "causal",
+     "source_entity_id": "ent-KRAS", "target_entity_id": "ent-RAF",
+     "description": "GTP-bound KRAS recruits RAF to the plasma membrane, initiating the MAPK cascade",
+     "confidence": 0.97, "domain": "drug_discovery",
+     "evidence_ids": ["ev-kras-structure-2019"]},
+    {"id": "mech-RAF-activates-MEK", "name": "RAF phosphorylates MEK", "mechanism_type": "causal",
+     "source_entity_id": "ent-RAF", "target_entity_id": "ent-MEK",
+     "description": "RAF kinase phosphorylates MEK1/2 at Ser217/221",
+     "confidence": 0.96, "domain": "drug_discovery"},
+    {"id": "mech-MEK-activates-ERK", "name": "MEK activates ERK", "mechanism_type": "causal",
+     "source_entity_id": "ent-MEK", "target_entity_id": "ent-ERK",
+     "description": "MEK1/2 dual phosphorylates ERK1/2 at Thr202/Tyr204",
+     "confidence": 0.98, "domain": "drug_discovery"},
+    {"id": "mech-AMG510-inhibits-KRAS", "name": "AMG510 covalently inhibits KRAS G12C", "mechanism_type": "inhibitory",
+     "source_entity_id": "ent-AMG510", "target_entity_id": "ent-KRAS",
+     "description": "AMG510 forms a covalent bond with Cys12 of KRAS G12C, locking it in GDP-bound inactive state",
+     "confidence": 0.94, "domain": "drug_discovery",
+     "evidence_ids": ["ev-kras-structure-2019", "ev-codebreak100-trial"]}
+  ],
+
+  "hypotheses": [
+    {"id": "hyp-bbb-penetration",
+     "statement": "Sotorasib analogues with lower MW could achieve therapeutically relevant CNS concentrations",
+     "domain": "drug_discovery", "status": "proposed",
+     "evidence_for": ["ev-bbb-assay-results"],
+     "evidence_against": ["ev-codebreak100-trial"],
+     "entity_ids": ["ent-AMG510"],
+     "prior": 0.35, "uncertainty": 0.72}
+  ],
+
+  "goals": [
+    {"id": "goal-reduce-tumor-burden", "title": "Reduce KRAS G12C-driven tumour burden",
+     "status": "active", "horizon": "medium", "priority": 0.95,
+     "owner_id": "agent-oncologist-01", "domain": "drug_discovery",
+     "metric": "objective_response_rate", "metric_target": 0.40},
+    {"id": "goal-patient-safety", "title": "Maintain acceptable safety profile",
+     "status": "active", "horizon": "medium", "priority": 1.0,
+     "owner_id": "agent-oncologist-01", "domain": "drug_discovery",
+     "metric": "grade3_adverse_events", "metric_target": 0.15},
+    {"id": "goal-drug-selectivity", "title": "Achieve KRAS G12C selectivity > 100x over WT",
+     "status": "active", "horizon": "short", "priority": 0.8,
+     "owner_id": "agent-chemist-01", "parent_goal_id": "goal-reduce-tumor-burden",
+     "domain": "drug_discovery"},
+    {"id": "goal-research-acceleration", "title": "Accelerate CNS cohort expansion to next trial phase",
+     "status": "active", "horizon": "short", "priority": 0.75,
+     "owner_id": "agent-chemist-01", "domain": "drug_discovery",
+     "metric": "months_to_cohort_expansion", "metric_target": 6}
+  ],
+
+  "constraints": [
+    {"id": "constraint-cns-safety-gate",
+     "description": "CNS cohort expansion requires BBB penetration data with uncertainty < 0.4 before proceeding",
+     "constraint_type": "hard",
+     "governed_entity_ids": ["goal-patient-safety", "goal-research-acceleration"],
+     "domain": "drug_discovery"}
+  ],
+
+  "precedents": [
+    {
+      "id": "prec-cns-deferral-2022",
+      "statement": "CNS cohort expansion was deferred for a prior KRAS inhibitor (AMG-224) pending BBB pharmacokinetics confirmation. The expansion proceeded 9 months later after PK data showed Cmax/IC50 > 3 in CSF.",
+      "decision_trace_id": "dec-trial-approval-2024",
+      "applicability_conditions": ["CNS metastatic cohort", "KRAS inhibitor", "BBB uncertainty > 0.5"],
+      "domains": ["drug_discovery"],
+      "confidence": 0.82,
+      "invocation_count": 1,
+      "override_count": 0,
+      "domain": "drug_discovery"
+    }
+  ],
+
+  "provenance_records": [
+    {
+      "id": "prov-ev-bbb-assay",
+      "source_id": "ev-bbb-assay-results",
+      "actor_id": "agent-chemist-01",
+      "action": "validated",
+      "timestamp": "2024-07-10T09:15:00Z",
+      "data_hash": "sha256:d4f8e2a1b9c7f3e5a2d1c8b4f6e9a3b7c2d5e8f1a4b7c0d3e6f9a2b5c8d1e4f7",
+      "downstream_ids": ["dec-trial-approval-2024"],
+      "domain": "drug_discovery"
+    },
+    {
+      "id": "prov-dec-trial-approval",
+      "source_id": "dec-trial-approval-2024",
+      "actor_id": "agent-oncologist-01",
+      "action": "created",
+      "timestamp": "2024-07-15T14:30:00Z",
+      "data_hash": "sha256:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+      "downstream_ids": ["prec-cns-deferral-2022"],
+      "domain": "drug_discovery"
+    }
+  ],
+
+  "decisions": [
+    {
+      "id": "dec-trial-approval-2024",
+      "question": "Should the Phase II expansion cohort include CNS-metastatic NSCLC patients?",
+      "outcome": "deferred",
+      "rationale": "Insufficient BBB penetration data for AMG510. Assay results show high uncertainty (0.6). Deferring until CNS pharmacokinetics data from the ongoing bespoke study are available. Exception to standard expansion timeline.",
+      "evidence_ids": ["ev-bbb-assay-results", "ev-codebreak100-trial"],
+      "actor_id": "agent-oncologist-01",
+      "policy_ids": [],
+      "precedent_ids": [],
+      "is_exception": true,
+      "domain": "drug_discovery"
+    }
+  ],
+
+  "uncertainty_annotations": [
+    {"id": "ua-bbb-penetration", "target_id": "hyp-bbb-penetration",
+     "dimension": "CNS penetration of AMG510 analogues", "value": 0.72,
+     "method": "assay_data", "annotator_id": "agent-chemist-01",
+     "rationale": "Assay results are preliminary (n=3) and show high inter-sample variance"},
+    {"id": "ua-kras-bbb-mechanism", "target_id": "mech-AMG510-inhibits-KRAS",
+     "dimension": "CNS activity of covalent mechanism", "value": 0.65,
+     "method": "expert_elicitation", "annotator_id": "agent-oncologist-01",
+     "rationale": "Covalent mechanism may not have sufficient residence time in CNS tumour microenvironment"}
+  ],
+
+  "dissent_records": [
+    {"id": "dissent-bbb-01",
+     "actor_id": "agent-ai-screen-01",
+     "target_id": "dec-trial-approval-2024",
+     "dissent_type": "factual",
+     "rationale": "MolScreen-v2 virtual ADMET prediction gives BBB+ probability 0.41 for AMG510. The deferral may be overly conservative given the model's performance on similar covalent inhibitors.",
+     "resolution_status": "open",
+     "supporting_evidence_ids": [],
+     "domain": "drug_discovery"}
+  ]
+}
