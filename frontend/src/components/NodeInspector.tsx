@@ -87,7 +87,7 @@ export function NodeInspector() {
             <span>Uncertainty</span>
             <span>{Math.round(Number((selectedNode.data as Record<string, unknown>).uncertainty) * 100)}%</span>
           </div>
-          <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-1 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.06)" }}>
             <div
               className="h-full rounded-full"
               style={{
