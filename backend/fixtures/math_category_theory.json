@@ -1,0 +1,229 @@
+{
+  "domain": "math_category_theory",
+  "description": "Formal objects of category theory, used as the reflexive meta-domain in KOS. KOS uses categorical structures as its transfer infrastructure; this domain represents those structures as knowledge objects within KOS itself.",
+  "agents": [
+    {
+      "id": "ag-eilenberg",
+      "name": "Samuel Eilenberg (historical)",
+      "agent_type": "human",
+      "domain": "math_category_theory",
+      "competences": ["category_theory", "algebraic_topology", "homological_algebra"],
+      "beliefs": {
+        "categories_are_fundamental": 0.99,
+        "functors_preserve_structure": 0.99
+      },
+      "authority_scope": ["math_category_theory"],
+      "calibration_score": 0.96,
+      "attributes": {"era": "1940s–1990s", "contribution": "co-invented category theory with Mac Lane"}
+    },
+    {
+      "id": "ag-cat-theory-ai",
+      "name": "CatReason-v1",
+      "agent_type": "ai",
+      "domain": "math_category_theory",
+      "competences": ["functor_validation", "natural_transformation_checking", "diagram_chasing"],
+      "beliefs": {
+        "computational_category_theory_is_tractable": 0.82
+      },
+      "authority_scope": ["math_category_theory", "alignment"],
+      "calibration_score": 0.88,
+      "attributes": {"specialization": "categorical proof verification"}
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-category",
+      "label": "Category",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A collection of objects and morphisms between them, with composition and identities",
+        "key_axioms": ["associativity of composition", "left and right identity"]
+      }
+    },
+    {
+      "id": "ent-object",
+      "label": "Object",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "An element of a category with no required internal structure",
+        "note": "Opacity is intentional — what matters is the morphisms, not the object's internals"
+      }
+    },
+    {
+      "id": "ent-morphism",
+      "label": "Morphism",
+      "entity_type": "math_relation",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "An arrow f: A → B in a category",
+        "note": "Morphisms are the primary structure; objects are just anchors for morphisms"
+      }
+    },
+    {
+      "id": "ent-functor",
+      "label": "Functor",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A structure-preserving map between categories: maps objects to objects, morphisms to morphisms, preserves composition and identity",
+        "types": ["covariant", "contravariant"],
+        "in_kos": "AlignmentMap is a partial functor between local ontologies"
+      }
+    },
+    {
+      "id": "ent-natural-transformation",
+      "label": "Natural Transformation",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A family of morphisms η_X: F(X) → G(X) for functors F,G: C → D, natural in X",
+        "key_property": "naturality squares commute: η_Y ∘ F(f) = G(f) ∘ η_X",
+        "in_kos": "NaturalTransformationCandidate — compatibility between two alignment maps"
+      }
+    },
+    {
+      "id": "ent-adjunction",
+      "label": "Adjunction",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A pair of functors F: C → D and G: D → C with a natural bijection Hom(F(A), B) ≅ Hom(A, G(B))",
+        "intuition": "F is left adjoint to G; F is the 'freest' construction, G is the 'cofree' one",
+        "examples": ["free group ⊣ forgetful", "product ⊣ diagonal", "π₀ ⊣ discrete"]
+      }
+    },
+    {
+      "id": "ent-limit",
+      "label": "Limit",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "Terminal cone over a diagram: the most general object with maps to all objects in the diagram",
+        "examples": ["product", "equalizer", "pullback", "terminal object"],
+        "in_kos": "Intersection of two AlignmentMaps — the common core of two domain alignments"
+      }
+    },
+    {
+      "id": "ent-colimit",
+      "label": "Colimit",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "Initial cocone under a diagram: dual to limit",
+        "examples": ["coproduct", "coequalizer", "pushout", "initial object"],
+        "in_kos": "Minimal merge of two domain alignments — the GlobalGluingGap records where this fails"
+      }
+    },
+    {
+      "id": "ent-pullback",
+      "label": "Pullback",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A specific limit: given f: A→C and g: B→C, the pullback A×_C B is the universal object with maps to A and B that agree on C",
+        "intuition": "The 'intersection' or 'common fiber' of two structures over a base",
+        "in_kos": "Shared subgraph when two domains are both aligned to a third"
+      }
+    },
+    {
+      "id": "ent-pushout",
+      "label": "Pushout",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "Dual of pullback: given f: C→A and g: C→B, the pushout A+_C B is the universal object with maps from A and B that agree on C",
+        "intuition": "The 'merge' of two structures sharing a common substructure",
+        "in_kos": "Minimal combined domain when two domains share structural elements"
+      }
+    },
+    {
+      "id": "ent-yoneda",
+      "label": "Yoneda Lemma",
+      "entity_type": "math_theorem",
+      "domain": "math_category_theory",
+      "attributes": {
+        "statement": "For any functor F: C → Set and object A in C: Nat(Hom(A,−), F) ≅ F(A)",
+        "intuition": "An object is completely determined by the morphisms into it — 'to know an object is to know its relationships'",
+        "significance": "The most important lemma in category theory: morphisms are the primary epistemic access"
+      }
+    },
+    {
+      "id": "ent-sheaf",
+      "label": "Sheaf",
+      "entity_type": "math_concept",
+      "domain": "math_category_theory",
+      "attributes": {
+        "definition": "A functor satisfying the gluing axioms: local sections that agree on overlaps can be uniquely glued into a global section",
+        "in_kos": "Knowledge consistency condition: local knowledge in each domain can be glued into a global knowledge state if and only if the domains are coherent on their overlaps"
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-functor-composition",
+      "name": "Functor Composition",
+      "mechanism_type": "formal_composition",
+      "domain": "math_category_theory",
+      "inputs": ["functor_F: C→D", "functor_G: D→E"],
+      "outputs": ["functor_GF: C→E"],
+      "causal_direction": "deterministic",
+      "confidence": 1.0,
+      "notes": "Composition of structure-preserving maps is structure-preserving"
+    },
+    {
+      "id": "mech-adjoint-correspondence",
+      "name": "Adjoint Correspondence",
+      "mechanism_type": "formal_bijection",
+      "domain": "math_category_theory",
+      "inputs": ["left_adjoint_F", "object_A_in_C", "object_B_in_D"],
+      "outputs": ["natural_bijection: Hom(FA, B) ≅ Hom(A, GB)"],
+      "causal_direction": "bidirectional",
+      "confidence": 1.0
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-adopt-ct-as-transfer",
+      "question": "Should KOS use category theory as its transfer infrastructure?",
+      "outcome": "Yes — AlignmentMap as partial functor, NaturalTransformationCandidate for compatibility between translations",
+      "rationale": "Category theory is the mathematics of structure-preserving maps. The transfer problem in KOS is exactly the problem of finding structure-preserving maps between local ontologies. No alternative framework captures the composability, the loss accounting (partial functors), and the upgrade path (natural transformations) in a unified way.",
+      "actor_id": "ag-eilenberg",
+      "domain": "math_category_theory",
+      "is_exception": false
+    }
+  ],
+  "dissents": [],
+  "evidence": [
+    {
+      "id": "ev-spivak-kent-ologs",
+      "source_type": "primary_literature",
+      "content_ref": "Spivak & Kent (2012) - Ologs: A Categorical Framework for Knowledge Representation",
+      "media_type": "text",
+      "validated_by": ["ag-cat-theory-ai"],
+      "notes": "Demonstrates that ontologies can be formalized as categories with functors as translations between them"
+    },
+    {
+      "id": "ev-fong-spivak-seven-sketches",
+      "source_type": "primary_literature",
+      "content_ref": "Fong & Spivak (2018) - Seven Sketches in Compositionality",
+      "media_type": "text",
+      "validated_by": ["ag-cat-theory-ai"],
+      "notes": "Applied category theory for scientists — the standard reference for CT in knowledge systems"
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-adjunction-alignment",
+      "claim": "KOS AlignmentMap is an instantiation of a partial functor in the category-theoretic sense",
+      "source_domain": "math_category_theory",
+      "target_domain": "alignment",
+      "source_node_ids": ["ent-functor", "ent-natural-transformation", "ent-limit"],
+      "target_node_ids": ["AlignmentMap", "NaturalTransformationCandidate", "GlobalGluingGap"],
+      "confidence": 0.91,
+      "novelty_score": 0.76,
+      "structural_loss": "KOS AlignmentMap is partial (gaps allowed); strict functors require total maps. The loss is documented in GlobalGluingGap."
+    }
+  ]
+}

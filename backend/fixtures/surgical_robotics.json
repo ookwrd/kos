@@ -1,0 +1,327 @@
+{
+  "domain": "surgical_robotics",
+  "description": "Robotic-assisted surgery domain. Focus on tacit knowledge transfer from attending surgeons to residents via the da Vinci system, and on institutional authority structures in the OR. Key parallel with fukushima_governance: expert dissent overridden by institutional authority.",
+  "agents": [
+    {
+      "id": "ag-santos",
+      "name": "Dr. Maria Santos",
+      "agent_type": "human",
+      "domain": "surgical_robotics",
+      "competences": ["laparoscopic_surgery", "robotic_surgery", "hepatobiliary_procedures", "haptic_feedback_calibration"],
+      "beliefs": {
+        "haptic_feedback_critical_for_safety": 0.94,
+        "resident_needs_50_supervised_cases": 0.88,
+        "current_OR_schedule_is_unsafe": 0.79
+      },
+      "authority_scope": ["surgical_robotics", "intraoperative_decisions"],
+      "calibration_score": 0.89,
+      "attributes": {
+        "years_experience": 15,
+        "cases_performed": 847,
+        "specialization": "hepatobiliary robotic surgery",
+        "tacit_knowledge_clusters": ["trocar-entry-feel", "bleeding-pattern-recognition", "tissue-tension-calibration"]
+      }
+    },
+    {
+      "id": "ag-park",
+      "name": "Dr. James Park",
+      "agent_type": "human",
+      "domain": "surgical_robotics",
+      "competences": ["laparoscopic_surgery", "robotic_surgery_basic", "anatomy"],
+      "beliefs": {
+        "haptic_feedback_critical_for_safety": 0.71,
+        "resident_needs_50_supervised_cases": 0.65,
+        "current_OR_schedule_is_unsafe": 0.42
+      },
+      "authority_scope": ["surgical_robotics"],
+      "calibration_score": 0.72,
+      "attributes": {
+        "training_year": 5,
+        "cases_performed": 89,
+        "supervised_robotic_cases": 31,
+        "note": "18 cases below Santos's minimum threshold for unsupervised practice"
+      }
+    },
+    {
+      "id": "ag-davinci-xi",
+      "name": "da Vinci Xi System",
+      "agent_type": "ai",
+      "domain": "surgical_robotics",
+      "competences": ["kinematic_precision", "motion_scaling", "tremor_filtering", "haptic_trace_recording"],
+      "beliefs": {
+        "motion_execution_nominal": 0.99
+      },
+      "authority_scope": ["instrument_control", "motion_planning"],
+      "calibration_score": 0.95,
+      "attributes": {
+        "manufacturer": "Intuitive Surgical",
+        "degrees_of_freedom": 7,
+        "motion_scale": "5:1",
+        "haptic_feedback": "force_torque_telemetry"
+      }
+    },
+    {
+      "id": "ag-or-safety-committee",
+      "name": "OR Safety Committee",
+      "agent_type": "institution",
+      "domain": "surgical_robotics",
+      "competences": ["credentialing", "error_reporting", "scheduling_authority"],
+      "beliefs": {
+        "current_OR_schedule_is_unsafe": 0.31,
+        "resident_needs_50_supervised_cases": 0.40
+      },
+      "authority_scope": ["surgical_robotics", "credentialing", "scheduling"],
+      "calibration_score": 0.58,
+      "attributes": {
+        "role": "Institutional authority for OR safety governance",
+        "override_record": "3 attending surgeon warnings overridden in past 18 months"
+      }
+    },
+    {
+      "id": "ag-haptic-ai",
+      "name": "HapticNet-v2",
+      "agent_type": "ai",
+      "domain": "surgical_robotics",
+      "competences": ["force_pattern_classification", "trocar_entry_detection", "tissue_resistance_modeling"],
+      "beliefs": {
+        "trocar_entry_detectable_by_force_profile": 0.84
+      },
+      "authority_scope": ["haptic_analysis"],
+      "calibration_score": 0.78,
+      "attributes": {
+        "training_cases": 2400,
+        "f1_score_entry_detection": 0.81
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-trocar",
+      "label": "Trocar",
+      "entity_type": "instrument",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "function": "Access port for laparoscopic instruments through abdominal wall",
+        "risk": "Incorrect entry can cause vascular injury"
+      }
+    },
+    {
+      "id": "ent-fascial-plane",
+      "label": "Fascial Plane",
+      "entity_type": "anatomy",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "description": "The correct anatomical layer for trocar entry — below peritoneum, above viscera",
+        "recognition": "Tactile: characteristic 'give' when fascia is punctured correctly"
+      }
+    },
+    {
+      "id": "ent-haptic-trace",
+      "label": "Haptic Trace",
+      "entity_type": "measurement",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "description": "Force-torque profile recorded during a robotic surgery episode",
+        "dimensions": "6-DOF (3 force + 3 torque)",
+        "sampling_rate_hz": 1000
+      }
+    },
+    {
+      "id": "ent-da-vinci-kinematic-chain",
+      "label": "da Vinci Kinematic Chain",
+      "entity_type": "mechanism_substrate",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "architecture": "7-DOF wristed instrument",
+        "motion_scaling": "5:1 or 3:1",
+        "note": "Scaling removes gross tremor but changes haptic cues compared to direct laparoscopy"
+      }
+    },
+    {
+      "id": "ent-tacit-cluster-trocar",
+      "label": "Trocar Entry Feel",
+      "entity_type": "tacit_knowledge_cluster",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "skill_holder_id": "ag-santos",
+        "description": "The characteristic resistance-and-give pattern that indicates correct fascial plane entry. Cannot be fully described verbally — must be experienced under supervision.",
+        "transfer_difficulty": "high",
+        "estimated_cases_to_acquire": 50,
+        "media_types": ["haptic_trace", "verbal_protocol"],
+        "current_capture_status": "partial — 15 annotated haptic traces + 3 verbal protocol sessions"
+      }
+    },
+    {
+      "id": "ent-tacit-cluster-bleeding",
+      "label": "Bleeding Pattern Recognition",
+      "entity_type": "tacit_knowledge_cluster",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "skill_holder_id": "ag-santos",
+        "description": "Distinguishing arterial from venous bleeding by visual properties: pulsatile vs. steady, bright vs. dark, spray pattern. Critical for knowing when to call for open conversion.",
+        "transfer_difficulty": "medium",
+        "estimated_cases_to_acquire": 30,
+        "media_types": ["video", "verbal_protocol"]
+      }
+    },
+    {
+      "id": "ent-tacit-cluster-tension",
+      "label": "Tissue Tension Calibration",
+      "entity_type": "tacit_knowledge_cluster",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "skill_holder_id": "ag-santos",
+        "description": "Knowing how hard to retract tissue without tearing — varies by tissue type, patient age, prior operations, inflammation state. No single parameter describes it.",
+        "transfer_difficulty": "very_high",
+        "estimated_cases_to_acquire": 100,
+        "media_types": ["haptic_trace"]
+      }
+    },
+    {
+      "id": "ent-credentialing-protocol",
+      "label": "Robotic Credentialing Protocol",
+      "entity_type": "governance_artifact",
+      "domain": "surgical_robotics",
+      "attributes": {
+        "minimum_supervised_cases": 50,
+        "current_committee_threshold": 35,
+        "santos_recommendation": 50,
+        "discrepancy": "15 cases below expert recommendation"
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-haptic-calibration",
+      "name": "Haptic Calibration via Supervised Practice",
+      "mechanism_type": "skill_acquisition",
+      "domain": "surgical_robotics",
+      "inputs": ["supervised_case", "attending_feedback", "haptic_trace"],
+      "outputs": ["resident_haptic_calibration_improvement"],
+      "causal_direction": "forward",
+      "confidence": 0.78,
+      "notes": "Calibration improvement is non-linear — first 20 cases rapid learning, 20-50 refinement, 50+ mastery"
+    },
+    {
+      "id": "mech-force-feedback-detection",
+      "name": "Force Feedback Entry Detection",
+      "mechanism_type": "signal_processing",
+      "domain": "surgical_robotics",
+      "inputs": ["force_torque_profile", "haptic_model"],
+      "outputs": ["fascial_plane_entry_signal"],
+      "causal_direction": "forward",
+      "confidence": 0.81,
+      "notes": "HapticNet-v2 detects the entry event from force profile with F1=0.81"
+    },
+    {
+      "id": "mech-authority-override",
+      "name": "OR Safety Committee Schedule Override",
+      "mechanism_type": "institutional_decision",
+      "domain": "surgical_robotics",
+      "inputs": ["attending_recommendation", "committee_scheduling_pressure"],
+      "outputs": ["resident_early_independence_approval"],
+      "causal_direction": "forward",
+      "confidence": 0.95,
+      "notes": "Committee approved Dr. Park for unsupervised practice at 31 cases, overriding Dr. Santos's 50-case recommendation"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-park-credentialing",
+      "question": "Is Dr. James Park ready for unsupervised robotic surgery at 31 supervised cases?",
+      "outcome": "Approved for unsupervised practice by OR Safety Committee",
+      "rationale": "Committee cited scheduling needs and Park's satisfactory performance evaluations. Procedural metrics met (completion rate, operating time). Santos's haptic calibration concern noted but not incorporated.",
+      "actor_id": "ag-or-safety-committee",
+      "domain": "surgical_robotics",
+      "is_exception": true,
+      "policy_ids": ["credentialing-protocol"],
+      "evidence_ids": ["ev-park-evaluations"],
+      "notes": "Exception to Santos's 50-case minimum recommendation"
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-santos-credentialing",
+      "actor_id": "ag-santos",
+      "target_id": "dec-park-credentialing",
+      "disagreement_type": "methodological",
+      "rationale": "Procedural completion metrics do not capture haptic calibration quality. Dr. Park's force feedback profiles still show the characteristic overcompensation pattern of a novice. The 50-case minimum is based on the empirical observation that this pattern resolves around case 45-55. Approving at 31 cases accepts unquantified patient risk.",
+      "resolution_status": "open",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-haptic-traces-santos",
+      "source_type": "measurement",
+      "content_ref": "15 annotated haptic trace files from Dr. Santos — correct fascial plane entry examples",
+      "media_type": "haptic_trace",
+      "validated_by": ["ag-haptic-ai"],
+      "notes": "Characteristic force spike at entry, followed by relaxation. Clear signature in all 15 cases."
+    },
+    {
+      "id": "ev-haptic-traces-park",
+      "source_type": "measurement",
+      "content_ref": "8 haptic trace files from Dr. Park's supervised cases",
+      "media_type": "haptic_trace",
+      "validated_by": ["ag-haptic-ai"],
+      "uncertainty": 0.45,
+      "notes": "Park shows overcompensation pattern in 6/8 traces — consistent with HapticNet training data for cases 25-35 of learning curve"
+    },
+    {
+      "id": "ev-park-evaluations",
+      "source_type": "regulatory",
+      "content_ref": "OR Safety Committee evaluation forms for Dr. Park, cases 1-31",
+      "media_type": "text",
+      "validated_by": ["ag-or-safety-committee"],
+      "notes": "All evaluations 'satisfactory' or better on procedural completion, time, and complication rate. No haptic quality metric."
+    },
+    {
+      "id": "ev-marescaux-telesurgery",
+      "source_type": "primary_literature",
+      "content_ref": "Marescaux et al. (2001) - Transatlantic robot-assisted telesurgery, Nature",
+      "media_type": "text",
+      "notes": "Demonstrated remote surgery; latency was the key constraint on force feedback fidelity"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-minimum-supervised-cases",
+      "description": "Minimum supervised robotic cases before independent practice",
+      "constraint_type": "soft",
+      "governed_entity_ids": ["ag-park", "ag-or-safety-committee"],
+      "notes": "Set at 35 by committee; Santos recommends 50. Current policy allows committee override."
+    },
+    {
+      "id": "constraint-haptic-competence",
+      "description": "Resident must demonstrate haptic calibration at expert level on standardized force profiles",
+      "constraint_type": "deontic",
+      "governed_entity_ids": ["ag-park"],
+      "notes": "Proposed by Santos. Not currently in credentialing protocol. No instrument to measure this."
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-auth-override",
+      "claim": "The OR Safety Committee's override of Dr. Santos's credentialing recommendation is structurally identical to TEPCO Management's override of TEPCO Civil Engineering's seawall recommendation",
+      "source_domain": "surgical_robotics",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": ["dec-park-credentialing", "dissent-santos-credentialing", "ag-or-safety-committee"],
+      "target_node_ids": ["dec-seawall-2008", "dissent-tepco-eng", "inst-tepco-mgmt"],
+      "confidence": 0.87,
+      "novelty_score": 0.87,
+      "structural_loss": "Different stakes and reversibility: surgical credentialing can be revoked; the 2011 tsunami was not reversible. Scale of consequence differs significantly."
+    },
+    {
+      "id": "bridge-tacit-skill",
+      "claim": "The haptic calibration skill for trocar entry is structurally parallel to the EUV pre-pulse calibration skill — both are irreducible situated knowledge patterns",
+      "source_domain": "surgical_robotics",
+      "target_domain": "euv_lithography",
+      "source_node_ids": ["ent-tacit-cluster-trocar", "mech-haptic-calibration"],
+      "target_node_ids": ["tac-prepulse-1", "ag-asml-eng"],
+      "confidence": 0.82,
+      "novelty_score": 0.82,
+      "structural_loss": "Physical substrate is entirely different (force-torque vs. optical). What transfers is the meta-skill: learning to recognize a non-verbal pattern that signals correct operational state."
+    }
+  ]
+}

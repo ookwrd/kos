@@ -12,13 +12,14 @@ import { ExpertTwinView } from "./components/ExpertTwinView";
 import { CollectiveAssayView } from "./components/CollectiveAssayView";
 import { PermissionExplorer } from "./components/PermissionExplorer";
 import { NestedAgencyView } from "./components/NestedAgencyView";
+import { SerendipityPanel } from "./components/SerendipityPanel";
 import { LandingView } from "./components/LandingView";
 import { useGraphData, useDecisionReplay } from "./hooks/useGraphData";
 import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "alignment" | "evolution" | "permissions" | "agency";
+type RightTab = "council" | "twin" | "assay" | "alignment" | "evolution" | "permissions" | "agency" | "serendipity";
 type CenterView = "graph" | "city";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string }[] = [
@@ -29,13 +30,14 @@ const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string }[] = [
 ];
 
 const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string }[] = [
-  { id: "council",     label: "Council",     icon: "◉", tip: "Agent council" },
-  { id: "twin",        label: "Expert",      icon: "⊙", tip: "Expert twin view" },
-  { id: "assay",       label: "Assay",       icon: "⊗", tip: "Collective belief synthesis" },
-  { id: "alignment",   label: "Alignment",   icon: "⟺", tip: "Ontology bridge" },
-  { id: "permissions", label: "Permissions", icon: "⬡", tip: "Permission explorer" },
-  { id: "agency",      label: "Agency",      icon: "⊘", tip: "Nested agency / ALife" },
-  { id: "evolution",   label: "Evolution",   icon: "⊞", tip: "Graph evolution timeline" },
+  { id: "council",      label: "Council",      icon: "◉", tip: "Agent council" },
+  { id: "twin",         label: "Expert",       icon: "⊙", tip: "Expert twin view" },
+  { id: "assay",        label: "Assay",        icon: "⊗", tip: "Collective belief synthesis" },
+  { id: "serendipity",  label: "Discover",     icon: "⟺", tip: "Cross-domain serendipity discoveries" },
+  { id: "alignment",    label: "Bridge",       icon: "≡", tip: "Ontology bridge / functor" },
+  { id: "evolution",    label: "Evolution",    icon: "⊞", tip: "Graph evolution timeline" },
+  { id: "permissions",  label: "Permissions",  icon: "⬡", tip: "Permission explorer" },
+  { id: "agency",       label: "Agency",       icon: "⊘", tip: "Nested agency / ALife" },
 ];
 
 function SidebarTabs<T extends string>({
@@ -400,13 +402,14 @@ export default function App() {
             <div className="flex w-full flex-col overflow-hidden">
               <SidebarTabs tabs={RIGHT_TABS} active={rightTab} onChange={setRightTab} />
               <div className="flex-1 overflow-hidden">
-                {rightTab === "council"     && <AgentCouncilView      className="h-full" />}
-                {rightTab === "twin"        && <ExpertTwinView         className="h-full" />}
-                {rightTab === "assay"       && <CollectiveAssayView    className="h-full" />}
-                {rightTab === "alignment"   && <OntologyBridgeView     className="h-full" />}
-                {rightTab === "permissions" && <PermissionExplorer     className="h-full" />}
-                {rightTab === "agency"      && <NestedAgencyView       className="h-full" />}
-                {rightTab === "evolution"   && <GraphEvolutionTimeline  className="h-full" />}
+                {rightTab === "council"      && <AgentCouncilView      className="h-full" />}
+                {rightTab === "twin"         && <ExpertTwinView         className="h-full" />}
+                {rightTab === "assay"        && <CollectiveAssayView    className="h-full" />}
+                {rightTab === "serendipity"  && <SerendipityPanel       className="h-full" />}
+                {rightTab === "alignment"    && <OntologyBridgeView     className="h-full" />}
+                {rightTab === "permissions"  && <PermissionExplorer     className="h-full" />}
+                {rightTab === "agency"       && <NestedAgencyView       className="h-full" />}
+                {rightTab === "evolution"    && <GraphEvolutionTimeline  className="h-full" />}
               </div>
             </div>
           )}

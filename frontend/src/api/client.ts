@@ -101,6 +101,38 @@ export interface GraphChangeProposal {
   domain: string | null;
 }
 
+export interface BridgeCandidate {
+  id: string;
+  claim: string;
+  source_domain: string;
+  target_domain: string;
+  source_node_ids: string[];
+  target_node_ids: string[];
+  confidence: number;
+  novelty_score: number;
+  structural_loss: string;
+}
+
+export interface TransferOperator {
+  id: string;
+  bridge_map_id: string;
+  status: string;
+  approved_by: string | null;
+  approval_note: string;
+  acknowledged_loss_report_id: string | null;
+  reversible: boolean;
+  expiry_condition: string;
+}
+
+export interface StructuralLossReport {
+  id: string;
+  source_domain: string;
+  target_domain: string;
+  items: Array<{ loss_type: string; description: string; severity: number }>;
+  overall_fidelity: number;
+  summary: string;
+}
+
 // ── API calls ─────────────────────────────────────────────────────────────────
 
 export const api = {
@@ -162,6 +194,11 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ accepted, note }),
       }),
+    bridges: () => req<BridgeCandidate[]>("/openendedness/bridges"),
+  },
+  transfer: {
+    operators: () => req<TransferOperator[]>("/transfer/operators"),
+    lossReport: (id: string) => req<StructuralLossReport>(`/transfer/loss-report/${id}`),
   },
 };
 

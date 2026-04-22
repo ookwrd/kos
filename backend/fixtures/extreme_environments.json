@@ -1,0 +1,300 @@
+{
+  "domain": "extreme_environments",
+  "description": "Operational knowledge in extreme environments: deep-sea diving, high-altitude operations, and aerospace. Focus on normalization of deviance — the process by which small deviations from safe practice become accepted over time, leading to catastrophic failure. Key structural parallel with fukushima_governance: authority structures that accept risk signals as normal.",
+  "agents": [
+    {
+      "id": "ag-boisjoly",
+      "name": "Roger Boisjoly (historical)",
+      "agent_type": "human",
+      "domain": "extreme_environments",
+      "competences": ["o_ring_mechanics", "low_temperature_material_behavior", "sealing_system_failure_modes"],
+      "beliefs": {
+        "low_temp_launch_is_unsafe": 0.99,
+        "o_ring_failure_probability_above_threshold": 0.98,
+        "decision_will_be_reversed_if_evidence_presented": 0.31
+      },
+      "authority_scope": ["extreme_environments", "sealing_systems"],
+      "calibration_score": 0.94,
+      "attributes": {
+        "role": "Morton Thiokol senior engineer, O-ring specialist",
+        "note": "Wrote memo 6 months before Challenger disaster warning of O-ring cold-weather risk. Warning was overridden by management."
+      }
+    },
+    {
+      "id": "ag-nasa-launch-director",
+      "name": "NASA Launch Director (1986)",
+      "agent_type": "institution",
+      "domain": "extreme_environments",
+      "competences": ["mission_scheduling", "launch_authority", "risk_acceptance"],
+      "beliefs": {
+        "low_temp_launch_is_unsafe": 0.18,
+        "o_ring_failure_probability_above_threshold": 0.15,
+        "schedule_pressure_is_acceptable_risk_factor": 0.72
+      },
+      "authority_scope": ["extreme_environments", "launch_decisions"],
+      "calibration_score": 0.41,
+      "attributes": {
+        "note": "Approved Challenger launch at 28°F despite documented O-ring cold-weather performance concerns"
+      }
+    },
+    {
+      "id": "ag-dive-medicine",
+      "name": "Dr. Yuki Tanaka",
+      "agent_type": "human",
+      "domain": "extreme_environments",
+      "competences": ["hyperbaric_medicine", "decompression_physiology", "dive_table_design"],
+      "beliefs": {
+        "current_ascent_schedule_is_safe": 0.88,
+        "saturation_divers_need_longer_surface_interval": 0.74
+      },
+      "authority_scope": ["extreme_environments", "dive_medicine"],
+      "calibration_score": 0.88,
+      "attributes": {"specialization": "saturation diving and deep-sea operations"}
+    },
+    {
+      "id": "ag-operations-committee",
+      "name": "Deepwater Operations Committee",
+      "agent_type": "institution",
+      "domain": "extreme_environments",
+      "competences": ["operational_planning", "risk_acceptance", "schedule_authority"],
+      "beliefs": {
+        "current_ascent_schedule_is_safe": 0.71,
+        "saturation_divers_need_longer_surface_interval": 0.42
+      },
+      "authority_scope": ["extreme_environments", "operations_approval"],
+      "calibration_score": 0.55,
+      "attributes": {
+        "override_record": "2 dive medicine recommendations shortened in past 18 months due to weather window constraints"
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-o-ring",
+      "label": "SRB O-Ring Seal",
+      "entity_type": "component",
+      "domain": "extreme_environments",
+      "attributes": {
+        "material": "Viton rubber",
+        "operating_temperature_range_f": "53–75",
+        "documented_launch_temperature_f": 28,
+        "resilience_at_28f": "significantly impaired — documented in Boisjoly memo",
+        "failure_mode": "joint burn-through due to inadequate sealing at low temperature"
+      }
+    },
+    {
+      "id": "ent-normalization-event-oring",
+      "label": "O-Ring Erosion Accepted as Normal (1984-1985)",
+      "entity_type": "normalization_event",
+      "domain": "extreme_environments",
+      "attributes": {
+        "description": "Prior launches showed O-ring erosion but missions succeeded. Management progressively accepted erosion as within operational tolerance — 'if we flew before with this damage, we can fly again.'",
+        "temporal_span": "1984–1985",
+        "deviance_type": "component_damage_normalization",
+        "vaughan_category": "normalization_of_deviance"
+      }
+    },
+    {
+      "id": "ent-decompression-schedule",
+      "label": "Saturation Dive Decompression Schedule",
+      "entity_type": "protocol",
+      "domain": "extreme_environments",
+      "attributes": {
+        "standard_ascent_rate_ft_per_min": 30,
+        "surface_interval_hours_standard": 24,
+        "surface_interval_reduced": 18,
+        "risk_of_reduction": "Elevated decompression sickness probability at 18h vs. 24h: Tanaka estimates 3.2x increased DCS risk for deep saturation dives"
+      }
+    },
+    {
+      "id": "ent-pressure-chamber",
+      "label": "Saturation Dive Pressure Chamber",
+      "entity_type": "environment",
+      "domain": "extreme_environments",
+      "attributes": {
+        "depth_fsw": 1000,
+        "ambient_pressure_atm": 31,
+        "occupants": 6,
+        "emergency_egress": "limited — decompression required, minimum 12h under any circumstances"
+      }
+    },
+    {
+      "id": "ent-cold-weather-protocol",
+      "label": "Cold Weather Launch Protocol",
+      "entity_type": "governance_artifact",
+      "domain": "extreme_environments",
+      "attributes": {
+        "minimum_launch_temp_f_formal": "none — NASA had no formal minimum",
+        "thiokol_recommendation_f": 53,
+        "actual_launch_temp_f": 28,
+        "gap": "25°F below engineering recommendation, with no formal protocol violation because no formal minimum existed"
+      }
+    },
+    {
+      "id": "ent-boisjoly-memo",
+      "label": "Boisjoly O-Ring Warning Memo",
+      "entity_type": "evidence_artifact",
+      "domain": "extreme_environments",
+      "attributes": {
+        "date": "1985-07-31",
+        "content": "Warning that O-ring cold-weather resilience data showed critical failure risk. Recommended flight suspension pending design review.",
+        "recipient": "Morton Thiokol management",
+        "action_taken": "Filed. Not escalated to NASA. Design review not conducted."
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-normalization-of-deviance",
+      "name": "Normalization of Deviance",
+      "mechanism_type": "institutional_process",
+      "domain": "extreme_environments",
+      "inputs": ["successful_operation_despite_known_anomaly", "schedule_pressure", "risk_acceptance_authority"],
+      "outputs": ["anomaly_accepted_as_normal", "increased_risk_tolerance_threshold"],
+      "causal_direction": "forward",
+      "confidence": 0.91,
+      "notes": "Vaughan (1996): when anomalies do not immediately produce failures, they become institutionally reclassified as acceptable risk. Each successful flight with O-ring erosion made the next acceptance easier."
+    },
+    {
+      "id": "mech-cold-temp-seal-failure",
+      "name": "Low Temperature O-Ring Resilience Loss",
+      "mechanism_type": "material_physics",
+      "domain": "extreme_environments",
+      "inputs": ["ambient_temperature_f", "o_ring_material_properties"],
+      "outputs": ["sealing_effectiveness", "joint_burn_through_probability"],
+      "causal_direction": "forward",
+      "confidence": 0.97,
+      "notes": "Well-characterized physical mechanism. At 28°F, Viton rubber loses significant resilience, impairing sealing. Boisjoly had the data."
+    },
+    {
+      "id": "mech-authority-override-launch",
+      "name": "Management Override of Engineering Recommendation",
+      "mechanism_type": "institutional_decision",
+      "domain": "extreme_environments",
+      "inputs": ["engineer_recommendation", "schedule_pressure", "management_authority"],
+      "outputs": ["launch_approval_despite_warning"],
+      "causal_direction": "forward",
+      "confidence": 0.99,
+      "notes": "Morton Thiokol management reversed engineer consensus after NASA management expressed displeasure. Engineers asked to 'take off their engineer hat and put on their management hat.'"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-challenger-launch",
+      "question": "Should Challenger STS-51-L launch on January 28, 1986 at 28°F ambient temperature?",
+      "outcome": "Launch approved",
+      "rationale": "Management at Morton Thiokol reversed prior engineer consensus under pressure from NASA. Previous successful flights with O-ring damage cited as evidence that risk was acceptable. Formal risk quantification not performed at decision time.",
+      "actor_id": "ag-nasa-launch-director",
+      "domain": "extreme_environments",
+      "is_exception": true,
+      "evidence_ids": ["ev-boisjoly-data", "ev-prior-flight-data"],
+      "notes": "73 seconds after launch, Challenger disintegrated due to O-ring joint failure on the right SRB."
+    },
+    {
+      "id": "dec-shortened-decompression",
+      "question": "Can saturation divers complete decompression on 18-hour schedule instead of 24-hour standard due to approaching weather window?",
+      "outcome": "Approved — 18-hour schedule",
+      "rationale": "Operations Committee approved shortened decompression citing favorable DCS history on previous shortened schedules and weather window constraint.",
+      "actor_id": "ag-operations-committee",
+      "domain": "extreme_environments",
+      "is_exception": true,
+      "evidence_ids": ["ev-tanaka-assessment"]
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-boisjoly-launch",
+      "actor_id": "ag-boisjoly",
+      "target_id": "dec-challenger-launch",
+      "disagreement_type": "factual",
+      "rationale": "Cold temperature significantly reduces O-ring resilience. We have data showing erosion increases with lower temperature. At 28°F, I cannot quantify the probability of joint failure, but I can say with confidence that it is unacceptably high. We should not fly below 53°F until we understand the temperature relationship fully.",
+      "resolution_status": "unresolved",
+      "preserved": true
+    },
+    {
+      "id": "dissent-tanaka-decompression",
+      "actor_id": "ag-dive-medicine",
+      "target_id": "dec-shortened-decompression",
+      "disagreement_type": "methodological",
+      "rationale": "Previous successful shortened decompression schedules are not evidence of safety — they are evidence we were lucky. For 1000 fsw saturation dives, the physiological model predicts 3.2x increased DCS risk at 18h vs. 24h. The weather window is a logistical constraint; it does not change the physiology.",
+      "resolution_status": "open",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-boisjoly-data",
+      "source_type": "measurement",
+      "content_ref": "Morton Thiokol O-ring temperature resilience data, 1985",
+      "media_type": "text",
+      "validated_by": ["ag-boisjoly"],
+      "uncertainty": 0.08,
+      "notes": "Data clearly showed O-ring resilience decreasing with temperature. Below 53°F, resilience curve shows non-linear decline."
+    },
+    {
+      "id": "ev-prior-flight-data",
+      "source_type": "measurement",
+      "content_ref": "Post-flight O-ring inspection data, STS flights 1984-1985",
+      "media_type": "text",
+      "validated_by": ["ag-nasa-launch-director"],
+      "uncertainty": 0.35,
+      "notes": "Shows O-ring erosion in prior flights, but all survived. This data was used to argue that erosion was acceptable — a misuse of survivorship bias."
+    },
+    {
+      "id": "ev-tanaka-assessment",
+      "source_type": "primary_literature",
+      "content_ref": "Tanaka decompression risk assessment for 1000 fsw saturation dive shortened schedule",
+      "media_type": "text",
+      "validated_by": ["ag-dive-medicine"],
+      "uncertainty": 0.22,
+      "notes": "3.2x DCS risk increase at 18h vs. 24h surface interval. Based on US Navy decompression physiology model."
+    },
+    {
+      "id": "ev-vaughan-normalization",
+      "source_type": "primary_literature",
+      "content_ref": "Vaughan, The Challenger Launch Decision (1996), University of Chicago Press",
+      "media_type": "text",
+      "notes": "Definitive sociological analysis of normalization of deviance mechanism in the Challenger decision"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-oring-temperature",
+      "description": "Minimum launch temperature must ensure O-ring sealing effectiveness",
+      "constraint_type": "hard",
+      "governed_entity_ids": ["ag-nasa-launch-director"],
+      "notes": "NASA had no formal temperature minimum in 1986. This constraint did not exist in the governance system — a governance gap."
+    },
+    {
+      "id": "constraint-decompression-schedule",
+      "description": "Saturation dive decompression must follow standard schedule unless medical waiver obtained",
+      "constraint_type": "soft",
+      "governed_entity_ids": ["ag-operations-committee"],
+      "notes": "Waiver process exists but is rarely invoked. Shortened schedule approved operationally without formal waiver."
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-deviance-normalization",
+      "claim": "The normalization of O-ring erosion in NASA's Challenger program is structurally identical to the normalization of TEPCO's seawall inadequacy — both involve progressive acceptance of known risk signals under institutional pressure",
+      "source_domain": "extreme_environments",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": ["dec-challenger-launch", "ent-normalization-event-oring", "dissent-boisjoly-launch", "ag-nasa-launch-director"],
+      "target_node_ids": ["dec-seawall-2008", "dissent-tepco-eng", "inst-tepco-mgmt"],
+      "confidence": 0.91,
+      "novelty_score": 0.91,
+      "structural_loss": "Challenger involved a discrete launch decision; TEPCO's seawall decision was a persistent infrastructure commitment. The temporal structure differs: one decision vs. years of planning inaction. The pattern of authority-override-of-expert-dissent is structurally identical."
+    },
+    {
+      "id": "bridge-deviance-surgery",
+      "claim": "The OR Safety Committee's acceptance of insufficient supervised cases parallels the NASA management's acceptance of O-ring erosion — both involve progressive lowering of safety thresholds under schedule pressure",
+      "source_domain": "extreme_environments",
+      "target_domain": "surgical_robotics",
+      "source_node_ids": ["ent-normalization-event-oring", "mech-normalization-of-deviance"],
+      "target_node_ids": ["dec-park-credentialing", "ag-or-safety-committee"],
+      "confidence": 0.76,
+      "novelty_score": 0.78,
+      "structural_loss": "Hospital scheduling pressure differs from launch window pressure in urgency and reversibility. But the mechanism — accepting a known risk reduction as operationally normal — is structurally parallel."
+    }
+  ]
+}

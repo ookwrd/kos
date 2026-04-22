@@ -1,0 +1,286 @@
+{
+  "domain": "semiconductor_hardware",
+  "description": "CMOS semiconductor fabrication domain. Focus on plasma etch process knowledge, yield governance, and the institutional dynamics when process engineers' warnings are overridden by management. Key structural parallel with fukushima_governance: institutional authority override of calibrated expert dissent.",
+  "agents": [
+    {
+      "id": "ag-kim-process",
+      "name": "Jae-Won Kim",
+      "agent_type": "human",
+      "domain": "semiconductor_hardware",
+      "competences": ["plasma_etch", "process_window_optimization", "yield_analysis", "chamber_characterization"],
+      "beliefs": {
+        "current_etch_recipe_is_unstable": 0.91,
+        "yield_will_drop_next_quarter": 0.83,
+        "chamber_B_needs_maintenance": 0.88
+      },
+      "authority_scope": ["semiconductor_hardware", "etch_process"],
+      "calibration_score": 0.86,
+      "attributes": {
+        "years_experience": 22,
+        "fab_expertise": "14nm FinFET and 7nm GAAFET etch processes",
+        "tacit_knowledge": "Can diagnose plasma instability from chamber sound before instrumentation detects it"
+      }
+    },
+    {
+      "id": "ag-yield-committee",
+      "name": "FAB Yield Committee",
+      "agent_type": "institution",
+      "domain": "semiconductor_hardware",
+      "competences": ["yield_metrics", "process_sign_off", "scheduling_authority"],
+      "beliefs": {
+        "current_etch_recipe_is_unstable": 0.22,
+        "yield_will_drop_next_quarter": 0.28,
+        "chamber_B_needs_maintenance": 0.41
+      },
+      "authority_scope": ["semiconductor_hardware", "production_approval"],
+      "calibration_score": 0.62,
+      "attributes": {
+        "role": "Quarterly yield sign-off and process exception approval",
+        "override_record": "4 process engineer yield warnings dismissed in past 3 years"
+      }
+    },
+    {
+      "id": "ag-apc-system",
+      "name": "APC Controller (Advanced Process Control)",
+      "agent_type": "ai",
+      "domain": "semiconductor_hardware",
+      "competences": ["real_time_process_adjustment", "endpoint_detection", "run_to_run_control"],
+      "beliefs": {
+        "current_etch_recipe_is_unstable": 0.67
+      },
+      "authority_scope": ["etch_process", "deposition_process"],
+      "calibration_score": 0.91,
+      "attributes": {
+        "control_type": "run-to-run with endpoint detection",
+        "latency_s": 0.1,
+        "note": "APC detects process drift but cannot trigger maintenance — only human authority can do that"
+      }
+    },
+    {
+      "id": "ag-oem-support",
+      "name": "Equipment OEM Process Support",
+      "agent_type": "institution",
+      "domain": "semiconductor_hardware",
+      "competences": ["chamber_characterization", "recipe_development", "maintenance_scheduling"],
+      "beliefs": {
+        "chamber_B_needs_maintenance": 0.79
+      },
+      "authority_scope": ["equipment_maintenance", "recipe_qualification"],
+      "calibration_score": 0.74
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-cmos-transistor",
+      "label": "CMOS Transistor",
+      "entity_type": "device",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "current_node": "7nm GAAFET",
+        "gate_material": "HfO2 high-k dielectric",
+        "channel_architecture": "gate-all-around nanosheet"
+      }
+    },
+    {
+      "id": "ent-plasma-etch-chamber",
+      "label": "Plasma Etch Chamber",
+      "entity_type": "process_tool",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "tool_type": "capacitively coupled plasma (CCP)",
+        "chamber_id": "B",
+        "installation_year": 2019,
+        "maintenance_interval_wafers": 5000,
+        "current_wafer_count": 5847,
+        "status": "overdue for maintenance per OEM schedule"
+      }
+    },
+    {
+      "id": "ent-etch-recipe",
+      "label": "7nm FinFET Etch Recipe v3.2",
+      "entity_type": "process_spec",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "gas_chemistry": "CF4/CHF3/Ar",
+        "pressure_mtorr": 45,
+        "rf_power_w": 1200,
+        "process_window_nm": 2.3,
+        "current_window_nm": 1.8,
+        "drift_direction": "narrowing — approaching hard spec limit"
+      }
+    },
+    {
+      "id": "ent-yield-map",
+      "label": "Yield Map Q4-2025",
+      "entity_type": "measurement",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "die_yield_pct": 91.2,
+        "baseline_yield_pct": 93.8,
+        "degradation_pct": 2.6,
+        "defect_cluster": "center-right quadrant, consistent with chamber B film uniformity degradation"
+      }
+    },
+    {
+      "id": "ent-process-window",
+      "label": "Process Window",
+      "entity_type": "constraint",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "definition": "The parameter space (etch time, RF power, gas flow) within which yield meets spec",
+        "current_margin_nm": 0.5,
+        "hard_limit_nm": 0.0,
+        "risk": "At current drift rate, process exits hard spec in approximately 6 weeks"
+      }
+    },
+    {
+      "id": "ent-tacit-cluster-plasma",
+      "label": "Plasma Chamber Diagnostics",
+      "entity_type": "tacit_knowledge_cluster",
+      "domain": "semiconductor_hardware",
+      "attributes": {
+        "skill_holder_id": "ag-kim-process",
+        "description": "Kim can identify plasma instability from the acoustic signature of the chamber ('the pitch changes before the sensors flag it') and from the color of the plasma discharge through the viewport. These cues precede instrumentation alerts by 3-15 minutes.",
+        "transfer_difficulty": "very_high",
+        "estimated_years_to_acquire": 8,
+        "media_types": ["sensor_stream", "verbal_protocol"],
+        "current_capture_status": "Kim has documented 12 diagnostic events; transfer to APC system partial — acoustic not captured"
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-etch-uniformity-degradation",
+      "name": "Chamber Degradation → Etch Non-Uniformity",
+      "mechanism_type": "physical_process",
+      "domain": "semiconductor_hardware",
+      "inputs": ["chamber_wall_condition", "rf_power_distribution"],
+      "outputs": ["etch_rate_non_uniformity", "process_window_narrowing"],
+      "causal_direction": "forward",
+      "confidence": 0.89,
+      "notes": "Established mechanism: chamber wall polymer deposition alters RF power distribution, causing center-edge etch rate gradient"
+    },
+    {
+      "id": "mech-yield-degradation",
+      "name": "Process Window Narrowing → Yield Loss",
+      "mechanism_type": "statistical_process",
+      "domain": "semiconductor_hardware",
+      "inputs": ["process_window_margin", "process_variation_sigma"],
+      "outputs": ["yield_loss_rate"],
+      "causal_direction": "forward",
+      "confidence": 0.92,
+      "notes": "As process window narrows, natural process variation increasingly falls outside spec. Relationship is approximately exponential near hard limits."
+    },
+    {
+      "id": "mech-apc-compensation",
+      "name": "APC Run-to-Run Compensation",
+      "mechanism_type": "control_system",
+      "domain": "semiconductor_hardware",
+      "inputs": ["etch_endpoint_signal", "previous_run_metrology"],
+      "outputs": ["recipe_parameter_adjustment"],
+      "causal_direction": "forward",
+      "confidence": 0.91,
+      "notes": "APC can compensate for slow drift but cannot recover from abrupt process excursion. Near the hard limit, APC compensation is insufficient."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-continue-production",
+      "question": "Should production continue on Chamber B given current process window degradation?",
+      "outcome": "Continue production — yield within spec, APC managing drift",
+      "rationale": "Yield Committee assessed Q4 yield at 91.2% — above the 90% stop criterion. APC is actively compensating. Maintenance downtime would impact quarterly shipment commitments. Kim's concern about drift rate was noted but judged non-critical given current yield.",
+      "actor_id": "ag-yield-committee",
+      "domain": "semiconductor_hardware",
+      "is_exception": true,
+      "evidence_ids": ["ev-yield-map-q4", "ev-apc-log"],
+      "notes": "Exception: approved production despite OEM maintenance overdue flag and Kim's dissent"
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-kim-maintenance",
+      "actor_id": "ag-kim-process",
+      "target_id": "dec-continue-production",
+      "disagreement_type": "methodological",
+      "rationale": "The 91.2% yield figure conceals the drift vector. At current rate of process window narrowing (0.5nm margin remaining, losing ~0.15nm/week), we will hit the hard spec limit in 3-4 weeks. APC compensation will fail abruptly when the window closes — there is no gradual degradation, there is a cliff. The yield metric does not capture the proximity to this cliff. Maintenance now costs 3 days; a process excursion will cost 2-3 weeks and yield full lot scraps.",
+      "resolution_status": "open",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-yield-map-q4",
+      "source_type": "measurement",
+      "content_ref": "FAB Yield Map Q4-2025 — Chamber B wafer spatial yield data",
+      "media_type": "image",
+      "validated_by": ["ag-apc-system"],
+      "uncertainty": 0.12,
+      "notes": "Shows 2.6% yield degradation vs. baseline. Defect cluster spatially consistent with chamber B film uniformity issue."
+    },
+    {
+      "id": "ev-apc-log",
+      "source_type": "measurement",
+      "content_ref": "APC Controller run-to-run adjustment log, past 90 days",
+      "media_type": "sensor_stream",
+      "validated_by": ["ag-apc-system"],
+      "notes": "Shows APC correction magnitude increasing monotonically — evidence of accelerating drift. APC is compensating more each run."
+    },
+    {
+      "id": "ev-oem-maintenance-report",
+      "source_type": "regulatory",
+      "content_ref": "Equipment OEM maintenance recommendation — Chamber B at 5847 wafers (overdue at 5000)",
+      "media_type": "text",
+      "validated_by": ["ag-oem-support"],
+      "notes": "OEM recommends immediate preventive maintenance. Polymer deposition on chamber walls confirmed by periodic etch rate monitor test."
+    },
+    {
+      "id": "ev-kim-acoustic-log",
+      "source_type": "tacit_knowledge",
+      "content_ref": "Kim's verbal protocol and sensor annotation — 12 documented instability events",
+      "media_type": "verbal_protocol",
+      "validated_by": ["ag-kim-process"],
+      "uncertainty": 0.35,
+      "notes": "Kim's acoustic cue detects chamber instability 3-15 min before sensors. Pattern consistent with known plasma instability modes. Not yet incorporated into APC."
+    }
+  ],
+  "constraints": [
+    {
+      "id": "constraint-yield-stop-criterion",
+      "description": "Production halts if wafer yield falls below 90%",
+      "constraint_type": "hard",
+      "governed_entity_ids": ["ag-yield-committee"],
+      "notes": "Current yield 91.2% — above threshold but approaching it on current trajectory"
+    },
+    {
+      "id": "constraint-process-window-margin",
+      "description": "Process must maintain minimum 1.0nm margin in process window",
+      "constraint_type": "soft",
+      "governed_entity_ids": ["ag-kim-process", "ag-apc-system"],
+      "notes": "Current margin 0.5nm — violates this soft constraint. Committee not aware."
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-authority-override-semicon",
+      "claim": "The Yield Committee's decision to continue production despite Kim's dissent is structurally identical to TEPCO Management's seawall decision: institutional authority overriding calibrated process engineer dissent",
+      "source_domain": "semiconductor_hardware",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": ["dec-continue-production", "dissent-kim-maintenance", "ag-yield-committee"],
+      "target_node_ids": ["dec-seawall-2008", "dissent-tepco-eng", "inst-tepco-mgmt"],
+      "confidence": 0.84,
+      "novelty_score": 0.79,
+      "structural_loss": "Consequences differ in scale and reversibility. A fab yield excursion is economically damaging but not a humanitarian catastrophe. The structural decision pattern is identical; the stakes differ by 3 orders of magnitude."
+    },
+    {
+      "id": "bridge-calibration-decay",
+      "claim": "Process window drift in semiconductor fabrication is structurally parallel to agent calibration decay in drug discovery — both measure accumulated deviation from a baseline that predicts future failure",
+      "source_domain": "semiconductor_hardware",
+      "target_domain": "drug_discovery",
+      "source_node_ids": ["ent-process-window", "mech-etch-uniformity-degradation"],
+      "target_node_ids": ["calibration_decay_mechanism"],
+      "confidence": 0.71,
+      "novelty_score": 0.74,
+      "structural_loss": "Process window is a physical measurement; calibration is a statistical track record. The time-series behavior (drift, cliff, sudden failure) is similar, but the mechanism differs."
+    }
+  ]
+}

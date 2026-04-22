@@ -23,27 +23,55 @@ interface DomainCluster {
 }
 
 const DOMAIN_POSITIONS: Record<string, [number, number]> = {
-  drug_discovery:       [-10, -5],
-  fukushima_governance: [0,    8],
-  euv_lithography:      [10,  -5],
+  drug_discovery:         [-10, -5],
+  fukushima_governance:   [0,    8],
+  euv_lithography:        [10,  -5],
+  math_category_theory:   [-18,  2],
+  surgical_robotics:      [-6,  16],
+  semiconductor_hardware: [18,   4],
+  extreme_environments:   [6,  -18],
 };
 
 const DOMAIN_COLORS: Record<string, string> = {
-  drug_discovery:       "#3b82f6",
-  fukushima_governance: "#f97316",
-  euv_lithography:      "#22c55e",
+  drug_discovery:         "#3b82f6",
+  fukushima_governance:   "#f97316",
+  euv_lithography:        "#22c55e",
+  math_category_theory:   "#8b5cf6",
+  surgical_robotics:      "#ec4899",
+  semiconductor_hardware: "#eab308",
+  extreme_environments:   "#ef4444",
 };
 
 const DOMAIN_LABELS: Record<string, string> = {
-  drug_discovery:       "Drug Discovery",
-  fukushima_governance: "Governance",
-  euv_lithography:      "EUV Operations",
+  drug_discovery:         "Drug Discovery",
+  fukushima_governance:   "Governance",
+  euv_lithography:        "EUV Operations",
+  math_category_theory:   "Category Theory",
+  surgical_robotics:      "Surgical Robotics",
+  semiconductor_hardware: "Semiconductor",
+  extreme_environments:   "Extreme Envs.",
 };
+
+const DEMO_CLUSTERS: DomainCluster[] = Object.keys(DOMAIN_POSITIONS).map(domain => ({
+  domain,
+  cx: DOMAIN_POSITIONS[domain]![0],
+  cz: DOMAIN_POSITIONS[domain]![1],
+  totalNodes: Math.floor(Math.random() * 20 + 10),
+  layers: ["knowledge", "context", "agents"] as LayerKey[],
+}));
+
+const CROSS_DOMAIN_BRIDGES: Array<[string, string, number]> = [
+  ["extreme_environments",   "fukushima_governance",   0.91],
+  ["surgical_robotics",      "fukushima_governance",   0.87],
+  ["surgical_robotics",      "euv_lithography",        0.82],
+  ["math_category_theory",   "fukushima_governance",   0.76],
+  ["semiconductor_hardware", "drug_discovery",         0.74],
+];
 
 function useCityData(): { districts: DistrictData[]; clusters: DomainCluster[] } {
   const { overview } = useGraphStore();
   return useMemo(() => {
-    if (!overview) return { districts: [], clusters: [] };
+    if (!overview) return { districts: [], clusters: DEMO_CLUSTERS };
 
     const districts: DistrictData[] = [];
     const clusterMap: Record<string, { nodes: number; layers: Set<LayerKey> }> = {};
@@ -382,8 +410,8 @@ export function CityOverview({ className = "" }: Props) {
       </div>
 
       {!overview && (
-        <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-xs tracking-widest uppercase">
-          Loading knowledge ecology…
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-slate-600 tracking-widest uppercase italic">
+          Demo mode — 7 knowledge cities
         </div>
       )}
 
@@ -418,30 +446,20 @@ export function CityOverview({ className = "" }: Props) {
           />
         ))}
 
-        {/* Bridge arcs between domains */}
-        {clusters.length >= 2 && (
-          <>
+        {/* Cross-domain bridge arcs */}
+        {CROSS_DOMAIN_BRIDGES.map(([srcDomain, tgtDomain, strength]) => {
+          const src = clusters.find(c => c.domain === srcDomain);
+          const tgt = clusters.find(c => c.domain === tgtDomain);
+          if (!src || !tgt) return null;
+          return (
             <BridgeArc
-              from={[clusters[0]?.cx ?? -10, clusters[0]?.cz ?? -5]}
-              to={[clusters[1]?.cx ?? 0, clusters[1]?.cz ?? 8]}
-              strength={0.7}
+              key={`${srcDomain}-${tgtDomain}`}
+              from={[src.cx, src.cz]}
+              to={[tgt.cx, tgt.cz]}
+              strength={strength}
             />
-            {clusters.length >= 3 && (
-              <>
-                <BridgeArc
-                  from={[clusters[1]?.cx ?? 0, clusters[1]?.cz ?? 8]}
-                  to={[clusters[2]?.cx ?? 10, clusters[2]?.cz ?? -5]}
-                  strength={0.6}
-                />
-                <BridgeArc
-                  from={[clusters[0]?.cx ?? -10, clusters[0]?.cz ?? -5]}
-                  to={[clusters[2]?.cx ?? 10, clusters[2]?.cz ?? -5]}
-                  strength={0.4}
-                />
-              </>
-            )}
-          </>
-        )}
+          );
+        })}
 
         {/* District towers */}
         {districts.map((d, i) => (
