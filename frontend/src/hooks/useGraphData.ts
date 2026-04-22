@@ -6,6 +6,7 @@
 import { useEffect } from "react";
 import { api, connectGraphWs } from "../api/client";
 import { useGraphStore } from "../store/graphStore";
+import { DEMO_OVERVIEW } from "../api/demoData";
 
 export function useGraphData() {
   const { domainFilter, setOverview, setLoading, setError, pushEvent } = useGraphStore();
@@ -15,7 +16,11 @@ export function useGraphData() {
     api.graph
       .overview(domainFilter ?? undefined)
       .then(setOverview)
-      .catch(e => setError(e instanceof Error ? e.message : "Failed to load graph"))
+      .catch(() => {
+        // No backend — show static demo data so the UI is always functional
+        setOverview(DEMO_OVERVIEW);
+        setError(null);
+      })
       .finally(() => setLoading(false));
   }, [domainFilter]);
 

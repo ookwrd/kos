@@ -154,16 +154,19 @@ export default function App() {
 
   useGraphData();
 
+  const [demoMode, setDemoMode] = useState(false);
+
   // Detect WS connectivity via live events
   useEffect(() => {
     if (liveEvents.length > 0) setWsConnected(true);
   }, [liveEvents]);
 
-  // Attempt health check to see if API is up
+  // Health check — detect demo mode (no backend)
   useEffect(() => {
-    fetch("/api/../health")
-      .then(r => r.ok && setWsConnected(true))
-      .catch(() => {});
+    const base = import.meta.env.VITE_API_URL ?? "";
+    fetch(`${base}/health`)
+      .then(r => { if (r.ok) setWsConnected(true); else setDemoMode(true); })
+      .catch(() => setDemoMode(true));
   }, []);
 
   const selectedDecisionId =
@@ -230,6 +233,15 @@ export default function App() {
           >
             ACI
           </span>
+          {demoMode && (
+            <span
+              className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest"
+              style={{ backgroundColor: "#f9731620", color: "#fb923c", border: "1px solid #f9731630" }}
+              title="No backend connected — showing drug_discovery fixture data"
+            >
+              demo
+            </span>
+          )}
         </div>
 
         {/* Domain chips */}
