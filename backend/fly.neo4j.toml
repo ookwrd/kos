@@ -1,0 +1,28 @@
+# Fly.io config for the Neo4j database service
+app = 'kos-neo4j'
+primary_region = 'lax'
+
+[build]
+  image = 'neo4j:5-community'
+
+[env]
+  NEO4J_AUTH = 'neo4j/kospassword'
+  NEO4J_server_memory_heap_initial__size = '256m'
+  NEO4J_server_memory_heap_max__size = '512m'
+  NEO4J_server_memory_pagecache_size = '128m'
+
+[[services]]
+  internal_port = 7687
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 7687
+
+[[mounts]]
+  source = 'neo4j_data'
+  destination = '/data'
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
