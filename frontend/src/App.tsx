@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { GraphCanvas } from "./components/GraphCanvas";
 import { CityOverview } from "./components/CityOverview";
 import { DecisionReplay } from "./components/DecisionReplay";
@@ -19,82 +20,229 @@ import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "alignment" | "evolution" | "permissions" | "agency" | "serendipity";
+type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency";
 type CenterView = "graph" | "city";
 
-const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string }[] = [
-  { id: "replay",     label: "Replay",     icon: "▶", tip: "Decision trace replay" },
-  { id: "provenance", label: "Provenance", icon: "⊕", tip: "Custody chain" },
-  { id: "tacit",      label: "Tacit",      icon: "◎", tip: "Situated skill traces" },
-  { id: "inference",  label: "Inference",  icon: "⊛", tip: "Expert routing" },
+const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string; desc: string }[] = [
+  { id: "replay",     label: "Replay",     icon: "▶", tip: "Decision Replay",      desc: "Step through any decision trace with actors, evidence, and policy gates" },
+  { id: "provenance", label: "Provenance", icon: "⊕", tip: "Provenance Chain",     desc: "SHA-256 custody chain — who did what, when, and why" },
+  { id: "tacit",      label: "Tacit",      icon: "◎", tip: "Tacit Knowledge",      desc: "Situated skill traces — knowledge that cannot be fully written down" },
+  { id: "inference",  label: "Inference",  icon: "⊛", tip: "Expert Routing",       desc: "EIG-based routing: finds the agent whose answer reduces uncertainty most" },
 ];
 
-const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string }[] = [
-  { id: "council",      label: "Council",      icon: "◉", tip: "Agent council" },
-  { id: "twin",         label: "Expert",       icon: "⊙", tip: "Expert twin view" },
-  { id: "assay",        label: "Assay",        icon: "⊗", tip: "Collective belief synthesis" },
-  { id: "serendipity",  label: "Discover",     icon: "⟺", tip: "Cross-domain serendipity discoveries" },
-  { id: "alignment",    label: "Bridge",       icon: "≡", tip: "Ontology bridge / functor" },
-  { id: "evolution",    label: "Evolution",    icon: "⊞", tip: "Graph evolution timeline" },
-  { id: "permissions",  label: "Permissions",  icon: "⬡", tip: "Permission explorer" },
-  { id: "agency",       label: "Agency",       icon: "⊘", tip: "Nested agency / ALife" },
+const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string; desc: string }[] = [
+  { id: "council",     label: "Council",     icon: "◉", tip: "Agent Council",     desc: "All agents with calibration rings, belief bars, and dissent history" },
+  { id: "twin",        label: "Expert",      icon: "⊙", tip: "Expert Twin",       desc: "Digital twin of an expert's epistemic state — beliefs, calibration, authority" },
+  { id: "assay",       label: "Assay",       icon: "⊗", tip: "Belief Synthesis",  desc: "Collective assay: how do agents disagree? Where do constraint violations occur?" },
+  { id: "serendipity", label: "Discover",    icon: "⟺", tip: "Cross-Domain Bridges", desc: "Serendipity: structural parallels found across domains without being asked" },
+  { id: "alignment",   label: "Bridge",      icon: "≡", tip: "Ontology Bridge",   desc: "Functor alignment between two ontologies — mappings, gaps, structural loss" },
+  { id: "evolution",   label: "Evolution",   icon: "⊞", tip: "Graph Evolution",   desc: "Open-ended proposals: new nodes, bridges, densifications — subject to governance" },
+  { id: "permissions", label: "Access",      icon: "⬡", tip: "Permission Matrix", desc: "Who can read, write, or govern which nodes and layers" },
+  { id: "agency",      label: "Agency",      icon: "⊘", tip: "Nested Agency",     desc: "Hierarchy of agents and institutions — delegation chains, authority scopes" },
 ];
 
-function SidebarTabs<T extends string>({
-  tabs, active, onChange, orientation = "horizontal",
-}: {
-  tabs: { id: T; label: string; icon: string; tip: string }[];
-  active: T;
-  onChange: (t: T) => void;
-  orientation?: "horizontal" | "vertical";
+const DOMAIN_META: Record<string, { color: string; label: string; desc: string }> = {
+  drug_discovery:         { color: "#3b82f6", label: "Drug",         desc: "KRAS pathway, clinical trial governance, expert calibration" },
+  fukushima_governance:   { color: "#f97316", label: "Governance",   desc: "TEPCO seawall decision — authority override, calibration decay" },
+  euv_lithography:        { color: "#22c55e", label: "EUV",          desc: "Pre-pulse tacit knowledge, ASML process engineering" },
+  math_category_theory:   { color: "#8b5cf6", label: "Category",     desc: "Formal category theory — reflexive meta-domain for KOS transfer" },
+  surgical_robotics:      { color: "#ec4899", label: "Surgery",      desc: "da Vinci haptic calibration, OR Safety Committee override" },
+  semiconductor_hardware: { color: "#eab308", label: "Fab",          desc: "Plasma etch process window, yield governance, Kim's dissent" },
+  extreme_environments:   { color: "#ef4444", label: "Extreme",      desc: "Challenger O-ring — normalization of deviance, Boisjoly warning" },
+};
+
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+
+interface TooltipState {
+  x: number;
+  y: number;
+  side: "right" | "left" | "bottom";
+  title: string;
+  body?: string;
+}
+
+function Tooltip({ title, body, anchor, side = "right" }: {
+  title: string;
+  body?: string;
+  anchor: DOMRect | null;
+  side?: "right" | "left" | "bottom";
 }) {
-  if (orientation === "vertical") {
-    return (
-      <div className="flex flex-col" style={{ borderRight: "1px solid rgba(255,255,255,0.04)" }}>
-        {tabs.map(t => (
-          <button
-            key={t.id}
-            onClick={() => onChange(t.id)}
-            title={t.tip}
-            className="flex flex-col items-center justify-center py-3 px-1.5 transition-all duration-150 relative"
-            style={{
-              color: active === t.id ? "#e2e8f0" : "#334155",
-              borderLeft: active === t.id ? "2px solid #6366f1" : "2px solid transparent",
-              background: active === t.id ? "rgba(99,102,241,0.06)" : "transparent",
-            }}
-          >
-            <span className="text-[13px] leading-none">{t.icon}</span>
-            <span className="text-[7px] font-medium uppercase tracking-widest mt-1 leading-none"
-              style={{ writingMode: "vertical-lr", transform: "rotate(180deg)", letterSpacing: "0.15em" }}>
-              {t.label}
-            </span>
-          </button>
-        ))}
+  if (!anchor) return null;
+  let style: React.CSSProperties = { position: "fixed", zIndex: 9999, pointerEvents: "none" };
+  if (side === "right")  { style.left = anchor.right + 8; style.top = anchor.top + anchor.height / 2; style.transform = "translateY(-50%)"; }
+  if (side === "left")   { style.right = window.innerWidth - anchor.left + 8; style.top = anchor.top + anchor.height / 2; style.transform = "translateY(-50%)"; }
+  if (side === "bottom") { style.left = anchor.left + anchor.width / 2; style.top = anchor.bottom + 6; style.transform = "translateX(-50%)"; }
+  return createPortal(
+    <div style={style}>
+      <div style={{
+        backgroundColor: "rgba(8,14,30,0.97)",
+        border: "1px solid rgba(255,255,255,0.12)",
+        borderRadius: 8,
+        padding: "6px 10px",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
+        maxWidth: 220,
+      }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "#e2e8f0", whiteSpace: "nowrap" }}>{title}</div>
+        {body && <div style={{ fontSize: 10, color: "#64748b", marginTop: 2, lineHeight: 1.4 }}>{body}</div>}
       </div>
-    );
-  }
+    </div>,
+    document.body,
+  );
+}
 
+function useTooltip() {
+  const [anchor, setAnchor] = useState<DOMRect | null>(null);
+  const show = useCallback((e: React.MouseEvent) => setAnchor((e.currentTarget as HTMLElement).getBoundingClientRect()), []);
+  const hide = useCallback(() => setAnchor(null), []);
+  return { anchor, show, hide };
+}
+
+// ── Resize handle ─────────────────────────────────────────────────────────────
+
+function useResizable(initial: number, min = 180, max = 520, direction: "right" | "left" = "right") {
+  const [width, setWidth] = useState(initial);
+  const dragging = useRef(false);
+  const startX = useRef(0);
+  const startW = useRef(initial);
+
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragging.current = true;
+    startX.current = e.clientX;
+    startW.current = width;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    const onMove = (ev: MouseEvent) => {
+      if (!dragging.current) return;
+      const delta = direction === "right" ? ev.clientX - startX.current : startX.current - ev.clientX;
+      setWidth(Math.max(min, Math.min(max, startW.current + delta)));
+    };
+    const onUp = () => {
+      dragging.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, [width, min, max, direction]);
+
+  return { width, onMouseDown };
+}
+
+// ── ResizeHandle ──────────────────────────────────────────────────────────────
+
+function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent) => void; side: "right" | "left" }) {
+  const [hovered, setHovered] = useState(false);
   return (
-    <div className="flex" style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(2,6,16,0.7)" }}>
-      {tabs.map(t => (
-        <button
-          key={t.id}
-          onClick={() => onChange(t.id)}
-          title={t.tip}
-          className="flex-1 flex flex-col items-center justify-center py-2.5 transition-all duration-150"
-          style={{
-            color: active === t.id ? "#e2e8f0" : "#334155",
-            borderBottom: active === t.id ? "2px solid #6366f1" : "2px solid transparent",
-            background: active === t.id ? "rgba(99,102,241,0.04)" : "transparent",
-          }}
-        >
-          <span className="text-[12px] leading-none">{t.icon}</span>
-          <span className="text-[8px] font-medium uppercase tracking-widest mt-0.5 leading-none">{t.label}</span>
-        </button>
-      ))}
+    <div
+      onMouseDown={onMouseDown}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: 4,
+        flexShrink: 0,
+        cursor: "col-resize",
+        background: hovered ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.04)",
+        transition: "background 0.15s",
+        alignSelf: "stretch",
+        zIndex: 10,
+        ...(side === "right" ? { borderRight: "1px solid rgba(255,255,255,0.04)" } : { borderLeft: "1px solid rgba(255,255,255,0.04)" }),
+      }}
+      title="Drag to resize"
+    />
+  );
+}
+
+// ── Left sidebar tab strip (horizontal) ───────────────────────────────────────
+
+function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: LeftTab) => void }) {
+  return (
+    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(2,6,16,0.8)", display: "flex", flexShrink: 0 }}>
+      {LEFT_TABS.map(t => {
+        const { anchor, show, hide } = useTooltip();
+        return (
+          <div key={t.id} style={{ flex: 1 }} onMouseEnter={show} onMouseLeave={hide}>
+            <button
+              onClick={() => onChange(t.id)}
+              style={{
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "8px 4px",
+                color: active === t.id ? "#e2e8f0" : "#334155",
+                borderBottom: active === t.id ? "2px solid #6366f1" : "2px solid transparent",
+                background: active === t.id ? "rgba(99,102,241,0.05)" : "transparent",
+                cursor: "pointer",
+                border: "none",
+                outline: "none",
+                transition: "color 0.15s, background 0.15s",
+              }}
+            >
+              <span style={{ fontSize: 12, lineHeight: 1 }}>{t.icon}</span>
+              <span style={{ fontSize: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 3, lineHeight: 1 }}>{t.label}</span>
+            </button>
+            <Tooltip title={t.tip} body={t.desc} anchor={anchor} side="bottom" />
+          </div>
+        );
+      })}
     </div>
   );
 }
+
+// ── Right sidebar tab strip (vertical icons) ──────────────────────────────────
+
+function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: RightTab) => void }) {
+  return (
+    <div style={{
+      width: 36,
+      flexShrink: 0,
+      display: "flex",
+      flexDirection: "column",
+      borderRight: "1px solid rgba(255,255,255,0.05)",
+      background: "rgba(2,6,16,0.9)",
+      overflowY: "auto",
+    }}>
+      {RIGHT_TABS.map(t => {
+        const isActive = active === t.id;
+        const { anchor, show, hide } = useTooltip();
+        return (
+          <div key={t.id} onMouseEnter={show} onMouseLeave={hide}>
+            <button
+              onClick={() => onChange(t.id)}
+              style={{
+                width: 36,
+                height: 40,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 2,
+                cursor: "pointer",
+                border: "none",
+                outline: "none",
+                background: isActive ? "rgba(99,102,241,0.10)" : "transparent",
+                borderLeft: isActive ? "2px solid #6366f1" : "2px solid transparent",
+                color: isActive ? "#e2e8f0" : "#334155",
+                transition: "color 0.15s, background 0.15s",
+                flexShrink: 0,
+              }}
+              title={t.tip}
+            >
+              <span style={{ fontSize: 13, lineHeight: 1 }}>{t.icon}</span>
+            </button>
+            <Tooltip title={t.tip} body={t.desc} anchor={anchor} side="left" />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── OmegaGlyph ────────────────────────────────────────────────────────────────
 
 function OmegaGlyph({ size = 26 }: { size?: number }) {
   return (
@@ -106,48 +254,51 @@ function OmegaGlyph({ size = 26 }: { size?: number }) {
   );
 }
 
-function AnimatedStat({ value, label, color }: { value: number | null; label: string; color?: string }) {
+// ── AnimatedStat ──────────────────────────────────────────────────────────────
+
+function AnimatedStat({ value, label, color, tip }: { value: number | null; label: string; color?: string; tip?: string }) {
   const prev = useRef(0);
   const display = value ?? prev.current;
+  const { anchor, show, hide } = useTooltip();
   useEffect(() => { if (value != null) prev.current = value; }, [value]);
   return (
-    <div className="flex items-baseline gap-1">
+    <div className="flex items-baseline gap-1" onMouseEnter={show} onMouseLeave={hide}>
       <span className="text-sm font-bold tabular-nums font-mono" style={{ color: value ? (color ?? "#e2e8f0") : "#1e293b" }}>
         {display}
       </span>
       <span className="text-[9px] text-slate-700 uppercase tracking-widest">{label}</span>
+      {tip && <Tooltip title={label} body={tip} anchor={anchor} side="bottom" />}
     </div>
   );
 }
 
+// ── DomainPip ─────────────────────────────────────────────────────────────────
+
 function DomainPip({ domain, active, onClick }: { domain: string; active: boolean; onClick: () => void }) {
-  const COLORS: Record<string, string> = {
-    drug_discovery: "#3b82f6",
-    fukushima_governance: "#f97316",
-    euv_lithography: "#22c55e",
-  };
-  const LABELS: Record<string, string> = {
-    drug_discovery: "Drug",
-    fukushima_governance: "Governance",
-    euv_lithography: "EUV",
-  };
-  const color = COLORS[domain] ?? "#6366f1";
-  const label = LABELS[domain] ?? domain.replace(/_/g, " ");
+  const meta = domain === "all"
+    ? { color: "#6366f1", label: "All", desc: "Show all domains" }
+    : (DOMAIN_META[domain] ?? { color: "#6366f1", label: domain.replace(/_/g, " "), desc: "" });
+  const { anchor, show, hide } = useTooltip();
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
-      style={{
-        backgroundColor: active ? `${color}18` : "rgba(255,255,255,0.02)",
-        color: active ? color : "#334155",
-        border: `1px solid ${active ? `${color}35` : "rgba(255,255,255,0.04)"}`,
-      }}
-    >
-      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color, opacity: active ? 1 : 0.4 }} />
-      {label}
-    </button>
+    <div onMouseEnter={show} onMouseLeave={hide}>
+      <button
+        onClick={onClick}
+        className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
+        style={{
+          backgroundColor: active ? `${meta.color}18` : "rgba(255,255,255,0.02)",
+          color: active ? meta.color : "#334155",
+          border: `1px solid ${active ? `${meta.color}35` : "rgba(255,255,255,0.04)"}`,
+        }}
+      >
+        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.color, opacity: active ? 1 : 0.4 }} />
+        {meta.label}
+      </button>
+      <Tooltip title={domain === "all" ? "All Domains" : domain.replace(/_/g, " ")} body={meta.desc} anchor={anchor} side="bottom" />
+    </div>
   );
 }
+
+// ── Main App ──────────────────────────────────────────────────────────────────
 
 export default function App() {
   const [landed, setLanded] = useState(false);
@@ -158,6 +309,9 @@ export default function App() {
   const [rightOpen, setRightOpen] = useState(true);
   const [wsConnected, setWsConnected] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
+
+  const leftResize  = useResizable(296, 200, 520, "right");
+  const rightResize = useResizable(300, 200, 540, "left");
 
   const {
     selectedNode, overview, error, loading,
@@ -180,24 +334,31 @@ export default function App() {
 
   const selectedDecisionId =
     selectedNode?.type === "context" || selectedNode?.layer === "context"
-      ? selectedNode.id
-      : null;
+      ? selectedNode.id : null;
   useDecisionReplay(selectedDecisionId);
 
-  useEffect(() => {
-    if (selectedDecisionId) setLeftTab("replay");
-  }, [selectedDecisionId]);
+  useEffect(() => { if (selectedDecisionId) setLeftTab("replay"); }, [selectedDecisionId]);
+  useEffect(() => { if (selectedNode?.layer === "agents") setRightTab("twin"); }, [selectedNode]);
 
-  useEffect(() => {
-    if (selectedNode?.layer === "agents") setRightTab("twin");
-  }, [selectedNode]);
+  const alignPairs = [
+    ["drug_discovery", "fukushima_governance"],
+    ["drug_discovery", "euv_lithography"],
+    ["surgical_robotics", "fukushima_governance"],
+    ["extreme_environments", "fukushima_governance"],
+  ];
+  const alignIdx = useRef(0);
 
   const handleComputeAlignment = async () => {
+    const [src, tgt] = alignPairs[alignIdx.current % alignPairs.length]!;
+    alignIdx.current += 1;
+    setRightTab("alignment");
+    setRightOpen(true);
     try {
-      const map = await api.alignment.compute("drug_discovery", "euv_lithography");
+      const map = await api.alignment.compute(src, tgt);
       setAlignmentMap(map);
-      setRightTab("alignment");
-    } catch {}
+    } catch {
+      // demo mode: OntologyBridgeView shows embedded DEMO_MAP by default
+    }
   };
 
   const domains = overview
@@ -214,6 +375,9 @@ export default function App() {
   const layerBreakdown = overview
     ? Object.entries(overview.layers).map(([k, v]) => ({ layer: k as LayerKey, count: v.nodes.length }))
     : [];
+
+  const { anchor: alignAnchor, show: alignShow, hide: alignHide } = useTooltip();
+  const { anchor: centerAnchor, show: centerShow, hide: centerHide } = useTooltip();
 
   if (!landed) {
     return <LandingView onEnter={() => setLanded(true)} demoMode={demoMode} />;
@@ -239,106 +403,74 @@ export default function App() {
           <OmegaGlyph />
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-bold tracking-tight text-white">Omega</span>
-            <span className="text-[10px] text-slate-600">Collective Intelligence Substrate</span>
+            <span className="text-[10px] text-slate-600">Knowledge Operating System</span>
           </div>
-          <span
-            className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
-            style={{ backgroundColor: "#6366f115", color: "#6366f1", border: "1px solid #6366f125" }}
-          >
-            v2
+          <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
+            style={{ backgroundColor: "#6366f115", color: "#6366f1", border: "1px solid #6366f125" }}>
+            v3
           </span>
           {demoMode && (
-            <span
-              className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
+            <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
               style={{ backgroundColor: "#f9731615", color: "#fb923c", border: "1px solid #f9731625" }}
-              title="Demo mode — no live backend"
-            >
+              title="No live backend — all data is embedded demo data">
               demo
             </span>
           )}
         </div>
 
         {/* Domain filter */}
-        {domains.length > 0 && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <span className="text-[8px] text-slate-700 uppercase tracking-widest">Domain</span>
-            <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
-            {domains.map(d => (
-              <DomainPip
-                key={d}
-                domain={d}
-                active={domainFilter === d}
-                onClick={() => setDomainFilter(domainFilter === d ? null : d)}
-              />
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          <span className="text-[8px] text-slate-700 uppercase tracking-widest mr-1">Domain</span>
+          <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
+          {(domains.length > 0 ? domains : Object.keys(DOMAIN_META)).map(d => (
+            <DomainPip key={d} domain={d} active={domainFilter === d}
+              onClick={() => setDomainFilter(domainFilter === d ? null : d)} />
+          ))}
+        </div>
 
-        {/* Spacer */}
         <div className="flex-1" />
 
         {/* Center view toggle */}
-        <div className="flex rounded-lg overflow-hidden flex-shrink-0"
+        <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
           style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
           {(["graph", "city"] as CenterView[]).map(v => (
-            <button
-              key={v}
-              onClick={() => setCenterView(v)}
+            <button key={v} onClick={() => setCenterView(v)}
               className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
               style={{
                 backgroundColor: centerView === v ? "rgba(99,102,241,0.15)" : "transparent",
                 color: centerView === v ? "#818cf8" : "#334155",
-              }}
-            >
+              }}>
               {v === "graph" ? "⬡ Graph" : "⬛ City"}
             </button>
           ))}
+          <Tooltip title={centerView === "graph" ? "Graph View" : "City View"}
+            body={centerView === "graph" ? "Multi-layer knowledge graph with Cytoscape — click any node to inspect" : "3D city of knowledge domains — buildings are node clusters, arcs are cross-domain bridges"}
+            anchor={centerAnchor} side="bottom" />
         </div>
 
         {/* Stats */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          {loading && (
-            <div className="w-3 h-3 rounded-full border border-t-indigo-400 border-indigo-900/50 animate-spin" />
-          )}
-          <AnimatedStat value={totalNodes} label="nodes" />
-          <AnimatedStat value={totalEdges} label="edges" />
+          {loading && <div className="w-3 h-3 rounded-full border border-t-indigo-400 border-indigo-900/50 animate-spin" />}
+          <AnimatedStat value={totalNodes} label="nodes" tip="Total graph nodes across all six layers" />
+          <AnimatedStat value={totalEdges} label="edges" tip="Total typed relations in the knowledge graph" />
 
           {/* Layer bar chart */}
-          <div className="flex items-end gap-0.5 h-5">
-            {layerBreakdown.map(({ layer, count }) => (
-              <div
-                key={layer}
-                title={`${layer}: ${count}`}
-                className="rounded-sm"
-                style={{
-                  width: 4,
-                  height: Math.max(3, Math.min(20, count * 2.2)),
-                  backgroundColor: LAYER_COLORS[layer],
-                  opacity: 0.75,
-                }}
-              />
-            ))}
+          <LayerBars breakdown={layerBreakdown} />
+
+          <div onMouseEnter={alignShow} onMouseLeave={alignHide}>
+            <button onClick={handleComputeAlignment}
+              className="px-2.5 py-1 text-[10px] rounded-lg font-medium transition-all duration-150"
+              style={{ border: "1px solid rgba(99,102,241,0.25)", color: "#6366f1", backgroundColor: "rgba(99,102,241,0.06)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.15)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.06)"; }}>
+              ≡ Bridge
+            </button>
+            <Tooltip title="Ontology Bridge"
+              body="Opens the Bridge tab showing functor alignment between two domains — structural parallels, gap nodes, and loss accounting. Click repeatedly to cycle through domain pairs."
+              anchor={alignAnchor} side="bottom" />
           </div>
 
-          <button
-            onClick={handleComputeAlignment}
-            className="px-2.5 py-1 text-[10px] rounded-lg font-medium transition-all duration-150"
-            style={{
-              border: "1px solid rgba(99,102,241,0.25)",
-              color: "#6366f1",
-              backgroundColor: "rgba(99,102,241,0.06)",
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.15)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.06)"; }}
-          >
-            Align ↔
-          </button>
-
-          {error && (
-            <span className="text-[10px] text-red-400 max-w-[140px] truncate" title={error}>
-              ⚠ {error}
-            </span>
-          )}
+          {error && <span className="text-[10px] text-red-400 max-w-[140px] truncate" title={error}>⚠ {error}</span>}
         </div>
       </header>
 
@@ -346,39 +478,39 @@ export default function App() {
       <div className="flex-1 flex overflow-hidden relative">
 
         {/* Left sidebar toggle */}
-        <button
-          onClick={() => setLeftOpen(o => !o)}
-          className="absolute z-30 top-1/2 -translate-y-1/2 w-2.5 h-10 flex items-center justify-center rounded-r transition-all"
+        <button onClick={() => setLeftOpen(o => !o)}
+          className="absolute z-30 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-r transition-all"
           style={{
-            left: leftOpen ? 296 : 0,
+            left: leftOpen ? leftResize.width : 0,
+            width: 10, height: 40,
             background: "rgba(99,102,241,0.12)",
             borderRight: "1px solid rgba(99,102,241,0.2)",
-          }}
-        >
-          <span className="text-[8px] text-indigo-500">{leftOpen ? "‹" : "›"}</span>
+          }}>
+          <span style={{ fontSize: 8, color: "#6366f1" }}>{leftOpen ? "‹" : "›"}</span>
         </button>
 
         {/* Left sidebar */}
-        <aside
-          className="flex-shrink-0 flex overflow-hidden transition-all duration-200"
-          style={{
-            width: leftOpen ? 296 : 0,
-            borderRight: leftOpen ? "1px solid rgba(255,255,255,0.05)" : "none",
+        {leftOpen && (
+          <aside style={{
+            width: leftResize.width,
+            flexShrink: 0,
+            display: "flex",
+            overflow: "hidden",
+            borderRight: "none",
             background: "rgba(2,6,16,0.97)",
-          }}
-        >
-          {leftOpen && (
-            <div className="flex w-full flex-col overflow-hidden">
-              <SidebarTabs tabs={LEFT_TABS} active={leftTab} onChange={setLeftTab} />
-              <div className="flex-1 overflow-hidden">
+          }}>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+              <LeftTabStrip active={leftTab} onChange={setLeftTab} />
+              <div style={{ flex: 1, overflow: "hidden" }}>
                 {leftTab === "replay"     && <DecisionReplay      className="h-full" />}
                 {leftTab === "provenance" && <ProvenanceInspector  className="h-full" />}
                 {leftTab === "tacit"      && <TacitTraceViewer     className="h-full" />}
                 {leftTab === "inference"  && <InferencePanel       className="h-full" />}
               </div>
             </div>
-          )}
-        </aside>
+            <ResizeHandle onMouseDown={leftResize.onMouseDown} side="right" />
+          </aside>
+        )}
 
         {/* Center */}
         <main className="flex-1 overflow-hidden p-2 relative">
@@ -390,62 +522,52 @@ export default function App() {
         </main>
 
         {/* Right sidebar */}
-        <aside
-          className="flex-shrink-0 flex overflow-hidden transition-all duration-200"
-          style={{
-            width: rightOpen ? 300 : 0,
-            borderLeft: rightOpen ? "1px solid rgba(255,255,255,0.05)" : "none",
+        {rightOpen && (
+          <aside style={{
+            width: rightResize.width,
+            flexShrink: 0,
+            display: "flex",
+            overflow: "hidden",
+            borderLeft: "1px solid rgba(255,255,255,0.05)",
             background: "rgba(2,6,16,0.97)",
-          }}
-        >
-          {rightOpen && (
-            <div className="flex w-full flex-col overflow-hidden">
-              <SidebarTabs tabs={RIGHT_TABS} active={rightTab} onChange={setRightTab} />
-              <div className="flex-1 overflow-hidden">
-                {rightTab === "council"      && <AgentCouncilView      className="h-full" />}
-                {rightTab === "twin"         && <ExpertTwinView         className="h-full" />}
-                {rightTab === "assay"        && <CollectiveAssayView    className="h-full" />}
-                {rightTab === "serendipity"  && <SerendipityPanel       className="h-full" />}
-                {rightTab === "alignment"    && <OntologyBridgeView     className="h-full" />}
-                {rightTab === "permissions"  && <PermissionExplorer     className="h-full" />}
-                {rightTab === "agency"       && <NestedAgencyView       className="h-full" />}
-                {rightTab === "evolution"    && <GraphEvolutionTimeline  className="h-full" />}
-              </div>
+          }}>
+            <ResizeHandle onMouseDown={rightResize.onMouseDown} side="left" />
+            <RightTabStrip active={rightTab} onChange={setRightTab} />
+            <div style={{ flex: 1, overflow: "hidden", minWidth: 0 }}>
+              {rightTab === "council"     && <AgentCouncilView      className="h-full" />}
+              {rightTab === "twin"        && <ExpertTwinView         className="h-full" />}
+              {rightTab === "assay"       && <CollectiveAssayView    className="h-full" />}
+              {rightTab === "serendipity" && <SerendipityPanel       className="h-full" />}
+              {rightTab === "alignment"   && <OntologyBridgeView     className="h-full" />}
+              {rightTab === "permissions" && <PermissionExplorer     className="h-full" />}
+              {rightTab === "agency"      && <NestedAgencyView       className="h-full" />}
+              {rightTab === "evolution"   && <GraphEvolutionTimeline  className="h-full" />}
             </div>
-          )}
-        </aside>
+          </aside>
+        )}
 
         {/* Right sidebar toggle */}
-        <button
-          onClick={() => setRightOpen(o => !o)}
-          className="absolute z-30 top-1/2 -translate-y-1/2 w-2.5 h-10 flex items-center justify-center rounded-l transition-all"
+        <button onClick={() => setRightOpen(o => !o)}
+          className="absolute z-30 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-l transition-all"
           style={{
-            right: rightOpen ? 300 : 0,
+            right: rightOpen ? rightResize.width : 0,
+            width: 10, height: 40,
             background: "rgba(99,102,241,0.12)",
             borderLeft: "1px solid rgba(99,102,241,0.2)",
-          }}
-        >
-          <span className="text-[8px] text-indigo-500">{rightOpen ? "›" : "‹"}</span>
+          }}>
+          <span style={{ fontSize: 8, color: "#6366f1" }}>{rightOpen ? "›" : "‹"}</span>
         </button>
       </div>
 
       {/* ── Status bar ── */}
       <footer
         className="flex-shrink-0 flex items-center justify-between px-4 gap-4 overflow-hidden"
-        style={{
-          height: 26,
-          borderTop: "1px solid rgba(255,255,255,0.04)",
-          background: "rgba(2,6,16,0.99)",
-        }}
-      >
-        {/* Live events */}
+        style={{ height: 26, borderTop: "1px solid rgba(255,255,255,0.04)", background: "rgba(2,6,16,0.99)" }}>
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="flex items-center gap-1.5">
-            <span
-              className={`w-1.5 h-1.5 rounded-full ${wsConnected ? "animate-pulse" : ""}`}
-              style={{ backgroundColor: wsConnected ? "#22c55e" : "#ef444460" }}
-            />
-            <span className="text-[9px] text-slate-700">{wsConnected ? "live" : "offline"}</span>
+            <span className={`w-1.5 h-1.5 rounded-full ${wsConnected ? "animate-pulse" : ""}`}
+              style={{ backgroundColor: wsConnected ? "#22c55e" : "#ef444460" }} />
+            <span className="text-[9px] text-slate-700">{wsConnected ? "live" : "demo"}</span>
           </span>
           {liveEvents.length > 0 && (
             <span className="text-[9px] text-slate-700 truncate">
@@ -454,22 +576,51 @@ export default function App() {
           )}
         </div>
 
-        {/* Selected node breadcrumb */}
         {selectedNode && (
           <div className="flex items-center gap-1.5 text-[9px] flex-shrink-0">
             <span className="w-1.5 h-1.5 rounded-full"
               style={{ backgroundColor: LAYER_COLORS[selectedNode.layer as LayerKey] ?? "#94a3b8" }} />
             <span className="text-slate-600">{selectedNode.layer}</span>
             <span className="text-slate-700">/</span>
-            <span className="text-slate-400 max-w-[180px] truncate">{selectedNode.label}</span>
+            <span className="text-slate-400 max-w-[200px] truncate">{selectedNode.label}</span>
           </div>
         )}
 
         <div className="flex items-center gap-4 flex-shrink-0 text-[9px] text-slate-800">
-          <span>Neo4j · 7 layers</span>
-          <span>Omega v2.0</span>
+          <span>7 knowledge cities · 5 bridges</span>
+          <span>Omega v3.0</span>
         </div>
       </footer>
+    </div>
+  );
+}
+
+// ── LayerBars (extracted to avoid hook-in-loop issues) ────────────────────────
+
+function LayerBars({ breakdown }: { breakdown: { layer: LayerKey; count: number }[] }) {
+  return (
+    <div className="flex items-end gap-0.5 h-5">
+      {breakdown.map(({ layer, count }) => (
+        <LayerBar key={layer} layer={layer} count={count} />
+      ))}
+    </div>
+  );
+}
+
+function LayerBar({ layer, count }: { layer: LayerKey; count: number }) {
+  const { anchor, show, hide } = useTooltip();
+  return (
+    <div onMouseEnter={show} onMouseLeave={hide}>
+      <div
+        className="rounded-sm"
+        style={{
+          width: 4,
+          height: Math.max(3, Math.min(20, count * 2.2)),
+          backgroundColor: LAYER_COLORS[layer],
+          opacity: 0.75,
+        }}
+      />
+      <Tooltip title={layer} body={`${count} nodes in the ${layer} layer`} anchor={anchor} side="bottom" />
     </div>
   );
 }
