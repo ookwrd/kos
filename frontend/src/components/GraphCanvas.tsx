@@ -1,12 +1,4 @@
-/**
- * GraphCanvas — multi-layer Cytoscape.js graph with layer toggles.
- *
- * Six layers, each with a distinct colour and node shape.
- * Layer shapes: evidence=roundrectangle, context=diamond, knowledge=hexagon,
- *   goal=star, governance=vee, agents=ellipse.
- */
-
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useState } from "react";
 import cytoscape, { Core, ElementDefinition } from "cytoscape";
 import dagre from "cytoscape-dagre";
 import { useGraphStore, LAYER_COLORS, ALL_LAYERS, type LayerKey } from "../store/graphStore";
@@ -32,13 +24,14 @@ const LAYER_LABELS: Record<LayerKey, string> = {
   agents:     "Agents",
 };
 
-interface Props {
-  className?: string;
-}
+type LayoutMode = "dagre" | "concentric" | "grid";
+
+interface Props { className?: string }
 
 export function GraphCanvas({ className = "" }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("dagre");
 
   const { overview, visibleLayers, selectNode } = useGraphStore();
 
@@ -46,6 +39,7 @@ export function GraphCanvas({ className = "" }: Props) {
     if (!overview) return [];
     const elements: ElementDefinition[] = [];
     const seenNodes = new Set<string>();
+    const seenEdges = new Set<string>();
 
     for (const [layerKey, layerData] of Object.entries(overview.layers)) {
       if (!visibleLayers.has(layerKey as LayerKey)) continue;
@@ -55,27 +49,36 @@ export function GraphCanvas({ className = "" }: Props) {
         seenNodes.add(node.id);
         const color = LAYER_COLORS[node.layer as LayerKey] ?? "#94a3b8";
         const shape = LAYER_SHAPES[node.layer as LayerKey] ?? "ellipse";
+        const uncertainty = (node.data as Record<string, unknown>)?.uncertainty as number | undefined;
+        const nodeType = (node.data as Record<string, unknown>)?.type as string | undefined;
+        const domain = (node.data as Record<string, unknown>)?.domain as string | undefined;
         elements.push({
           group: "nodes",
           data: {
             id: node.id,
-            label: node.label.length > 22 ? node.label.slice(0, 19) + "…" : node.label,
+            label: node.label.length > 20 ? node.label.slice(0, 17) + "…" : node.label,
             layer: node.layer,
             fullData: node,
             color,
             shape,
+            uncertainty: uncertainty ?? 0,
+            domain: domain ?? "",
+            isDissent: nodeType === "DissentRecord",
           },
         });
       }
 
       for (const edge of layerData.edges) {
+        const edgeId = `${edge.source}__${edge.relation}__${edge.target}`;
         if (!seenNodes.has(edge.source) || !seenNodes.has(edge.target)) continue;
-        const srcLayer = overview.layers[layerKey]?.nodes.find(n => n.id === edge.source)?.layer as LayerKey | undefined;
-        const edgeColor = srcLayer ? LAYER_COLORS[srcLayer] : "#475569";
+        if (seenEdges.has(edgeId)) continue;
+        seenEdges.add(edgeId);
+        const srcNode = overview.layers[layerKey]?.nodes.find(n => n.id === edge.source);
+        const edgeColor = srcNode ? LAYER_COLORS[srcNode.layer as LayerKey] : "#475569";
         elements.push({
           group: "edges",
           data: {
-            id: `${edge.source}__${edge.relation}__${edge.target}`,
+            id: edgeId,
             source: edge.source,
             target: edge.target,
             label: edge.relation.replace(/_/g, " ").toLowerCase(),
@@ -84,7 +87,6 @@ export function GraphCanvas({ className = "" }: Props) {
         });
       }
     }
-
     return elements;
   }, [overview, visibleLayers]);
 
@@ -100,35 +102,49 @@ export function GraphCanvas({ className = "" }: Props) {
           style: {
             shape: "data(shape)" as never,
             "background-color": "data(color)",
-            "background-opacity": 0.85,
+            "background-opacity": 0.9,
             label: "data(label)",
-            "font-size": 10,
-            "font-family": "'Inter', 'SF Pro Display', system-ui, sans-serif",
-            color: "#e2e8f0",
+            "font-size": 9,
+            "font-family": "'SF Mono', 'Fira Code', 'Cascadia Code', monospace",
+            color: "#cbd5e1",
             "text-valign": "bottom",
             "text-halign": "center",
-            "text-margin-y": 6,
-            "text-background-color": "#0a1628",
-            "text-background-opacity": 0.7,
-            "text-background-padding": "2px",
+            "text-margin-y": 7,
+            "text-background-color": "#020610",
+            "text-background-opacity": 0.85,
+            "text-background-padding": "2.5px",
             "text-background-shape": "roundrectangle",
-            width: 36,
-            height: 36,
-            "border-width": 2,
+            width: 32,
+            height: 32,
+            "border-width": 1.5,
             "border-color": "data(color)",
-            "border-opacity": 0.9,
+            "border-opacity": 0.7,
             "overlay-opacity": 0,
           },
         },
         {
           selector: "node:selected",
           style: {
-            "border-width": 3,
+            "border-width": 2.5,
             "border-color": "#ffffff",
+            "border-opacity": 1,
             "background-opacity": 1,
-            width: 44,
-            height: 44,
+            width: 40,
+            height: 40,
             "z-index": 9999,
+            "shadow-blur": 16,
+            "shadow-color": "data(color)",
+            "shadow-opacity": 0.6,
+            "shadow-offset-x": 0,
+            "shadow-offset-y": 0,
+          } as never,
+        },
+        {
+          selector: "node[isDissent]",
+          style: {
+            "border-color": "#f59e0b",
+            "border-width": 2,
+            "border-opacity": 0.9,
           },
         },
         {
@@ -138,20 +154,20 @@ export function GraphCanvas({ className = "" }: Props) {
         {
           selector: "edge",
           style: {
-            width: 1.5,
+            width: 1.2,
             "line-color": "data(edgeColor)",
-            "line-opacity": 0.35,
+            "line-opacity": 0.3,
             "target-arrow-color": "data(edgeColor)",
             "target-arrow-shape": "triangle",
-            "arrow-scale": 0.8,
+            "arrow-scale": 0.7,
             "curve-style": "bezier",
             label: "data(label)",
-            "font-size": 8,
-            "font-family": "'Inter', system-ui, sans-serif",
-            color: "#64748b",
+            "font-size": 7,
+            "font-family": "'SF Mono', 'Fira Code', monospace",
+            color: "#475569",
             "text-rotation": "autorotate",
-            "text-background-color": "#0a1628",
-            "text-background-opacity": 0.8,
+            "text-background-color": "#020610",
+            "text-background-opacity": 0.9,
             "text-background-padding": "2px",
             "overlay-opacity": 0,
           },
@@ -161,33 +177,30 @@ export function GraphCanvas({ className = "" }: Props) {
           style: {
             "line-color": "#f8fafc",
             "target-arrow-color": "#f8fafc",
-            width: 2.5,
-            "line-opacity": 0.9,
+            width: 2,
+            "line-opacity": 0.85,
+          },
+        },
+        {
+          selector: "edge:hover",
+          style: {
+            "line-opacity": 0.7,
+            width: 2,
+            "overlay-opacity": 0,
           },
         },
       ],
-      layout: {
-        name: "dagre",
-        rankDir: "LR",
-        nodeSep: 60,
-        rankSep: 120,
-        edgeSep: 10,
-        padding: 32,
-      } as never,
+      layout: { name: "dagre", rankDir: "LR", nodeSep: 55, rankSep: 110, padding: 36 } as never,
     });
 
     cyRef.current.on("tap", "node", evt => {
-      const node = evt.target;
-      selectNode(node.data("fullData") ?? null);
+      selectNode(evt.target.data("fullData") ?? null);
     });
     cyRef.current.on("tap", evt => {
       if (evt.target === cyRef.current) selectNode(null);
     });
 
-    return () => {
-      cyRef.current?.destroy();
-      cyRef.current = null;
-    };
+    return () => { cyRef.current?.destroy(); cyRef.current = null; };
   }, [selectNode]);
 
   useEffect(() => {
@@ -195,39 +208,76 @@ export function GraphCanvas({ className = "" }: Props) {
     const elements = buildElements();
     cyRef.current.elements().remove();
     cyRef.current.add(elements);
-    if (elements.length > 0) {
-      cyRef.current
-        .layout({
-          name: "dagre",
-          rankDir: "LR",
-          nodeSep: 60,
-          rankSep: 120,
-          padding: 32,
-        } as never)
-        .run();
-    }
-  }, [buildElements]);
+    if (elements.length === 0) return;
+
+    const layoutConfig: Record<LayoutMode, never> = {
+      dagre: { name: "dagre", rankDir: "LR", nodeSep: 55, rankSep: 110, padding: 36 } as never,
+      concentric: {
+        name: "concentric",
+        concentric: (node: { data: (k: string) => string }) => {
+          const layerOrder: Record<LayerKey, number> = {
+            agents: 6, governance: 5, goal: 4, context: 3, knowledge: 2, evidence: 1,
+          };
+          return layerOrder[node.data("layer") as LayerKey] ?? 0;
+        },
+        levelWidth: () => 2,
+        minNodeSpacing: 50,
+        padding: 36,
+      } as never,
+      grid: { name: "grid", rows: 5, padding: 36 } as never,
+    };
+
+    cyRef.current.layout(layoutConfig[layoutMode]).run();
+  }, [buildElements, layoutMode]);
 
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "#060c18" }}>
-      {/* Subtle radial glow background */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 50% 50%, rgba(99,102,241,0.05) 0%, transparent 70%)",
-        }}
-      />
+    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "#020610" }}>
+      {/* Deep space background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <svg className="w-full h-full" style={{ opacity: 0.4 }}>
+          <defs>
+            <radialGradient id="glow-center" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#glow-center)" />
+          {/* Grid lines */}
+          {Array.from({ length: 20 }, (_, i) => (
+            <line key={`h${i}`} x1="0" y1={`${i * 5}%`} x2="100%" y2={`${i * 5}%`}
+              stroke="#1e293b" strokeWidth="0.5" strokeOpacity="0.5" />
+          ))}
+          {Array.from({ length: 20 }, (_, i) => (
+            <line key={`v${i}`} x1={`${i * 5}%`} y1="0" x2={`${i * 5}%`} y2="100%"
+              stroke="#1e293b" strokeWidth="0.5" strokeOpacity="0.5" />
+          ))}
+          {/* Star field */}
+          {Array.from({ length: 80 }, (_, i) => (
+            <circle
+              key={`s${i}`}
+              cx={`${(i * 137.5) % 100}%`}
+              cy={`${(i * 97.3) % 100}%`}
+              r={Math.random() > 0.9 ? 1.2 : 0.6}
+              fill="white"
+              opacity={(i % 7) * 0.06 + 0.03}
+            />
+          ))}
+        </svg>
+      </div>
 
-      <LayerToggleBar />
+      {/* Layer toggle bar */}
+      <LayerToggleBar layoutMode={layoutMode} onLayoutChange={setLayoutMode} />
 
       <div ref={containerRef} className="w-full h-full" />
 
       {/* Loading overlay */}
       {!overview && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-          <div className="w-8 h-8 rounded-full border-2 border-indigo-500/30 border-t-indigo-500 animate-spin" />
-          <p className="text-slate-500 text-sm">Connecting to graph…</p>
+          <div className="relative w-12 h-12">
+            <div className="absolute inset-0 rounded-full border border-indigo-500/20 animate-ping" />
+            <div className="absolute inset-1 rounded-full border-2 border-indigo-500/30 border-t-indigo-500 animate-spin" />
+          </div>
+          <p className="text-slate-500 text-xs tracking-widest uppercase">Connecting to substrate…</p>
         </div>
       )}
 
@@ -236,19 +286,17 @@ export function GraphCanvas({ className = "" }: Props) {
   );
 }
 
-function LayerToggleBar() {
+function LayerToggleBar({ layoutMode, onLayoutChange }: { layoutMode: LayoutMode; onLayoutChange: (m: LayoutMode) => void }) {
   const { overview, visibleLayers, toggleLayer, setAllLayers } = useGraphStore();
 
   const nodeCounts = overview
-    ? Object.fromEntries(
-        ALL_LAYERS.map(l => [l, overview.layers[l]?.nodes.length ?? 0])
-      )
+    ? Object.fromEntries(ALL_LAYERS.map(l => [l, overview.layers[l]?.nodes.length ?? 0]))
     : {};
 
   return (
     <div
       className="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5 rounded-xl p-2"
-      style={{ background: "rgba(6,12,24,0.85)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.06)" }}
+      style={{ background: "rgba(2,6,16,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.05)" }}
     >
       {ALL_LAYERS.map(layer => {
         const active = visibleLayers.has(layer);
@@ -259,37 +307,48 @@ function LayerToggleBar() {
             key={layer}
             onClick={() => toggleLayer(layer)}
             title={`${LAYER_LABELS[layer]} (${count} nodes)`}
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150"
+            className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
             style={{
-              backgroundColor: active ? `${color}22` : "rgba(30,41,59,0.5)",
-              color: active ? color : "#475569",
-              border: `1px solid ${active ? `${color}50` : "transparent"}`,
-              boxShadow: active ? `0 0 8px ${color}30` : "none",
+              backgroundColor: active ? `${color}18` : "rgba(255,255,255,0.02)",
+              color: active ? color : "#334155",
+              border: `1px solid ${active ? `${color}35` : "rgba(255,255,255,0.04)"}`,
+              boxShadow: active ? `0 0 10px ${color}20` : "none",
             }}
           >
-            <span
-              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-              style={{ backgroundColor: active ? color : "#334155" }}
-            />
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: active ? color : "#334155" }} />
             {LAYER_LABELS[layer]}
             {count > 0 && (
-              <span
-                className="text-[9px] font-bold px-1 rounded"
-                style={{ backgroundColor: active ? `${color}30` : "rgba(30,41,59,0.7)", color: active ? color : "#334155" }}
-              >
+              <span className="text-[8px] font-mono px-1 rounded"
+                style={{ backgroundColor: active ? `${color}25` : "rgba(255,255,255,0.04)", color: active ? color : "#334155" }}>
                 {count}
               </span>
             )}
           </button>
         );
       })}
-      <button
-        onClick={() => setAllLayers(true)}
-        className="px-2 py-1 rounded-lg text-xs font-medium text-slate-500 hover:text-slate-300 transition-colors"
-        style={{ backgroundColor: "rgba(30,41,59,0.5)" }}
-      >
-        all
-      </button>
+
+      <div className="flex items-center gap-1 ml-1 pl-1.5" style={{ borderLeft: "1px solid rgba(255,255,255,0.06)" }}>
+        {(["dagre", "concentric", "grid"] as LayoutMode[]).map(mode => (
+          <button
+            key={mode}
+            onClick={() => onLayoutChange(mode)}
+            className="px-2 py-1 rounded text-[9px] font-medium transition-all"
+            style={{
+              backgroundColor: layoutMode === mode ? "rgba(99,102,241,0.15)" : "rgba(255,255,255,0.02)",
+              color: layoutMode === mode ? "#818cf8" : "#334155",
+              border: `1px solid ${layoutMode === mode ? "rgba(99,102,241,0.3)" : "transparent"}`,
+            }}
+          >
+            {mode === "dagre" ? "→" : mode === "concentric" ? "◎" : "⊞"}
+          </button>
+        ))}
+        <button
+          onClick={() => setAllLayers(true)}
+          className="px-2 py-1 rounded text-[9px] text-slate-600 hover:text-slate-400 transition-colors"
+        >
+          all
+        </button>
+      </div>
     </div>
   );
 }
