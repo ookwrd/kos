@@ -89,6 +89,39 @@ class Mechanism(KOSBase):
     domain: str | None = None
 
 
+class TacitStep(KOSBase):
+    """A single step within a tacit knowledge trace."""
+
+    step: int
+    action: str
+    observation: str | None = None
+    decision_point: str | None = None
+    tacit_warning: str | None = None
+    duration_seconds: int | None = None
+
+
+class TacitTrace(KOSBase):
+    """
+    A structured situated-skill episode capturing tacit knowledge.
+
+    Tacit traces are first-class evidence nodes. They record not just
+    what an expert did, but the decision points they navigated, the
+    observations they noticed, and crucially — the parts of the procedure
+    that cannot be fully codified into explicit instructions.
+    """
+
+    name: str
+    domain: str | None = None
+    expert_id: str | None = None
+    context: str = ""
+    equipment: str | None = None
+    prerequisite_knowledge: list[str] = Field(default_factory=list)
+    steps: list[TacitStep] = Field(default_factory=list)
+    outcome: str | None = None
+    transferability_notes: str | None = None
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
 class Hypothesis(KOSBase):
     """
     A falsifiable claim about the world, anchored to entities and evidence.

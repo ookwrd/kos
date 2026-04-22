@@ -18,7 +18,7 @@ from ..models.context import DecisionTrace, Precedent
 from ..models.evidence import EvidenceFragment
 from ..models.goal import Goal, Constraint
 from ..models.governance import ProvenanceRecord
-from ..models.knowledge import Entity, Mechanism, Hypothesis
+from ..models.knowledge import Entity, Mechanism, Hypothesis, TacitTrace, TacitStep
 from ..context_graph.service import ContextGraphService
 from ..evidence_graph.service import EvidenceGraphService
 from ..knowledge_graph.service import KnowledgeGraphService
@@ -57,6 +57,13 @@ async def seed_fixture(path: Path) -> None:
         await kg_svc.create_mechanism(Mechanism(**m))
     for h in data.get("hypotheses", []):
         await kg_svc.create_hypothesis(Hypothesis(**h))
+
+    # 3b. Tacit traces
+    for raw in data.get("tacit_traces", []):
+        steps_raw = raw.pop("steps", [])
+        steps = [TacitStep(**s) for s in steps_raw]
+        trace = TacitTrace(steps=steps, **raw)
+        await kg_svc.create_tacit_trace(trace)
 
     # 4. Goals + Constraints
     for g in data.get("goals", []):

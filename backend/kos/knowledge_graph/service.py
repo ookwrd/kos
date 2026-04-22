@@ -15,7 +15,7 @@ from typing import Any
 from ..db.neo4j_client import run_query, run_write
 from ..db.serialise import neo4j_props
 from ..db.chroma_client import upsert_embedding, query_similar
-from ..models.knowledge import Entity, Mechanism, Hypothesis
+from ..models.knowledge import Entity, Mechanism, Hypothesis, TacitTrace
 
 
 _UPSERT_ENTITY = """
@@ -108,6 +108,24 @@ class KnowledgeGraphService:
         await upsert_embedding("knowledge", hypothesis.id, hypothesis.statement,
                                {"domain": hypothesis.domain or "", "status": hypothesis.status})
         return hypothesis
+
+    async def create_tacit_trace(self, trace: TacitTrace) -> TacitTrace:
+        props = _ser(trace)
+        await run_write(
+            "MERGE (t:TacitTrace {id: $id}) SET t += $props RETURN t",
+            {"id": trace.id, "props": props},
+        )
+        step_text = " ".join(s.action for s in trace.steps)
+        await upsert_embedding("knowledge", trace.id, f"{trace.name} {step_text}",
+                               {"domain": trace.domain or "", "type": "tacit_trace"})
+        return trace
+
+    async def list_tacit_traces(self, domain: str | None = None, limit: int = 20) -> list[dict[str, Any]]:
+        rows = await run_query(
+            "MATCH (t:TacitTrace) WHERE $domain IS NULL OR t.domain = $domain RETURN t LIMIT $limit",
+            {"domain": domain, "limit": limit},
+        )
+        return [dict(r["t"]) for r in rows]
 
     async def explain_path(self, from_label: str, to_label: str) -> list[dict[str, Any]]:
         """

@@ -1,10 +1,3 @@
-/**
- * KOS Atlas — application shell.
- *
- * Three-column layout with collapsible sidebars, animated header stats,
- * live event feed in the status bar, and domain filter chips.
- */
-
 import { useEffect, useState, useRef } from "react";
 import { GraphCanvas } from "./components/GraphCanvas";
 import { CityOverview } from "./components/CityOverview";
@@ -16,26 +9,28 @@ import { OntologyBridgeView } from "./components/OntologyBridgeView";
 import { AgentCouncilView } from "./components/AgentCouncilView";
 import { MechanismPathExplorer } from "./components/MechanismPathExplorer";
 import { GraphEvolutionTimeline } from "./components/GraphEvolutionTimeline";
+import { TacitTraceViewer } from "./components/TacitTraceViewer";
+import { ExpertTwinView } from "./components/ExpertTwinView";
 import { useGraphData, useDecisionReplay } from "./hooks/useGraphData";
 import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
-type LeftTab = "replay" | "provenance" | "uncertainty" | "inference";
-type RightTab = "agents" | "mechanisms" | "alignment" | "evolution";
+type LeftTab = "replay" | "provenance" | "tacit" | "inference";
+type RightTab = "agents" | "twin" | "alignment" | "evolution";
 type CenterView = "graph" | "city";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string }[] = [
-  { id: "replay",      label: "Replay",      icon: "▶" },
-  { id: "provenance",  label: "Provenance",  icon: "⊕" },
-  { id: "uncertainty", label: "Uncertainty", icon: "~" },
-  { id: "inference",   label: "Inference",   icon: "⊛" },
+  { id: "replay",    label: "Replay",    icon: "▶" },
+  { id: "provenance", label: "Provenance", icon: "⊕" },
+  { id: "tacit",     label: "Tacit",     icon: "◎" },
+  { id: "inference", label: "Inference", icon: "⊛" },
 ];
 
 const RIGHT_TABS: { id: RightTab; label: string; icon: string }[] = [
-  { id: "agents",     label: "Council",    icon: "◉" },
-  { id: "mechanisms", label: "Mechanisms", icon: "→" },
-  { id: "alignment",  label: "Alignment",  icon: "⟺" },
-  { id: "evolution",  label: "Evolution",  icon: "⊞" },
+  { id: "agents",    label: "Council",   icon: "◉" },
+  { id: "twin",      label: "Expert",    icon: "⊙" },
+  { id: "alignment", label: "Alignment", icon: "⟺" },
+  { id: "evolution", label: "Evolution", icon: "⊞" },
 ];
 
 function SidebarTabs<T extends string>({
@@ -181,7 +176,7 @@ export default function App() {
 
   const handleComputeAlignment = async () => {
     try {
-      const map = await api.alignment.compute("drug_discovery", "ai_hardware");
+      const map = await api.alignment.compute("drug_discovery", "euv_lithography");
       setAlignmentMap(map);
       setRightTab("alignment");
     } catch {}
@@ -224,8 +219,8 @@ export default function App() {
         <div className="flex items-center gap-3">
           <HexLogo />
           <div>
-            <span className="text-sm font-bold tracking-tight text-white">KOS</span>
-            <span className="ml-2 text-xs text-slate-500">Knowledge Operating System</span>
+            <span className="text-sm font-bold tracking-tight text-white">Omega</span>
+            <span className="ml-2 text-xs text-slate-500">Collective Intelligence Substrate</span>
           </div>
           <span
             className="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest"
@@ -364,10 +359,10 @@ export default function App() {
             <>
               <SidebarTabs tabs={LEFT_TABS} active={leftTab} onChange={setLeftTab} />
               <div className="flex-1 overflow-hidden">
-                {leftTab === "replay"      && <DecisionReplay     className="h-full" />}
-                {leftTab === "provenance"  && <ProvenanceInspector className="h-full" />}
-                {leftTab === "uncertainty" && <UncertaintyOverlay  className="h-full" />}
-                {leftTab === "inference"   && <InferencePanel      className="h-full" />}
+                {leftTab === "replay"     && <DecisionReplay      className="h-full" />}
+                {leftTab === "provenance" && <ProvenanceInspector  className="h-full" />}
+                {leftTab === "tacit"      && <TacitTraceViewer     className="h-full" />}
+                {leftTab === "inference"  && <InferencePanel       className="h-full" />}
               </div>
             </>
           )}
@@ -395,10 +390,10 @@ export default function App() {
             <>
               <SidebarTabs tabs={RIGHT_TABS} active={rightTab} onChange={setRightTab} />
               <div className="flex-1 overflow-hidden">
-                {rightTab === "agents"     && <AgentCouncilView     className="h-full" />}
-                {rightTab === "mechanisms" && <MechanismPathExplorer className="h-full" />}
-                {rightTab === "alignment"  && <OntologyBridgeView   className="h-full" />}
-                {rightTab === "evolution"  && <GraphEvolutionTimeline className="h-full" />}
+                {rightTab === "agents"    && <AgentCouncilView      className="h-full" />}
+                {rightTab === "twin"      && <ExpertTwinView         className="h-full" />}
+                {rightTab === "alignment" && <OntologyBridgeView     className="h-full" />}
+                {rightTab === "evolution" && <GraphEvolutionTimeline  className="h-full" />}
               </div>
             </>
           )}
@@ -454,7 +449,7 @@ export default function App() {
 
         <div className="flex items-center gap-3 flex-shrink-0 text-[10px] text-slate-700">
           <span>Neo4j · bolt://localhost:7687</span>
-          <span>KOS v0.1.0</span>
+          <span>Omega v2.0</span>
         </div>
       </footer>
     </div>

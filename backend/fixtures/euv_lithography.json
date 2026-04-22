@@ -1,0 +1,609 @@
+{
+  "domain": "euv_lithography",
+  "name": "ASML EUV Lithography — Collective Tacit Knowledge in Advanced Manufacturing",
+  "version": "1.0",
+  "description": "The 40-year development of Extreme Ultraviolet (EUV) lithography — the technology that prints transistors in modern chips at sub-5nm feature sizes. EUV required coordinating deeply tacit engineering knowledge across ASML (Netherlands), Carl Zeiss SMT (Germany), Cymer/TRUMPF (USA/Germany), and IMEC (Belgium). The knowledge required to operate an EUV system cannot be fully codified; it lives in expert practitioners who learned it through years of failure and recovery. Sources: ASML Annual Reports 2010–2023, Cymer technical publications, IMEC EUV process research, Levinson (2010) Principles of Lithography, van den Brink SPIE keynotes.",
+
+  "agents": [
+    {
+      "id": "agent-asml-systems",
+      "name": "ASML Systems Engineering",
+      "agent_type": "institution",
+      "domain": "euv_lithography",
+      "competences": ["EUV system integration", "overlay control", "lithography tool design", "customer process support"],
+      "beliefs": {
+        "tin_plasma_approach_viable": 0.94,
+        "250W_source_power_achievable": 0.78,
+        "high_na_euv_feasible": 0.81
+      },
+      "preferred_outcomes": {
+        "goal-125wph-throughput": 0.95,
+        "goal-sub_01nm_overlay": 0.93,
+        "goal-source-uptime": 0.88
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.82,
+      "tags": ["system-integrator", "Netherlands", "lead-developer"]
+    },
+    {
+      "id": "agent-zeiss-optics",
+      "name": "Carl Zeiss SMT — EUV Mirror Division",
+      "agent_type": "institution",
+      "domain": "euv_lithography",
+      "competences": ["multilayer mirror fabrication", "optical metrology", "EUV reflectivity", "contamination management"],
+      "beliefs": {
+        "molybdenum_silicon_multilayer_optimal": 0.97,
+        "contamination_manageable": 0.71,
+        "angstrom_level_figure_error_achievable": 0.85
+      },
+      "preferred_outcomes": {
+        "goal-mirror-lifetime": 0.96,
+        "goal-reflectivity-target": 0.92
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.88,
+      "tags": ["optics", "Germany", "mirror-expert"]
+    },
+    {
+      "id": "agent-cymer-source",
+      "name": "Cymer (acquired by ASML 2012) — EUV Light Source",
+      "agent_type": "institution",
+      "domain": "euv_lithography",
+      "competences": ["tin plasma generation", "laser-produced plasma", "EUV source power scaling", "droplet generation"],
+      "beliefs": {
+        "tin_over_xenon_correct_choice": 0.96,
+        "pre-pulse_technique_critical": 0.91,
+        "250W_source_achievable_by_2016": 0.62
+      },
+      "preferred_outcomes": {
+        "goal-euv-source-power": 0.97,
+        "goal-source-uptime": 0.91
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.79,
+      "tags": ["light-source", "USA", "tin-plasma", "acquired"]
+    },
+    {
+      "id": "agent-imec-process",
+      "name": "IMEC — EUV Process Research",
+      "agent_type": "institution",
+      "domain": "euv_lithography",
+      "competences": ["EUV resist development", "stochastic defect analysis", "patterning process integration", "semiconductor process research"],
+      "beliefs": {
+        "stochastic_defects_manageable_at_5nm": 0.58,
+        "high_na_required_for_sub_2nm": 0.89,
+        "resist_sensitivity_tradeoff_fundamental": 0.93
+      },
+      "preferred_outcomes": {
+        "goal-sub-5nm-patterning": 0.91
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.84,
+      "tags": ["process-research", "Belgium", "resist-expert"]
+    },
+    {
+      "id": "agent-martin-van-den-brink",
+      "name": "Martin van den Brink — ASML CTO",
+      "agent_type": "human",
+      "domain": "euv_lithography",
+      "competences": ["lithography roadmap strategy", "EUV technology transition", "customer engagement", "cross-institutional coordination"],
+      "beliefs": {
+        "euv_will_replace_argon_fluoride_immersion": 0.98,
+        "13_5nm_wavelength_optimal": 0.97,
+        "high_na_euv_is_next_generation": 0.94
+      },
+      "preferred_outcomes": {
+        "goal-euv-production-readiness": 0.99
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.91,
+      "tags": ["CTO", "strategic-decision-maker", "long-tenure"]
+    },
+    {
+      "id": "agent-chipmaker-consortium",
+      "name": "Intel / TSMC / Samsung — EUV Co-Development Consortium",
+      "agent_type": "institution",
+      "domain": "euv_lithography",
+      "competences": ["chip manufacturing", "EUV process qualification", "yield learning", "roadmap requirements"],
+      "beliefs": {
+        "euv_needed_by_7nm_node": 0.87,
+        "current_source_power_inadequate": 0.79,
+        "stochastic_defects_production_risk": 0.82
+      },
+      "preferred_outcomes": {
+        "goal-125wph-throughput": 0.96,
+        "goal-euv-defectivity-target": 0.93
+      },
+      "authority_scope": ["euv_lithography"],
+      "calibration_score": 0.77,
+      "tags": ["customer", "co-developer", "roadmap-driver"]
+    }
+  ],
+
+  "evidence": [
+    {
+      "id": "ev-wavelength-selection-analysis-1999",
+      "source_type": "document",
+      "title": "EUV Wavelength Selection Study — 13.5nm Justified by Mo/Si Mirror Reflectivity and Tin Emission",
+      "content_ref": "SPIE:3997-01 (2000) EUV Lithography Conference Proceedings",
+      "media_type": "application/pdf",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-asml-systems", "agent-zeiss-optics"],
+      "uncertainty": 0.12,
+      "tags": ["wavelength", "13.5nm", "mirror-reflectivity", "tin-emission", "foundational"]
+    },
+    {
+      "id": "ev-tin-vs-xenon-source-comparison-2006",
+      "source_type": "document",
+      "title": "Laser-Produced Plasma EUV Source: Tin vs. Xenon Performance Comparison",
+      "content_ref": "doi:10.1116/1.2186080",
+      "media_type": "application/pdf",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-cymer-source", "agent-asml-systems"],
+      "uncertainty": 0.19,
+      "tags": ["tin-plasma", "xenon-plasma", "source-power", "conversion-efficiency"]
+    },
+    {
+      "id": "ev-pre-pulse-technique-2007",
+      "source_type": "document",
+      "title": "Double-Pulse Laser Technique for Enhanced EUV Conversion Efficiency from Tin Droplet Targets",
+      "content_ref": "doi:10.1063/1.2712503",
+      "media_type": "application/pdf",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-cymer-source"],
+      "uncertainty": 0.14,
+      "tags": ["pre-pulse", "droplet-flattening", "conversion-efficiency", "critical-technique"]
+    },
+    {
+      "id": "ev-mirror-contamination-lifetime-data",
+      "source_type": "sensor_window",
+      "title": "EUV Collector Mirror Reflectivity Degradation vs. Operating Hours — Field Data NXE:3100",
+      "content_ref": "internal://asml/mirror-lifetime-database/nxe3100-field-2012.csv",
+      "media_type": "text/csv",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-zeiss-optics", "agent-asml-systems"],
+      "uncertainty": 0.22,
+      "tags": ["mirror", "tin-contamination", "reflectivity-degradation", "lifetime"]
+    },
+    {
+      "id": "ev-hydrogen-cleaning-validation",
+      "source_type": "document",
+      "title": "In-Situ Hydrogen Plasma Cleaning of EUV Collector Mirrors — Lifetime Extension Study",
+      "content_ref": "doi:10.1117/12.816214",
+      "media_type": "application/pdf",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-zeiss-optics"],
+      "uncertainty": 0.17,
+      "tags": ["hydrogen-cleaning", "mirror-lifetime", "tin-removal", "tacit-procedure"]
+    },
+    {
+      "id": "ev-cymer-acquisition-rationale-2012",
+      "source_type": "document",
+      "title": "ASML-Cymer Merger Announcement and Strategic Rationale — EUV Source Vertical Integration",
+      "content_ref": "ASML Investor Relations Release 2012-07-09",
+      "media_type": "text/html",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-asml-systems", "agent-martin-van-den-brink"],
+      "uncertainty": 0.05,
+      "tags": ["acquisition", "vertical-integration", "tacit-knowledge-retention", "strategic"]
+    },
+    {
+      "id": "ev-nxe3400b-qualification-data-2017",
+      "source_type": "sensor_window",
+      "title": "NXE:3400B Production Qualification — Throughput, Overlay, and Defectivity at TSMC",
+      "content_ref": "internal://tsmc/euv-qualification/nxe3400b-2017.csv",
+      "media_type": "text/csv",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-chipmaker-consortium", "agent-asml-systems"],
+      "uncertainty": 0.11,
+      "tags": ["production-qualification", "throughput", "overlay", "TSMC", "7nm"]
+    },
+    {
+      "id": "ev-stochastic-defect-imec-study",
+      "source_type": "document",
+      "title": "Stochastic Printing Effects in EUV Lithography at Sub-7nm — IMEC Analysis",
+      "content_ref": "doi:10.1117/12.2297445",
+      "media_type": "application/pdf",
+      "domain": "euv_lithography",
+      "validated_by": ["agent-imec-process"],
+      "uncertainty": 0.31,
+      "tags": ["stochastics", "defectivity", "sub-7nm", "fundamental-limit"]
+    }
+  ],
+
+  "entities": [
+    {
+      "id": "ent-euv-photon-13-5nm",
+      "label": "13.5nm EUV Photon",
+      "entity_type": "physical_phenomenon",
+      "domain": "euv_lithography",
+      "attributes": {
+        "wavelength_nm": 13.5,
+        "photon_energy_eV": 91.9,
+        "source": "tin plasma emission",
+        "absorbed_by": "all materials except specialized multilayer mirrors"
+      }
+    },
+    {
+      "id": "ent-tin-plasma-source",
+      "label": "Laser-Produced Tin Plasma EUV Source",
+      "entity_type": "system_component",
+      "domain": "euv_lithography",
+      "attributes": {
+        "droplet_rate_per_second": 50000,
+        "laser_type": "CO2, 10.6 micrometers",
+        "conversion_efficiency_percent": 3.5,
+        "target_power_w": 250,
+        "pre_pulse_technique": "required for adequate CE"
+      }
+    },
+    {
+      "id": "ent-mo-si-multilayer-mirror",
+      "label": "Molybdenum-Silicon Multilayer EUV Mirror",
+      "entity_type": "system_component",
+      "domain": "euv_lithography",
+      "attributes": {
+        "layer_count": "40-60 bilayers",
+        "layer_thickness_nm": 3.0,
+        "peak_reflectivity_percent": 70,
+        "operating_wavelength_nm": 13.5,
+        "degradation_mechanism": "tin deposition at 1-2nm/hour"
+      }
+    },
+    {
+      "id": "ent-droplet-generator",
+      "label": "EUV Source Tin Droplet Generator",
+      "entity_type": "system_component",
+      "domain": "euv_lithography",
+      "attributes": {
+        "droplet_diameter_micrometers": 27,
+        "droplet_velocity_m_s": 70,
+        "timing_jitter_ns": 3,
+        "tacit_knowledge_intensity": "very high — calibration requires experienced operator"
+      }
+    },
+    {
+      "id": "ent-nxe3400b",
+      "label": "ASML NXE:3400B EUV Lithography System",
+      "entity_type": "product",
+      "domain": "euv_lithography",
+      "attributes": {
+        "na": 0.33,
+        "source_power_target_w": 250,
+        "throughput_wph": 125,
+        "overlay_nm": 0.5,
+        "first_shipment": "2017",
+        "price_usd": 120000000
+      }
+    }
+  ],
+
+  "mechanisms": [
+    {
+      "id": "mech-laser-plasma-euv-generation",
+      "name": "CO2 laser ablates tin droplet to generate EUV plasma",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-tin-plasma-source",
+      "target_entity_id": "ent-euv-photon-13-5nm",
+      "description": "A high-power CO2 laser (pre-pulse + main pulse) ablates a tin droplet, creating a plasma at ~220,000 K that emits EUV light at 13.5nm with ~3.5% conversion efficiency. The pre-pulse technique flattens the spherical droplet into a disk, increasing surface area and conversion efficiency by ~2x.",
+      "confidence": 0.96,
+      "domain": "euv_lithography",
+      "evidence_ids": ["ev-pre-pulse-technique-2007", "ev-tin-vs-xenon-source-comparison-2006"]
+    },
+    {
+      "id": "mech-tin-contamination-mirror-degradation",
+      "name": "Tin deposition degrades mirror reflectivity",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-tin-plasma-source",
+      "target_entity_id": "ent-mo-si-multilayer-mirror",
+      "description": "Tin ions and neutrals ejected from the plasma deposit on the collector mirror at ~1-2nm/hour, forming an absorbing tin film that reduces EUV reflectivity. Without mitigation, mirrors fail within days. Hydrogen plasma cleaning (Sn + 2H → SnH2, volatile) removes the deposit and restores reflectivity, extending mirror lifetime to months.",
+      "confidence": 0.94,
+      "domain": "euv_lithography",
+      "evidence_ids": ["ev-mirror-contamination-lifetime-data", "ev-hydrogen-cleaning-validation"]
+    },
+    {
+      "id": "mech-stochastic-effects-at-small-features",
+      "name": "Reduced photon dose at small features produces stochastic printing defects",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-euv-photon-13-5nm",
+      "target_entity_id": "ent-nxe3400b",
+      "description": "At sub-7nm feature sizes, the number of EUV photons exposing each pixel approaches statistical fluctuation limits. This produces shot-noise-limited stochastic defects (bridges, breaks, roughness) that cannot be fully mitigated by dose increases alone. Fundamental tradeoff: higher dose reduces stochastics but reduces throughput.",
+      "confidence": 0.91,
+      "domain": "euv_lithography",
+      "evidence_ids": ["ev-stochastic-defect-imec-study"]
+    }
+  ],
+
+  "hypotheses": [
+    {
+      "id": "hyp-tacit-knowledge-acquisition-rationale",
+      "statement": "ASML's 2012 acquisition of Cymer was primarily motivated by the recognition that EUV source knowledge was too tacit and too critical to maintain at arm's length through a supplier relationship.",
+      "domain": "euv_lithography",
+      "status": "supported",
+      "evidence_for": ["ev-cymer-acquisition-rationale-2012"],
+      "evidence_against": [],
+      "prior": 0.82,
+      "uncertainty": 0.19
+    },
+    {
+      "id": "hyp-euv-needed-for-below-5nm",
+      "statement": "EUV lithography (0.33 NA) with multi-patterning can extend to approximately 2nm node; High-NA EUV (0.55 NA) will be required below 2nm.",
+      "domain": "euv_lithography",
+      "status": "proposed",
+      "evidence_for": ["ev-nxe3400b-qualification-data-2017", "ev-stochastic-defect-imec-study"],
+      "evidence_against": [],
+      "prior": 0.88,
+      "uncertainty": 0.22
+    }
+  ],
+
+  "tacit_traces": [
+    {
+      "id": "trace-droplet-generator-calibration",
+      "title": "EUV Source Droplet Generator Calibration Procedure",
+      "domain": "euv_lithography",
+      "actor_id": "agent-cymer-source",
+      "trace_type": "skilled_procedure",
+      "description": "The tin droplet generator produces 27-micron droplets at 50,000 Hz with ±3ns timing jitter. The calibration procedure for achieving and maintaining optimal droplet size, velocity, and trajectory requires operator expertise that cannot be fully captured in parameter tables. The key tacit element: the relationship between reservoir temperature, nozzle pressure, and droplet characteristics is nonlinear in ways that differ subtly between individual source units — a fact not captured in specifications.",
+      "steps": [
+        {"step": 1, "action": "Set reservoir temperature to nominal 250°C, allow 45-minute thermal stabilization", "rationale": "Standard spec, but stabilization time varies by ambient conditions", "uncertainty": 0.15},
+        {"step": 2, "action": "Enable droplet illumination strobing; observe droplet shape at 100x magnification", "rationale": "Droplets should be spherical ±5%; irregular droplets indicate nozzle contamination or pressure anomaly", "uncertainty": 0.28},
+        {"step": 3, "action": "Adjust nozzle pressure in ≤0.2 bar increments while monitoring droplet frequency counter", "rationale": "Frequency target 50,000 ±200 Hz. Coarse adjustment first, fine trim last. Overcorrection causes oscillation.", "uncertainty": 0.41},
+        {"step": 4, "action": "Fire pre-pulse laser at 50% power; observe droplet flattening in real-time monitor", "rationale": "Optimal flattening ratio 3:1 (disk diameter vs original sphere). Tacit: experienced operators can judge this visually before metrics confirm.", "uncertainty": 0.35},
+        {"step": 5, "action": "Engage main pulse; measure conversion efficiency over 1000 shots", "rationale": "CE target >3.2%. If below, repeat nozzle pressure adjustment. Do not adjust laser power as first response.", "uncertainty": 0.22},
+        {"step": 6, "action": "Verify droplet intercept with laser by scanning mirror alignment in 0.1 mrad steps", "rationale": "This step is heavily operator-dependent. The optimal alignment is not at the measured center but offset by 0.3–0.8 mrad in a direction that varies by unit — experienced operators know their machine's characteristic offset.", "uncertainty": 0.52}
+      ],
+      "outcome": "Stable EUV source at target power (≥200W) with conversion efficiency ≥3.2%",
+      "tacit_warning": "Step 6 alignment offset is unit-specific and not documented in the standard procedure. This knowledge lives in experienced field application engineers. When new engineers take over, CE drops typically 15–30% until they learn the unit's characteristic behavior.",
+      "knowledge_type": "procedural + unit-specific_calibration_memory",
+      "transferability": "medium — steps 1–5 can be taught; step 6 offset must be transferred directly from experienced engineer or re-learned empirically (~40 hours per unit)"
+    },
+    {
+      "id": "trace-hydrogen-cleaning-procedure",
+      "title": "EUV Collector Mirror Hydrogen Plasma Cleaning",
+      "domain": "euv_lithography",
+      "actor_id": "agent-zeiss-optics",
+      "trace_type": "maintenance_procedure",
+      "description": "Tin contamination of the EUV collector mirror is the primary cause of reflectivity degradation. Hydrogen plasma (H2 ions) reacts with tin (Sn + 2H → SnH2) to form volatile stannane which is pumped away. The procedure is safe and effective if executed correctly; incorrect execution can cause mirror damage that is irreversible at $500,000+ replacement cost.",
+      "steps": [
+        {"step": 1, "action": "Reduce EUV source to standby; monitor mirror temperature for 20-minute cool-down", "rationale": "Cleaning above 80°C accelerates tin diffusion into mirror surface, reducing efficacy", "uncertainty": 0.12},
+        {"step": 2, "action": "Increase hydrogen gas flow to 50 sccm; monitor chamber pressure stabilization at 0.1 Pa", "rationale": "Pressure stability indicator of no outgassing anomalies. Anomalous pressure rise = abort.", "uncertainty": 0.18},
+        {"step": 3, "action": "Initiate plasma at 50W RF power; observe emission spectrum for Sn-H peaks", "rationale": "SnH2 emission at 204nm confirms cleaning is active. No emission = tin layer too thick or plasma not reaching surface.", "uncertainty": 0.29},
+        {"step": 4, "action": "Monitor reflectivity recovery in real-time at 13.5nm; terminate when recovery plateaus", "rationale": "Cleaning does not continue indefinitely — excessive cleaning at high power can sputter mirror surface. Stop at plateau, not at nominal value.", "uncertainty": 0.38},
+        {"step": 5, "action": "Log cleaning duration, initial/final reflectivity, RF power used, and chamber conditions", "rationale": "Trend analysis of cleaning records is the only way to detect slow mirror degradation before catastrophic reflectivity loss", "uncertainty": 0.09}
+      ],
+      "outcome": "Mirror reflectivity restored to 95–100% of baseline; source ready for production operation",
+      "tacit_warning": "The decision to terminate cleaning (step 4) is judgment-based. Over-cleaning at high RF power introduces a secondary degradation mechanism that manifests only after 200+ hours — not visible in single-session reflectivity data. Experienced engineers develop intuition for the cleaning duration vs. power tradeoff that is not captured in the procedure document.",
+      "knowledge_type": "safety-critical_maintenance + judgment-under-uncertainty",
+      "transferability": "low-medium — the procedure document captures steps 1–5; the judgment at step 4 requires ~6 months of supervised experience"
+    }
+  ],
+
+  "goals": [
+    {
+      "id": "goal-125wph-throughput",
+      "title": "Achieve ≥125 wafers/hour throughput at EUV source power ≥250W",
+      "status": "achieved",
+      "horizon": "long",
+      "priority": 0.97,
+      "owner_id": "agent-asml-systems",
+      "domain": "euv_lithography",
+      "metric": "wafers_per_hour",
+      "metric_target": 125
+    },
+    {
+      "id": "goal-sub_01nm_overlay",
+      "title": "Achieve ≤0.1nm overlay accuracy for multi-patterning",
+      "status": "active",
+      "horizon": "long",
+      "priority": 0.93,
+      "owner_id": "agent-asml-systems",
+      "domain": "euv_lithography",
+      "metric": "overlay_3sigma_nm",
+      "metric_target": 0.1
+    },
+    {
+      "id": "goal-euv-source-power",
+      "title": "Achieve sustained ≥250W EUV in-band power at IF",
+      "status": "active",
+      "horizon": "medium",
+      "priority": 0.94,
+      "owner_id": "agent-cymer-source",
+      "domain": "euv_lithography",
+      "metric": "euv_power_w_at_IF",
+      "metric_target": 250
+    },
+    {
+      "id": "goal-mirror-lifetime",
+      "title": "Achieve EUV collector mirror lifetime ≥40,000 wafer passes between replacement",
+      "status": "active",
+      "horizon": "medium",
+      "priority": 0.88,
+      "owner_id": "agent-zeiss-optics",
+      "domain": "euv_lithography",
+      "metric": "mirror_lifetime_wafer_passes",
+      "metric_target": 40000
+    },
+    {
+      "id": "goal-tacit-knowledge-retention",
+      "title": "Ensure critical EUV source process knowledge is retained during Cymer integration",
+      "status": "active",
+      "horizon": "short",
+      "priority": 0.85,
+      "owner_id": "agent-martin-van-den-brink",
+      "domain": "euv_lithography",
+      "metric": "source_engineers_retained_post_acquisition_percent",
+      "metric_target": 0.9
+    }
+  ],
+
+  "constraints": [
+    {
+      "id": "constraint-vacuum-requirement",
+      "description": "EUV light is absorbed by all gases. The entire optical path must operate in vacuum at pressure ≤1e-4 Pa. This is an absolute physical constraint that shapes all system architecture decisions.",
+      "constraint_type": "hard",
+      "governed_entity_ids": ["goal-125wph-throughput"],
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "constraint-mirror-reflectivity-floor",
+      "description": "EUV source cannot operate in production mode if collector mirror reflectivity falls below 70% of initial value. Below this threshold, source power is insufficient for 125 WPH throughput.",
+      "constraint_type": "hard",
+      "governed_entity_ids": ["goal-euv-source-power", "goal-125wph-throughput"],
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "constraint-stochastic-defect-floor",
+      "description": "Stochastic defect rate must be below 0.1 defects/cm² for production yield. This constrains minimum dose (limiting throughput) and is a hard physical limit at sub-3nm features that cannot be engineered away with current resist chemistry.",
+      "constraint_type": "hard",
+      "governed_entity_ids": ["goal-125wph-throughput"],
+      "domain": "euv_lithography"
+    }
+  ],
+
+  "precedents": [
+    {
+      "id": "prec-argon-fluoride-immersion-lesson",
+      "statement": "193nm ArF immersion lithography achieved sub-wavelength patterning through k1 factor reduction, multi-patterning, and OPC — demonstrating that the feature-size/wavelength ratio can be pushed far below 1.0 through engineering rather than wavelength reduction. Applied to EUV: similarly aggressive sub-resolution techniques will be required even with 13.5nm.",
+      "decision_trace_id": "dec-wavelength-selection-1999",
+      "applicability_conditions": ["lithography wavelength selection", "feature size target below physical wavelength"],
+      "domains": ["euv_lithography"],
+      "confidence": 0.91,
+      "invocation_count": 3,
+      "override_count": 0,
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "prec-cymer-arm-length-failure",
+      "statement": "The 2007–2011 period demonstrated that critical tacit manufacturing knowledge cannot be maintained through arms-length supplier relationships when the knowledge is rapidly evolving and failure modes are opaque. Multiple EUV source delays were attributable to communication barriers between ASML and Cymer that would not have existed within a single organization.",
+      "decision_trace_id": "dec-cymer-acquisition-2012",
+      "applicability_conditions": ["critical tacit-knowledge-intensive supplier", "knowledge evolving faster than documentation cycles", "failure modes require rapid cross-team iteration"],
+      "domains": ["euv_lithography"],
+      "confidence": 0.86,
+      "invocation_count": 1,
+      "override_count": 0,
+      "domain": "euv_lithography"
+    }
+  ],
+
+  "decisions": [
+    {
+      "id": "dec-wavelength-selection-1999",
+      "question": "Which wavelength should be selected as the EUV standard — 13.5nm, 11nm, or other?",
+      "outcome": "accepted",
+      "rationale": "13.5nm was selected based on: (1) molybdenum-silicon multilayer mirrors achieve peak reflectivity at this wavelength (~70%), (2) tin plasma emission line at 13.5nm has higher intensity than alternatives, (3) mirror fabrication for 11nm was not demonstrated as feasible. The decision was also influenced by the fact that 13.5nm falls in a window where silicon (wafer material) and carbon (resist) have relatively low absorption, reducing contamination-induced wavelength shift sensitivity.",
+      "evidence_ids": ["ev-wavelength-selection-analysis-1999"],
+      "actor_id": "agent-martin-van-den-brink",
+      "policy_ids": [],
+      "precedent_ids": ["prec-argon-fluoride-immersion-lesson"],
+      "is_exception": false,
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "dec-tin-over-xenon-2007",
+      "question": "Should ASML/Cymer transition from xenon plasma to tin plasma as the EUV light source?",
+      "outcome": "accepted",
+      "rationale": "Tin produces 13.5nm EUV with ~10x higher conversion efficiency than xenon (3.5% vs 0.3%). Despite the severe contamination challenge (tin deposits on mirrors), tin was selected because the throughput target of 125 WPH required source powers achievable only with tin. The decision committed the program to solving the mirror contamination problem — a 5-year engineering effort whose solution (hydrogen plasma cleaning) was not yet demonstrated.",
+      "evidence_ids": ["ev-tin-vs-xenon-source-comparison-2006", "ev-pre-pulse-technique-2007"],
+      "actor_id": "agent-cymer-source",
+      "policy_ids": [],
+      "precedent_ids": [],
+      "is_exception": false,
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "dec-cymer-acquisition-2012",
+      "question": "Should ASML acquire Cymer (EUV light source supplier) rather than continue the arm's-length supplier relationship?",
+      "outcome": "accepted",
+      "rationale": "ASML's leadership concluded that EUV source knowledge was so deeply tacit, so rapidly evolving, and so critical to EUV system performance that it could not be reliably transferred through the conventional customer-supplier interface. The acquisition at $2.5B was justified primarily as a tacit knowledge retention and integration play, not as a conventional vertical integration strategy. The explicit concern was that expert engineers at Cymer would not transfer their knowledge via specification documents — only via daily collaboration.",
+      "evidence_ids": ["ev-cymer-acquisition-rationale-2012"],
+      "actor_id": "agent-martin-van-den-brink",
+      "policy_ids": [],
+      "precedent_ids": ["prec-cymer-arm-length-failure"],
+      "is_exception": true,
+      "domain": "euv_lithography"
+    }
+  ],
+
+  "dissent_records": [
+    {
+      "id": "dissent-chipmaker-throughput-2014",
+      "actor_id": "agent-chipmaker-consortium",
+      "target_id": "dec-tin-over-xenon-2007",
+      "dissent_type": "performance",
+      "rationale": "By 2014, chipmakers (Intel, Samsung, TSMC) expressed strong concern that EUV source power was scaling too slowly. The tin plasma contamination problem was delaying achievement of 125 WPH throughput. The consortium had anticipated production readiness by 2012–2013; actual high-volume manufacturing did not begin until 2018–2019. This delay cost chipmakers approximately 2 technology generations of EUV-based roadmap.",
+      "resolution_status": "partially_resolved",
+      "supporting_evidence_ids": ["ev-mirror-contamination-lifetime-data", "ev-nxe3400b-qualification-data-2017"],
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "dissent-stochastic-fundamentality",
+      "actor_id": "agent-imec-process",
+      "target_id": "dec-wavelength-selection-1999",
+      "dissent_type": "technical",
+      "rationale": "IMEC process research found that stochastic defects at sub-7nm features are a fundamental consequence of low photon dose per resolution element at 13.5nm — not an engineering challenge that can be solved by better source power or resist chemistry. This dissent was initially discounted as overly pessimistic. By 2020 it was recognized as a genuine fundamental limitation driving the development of High-NA EUV (0.55 NA) which provides more photons per feature.",
+      "resolution_status": "vindicated",
+      "supporting_evidence_ids": ["ev-stochastic-defect-imec-study"],
+      "domain": "euv_lithography"
+    }
+  ],
+
+  "uncertainty_annotations": [
+    {
+      "id": "ua-tin-contamination-rate",
+      "target_id": "mech-tin-contamination-mirror-degradation",
+      "dimension": "tin deposition rate variation across operating conditions",
+      "value": 0.31,
+      "method": "field_data_analysis",
+      "annotator_id": "agent-zeiss-optics",
+      "rationale": "The 1–2nm/hour deposition rate is a nominal value; actual rate varies with source geometry, plasma stability, and collector mirror position. Unit-to-unit variation is significant (~30%) and correlates with tacit calibration quality."
+    },
+    {
+      "id": "ua-high-na-timeline",
+      "target_id": "hyp-euv-needed-for-below-5nm",
+      "dimension": "timeline for High-NA EUV production readiness",
+      "value": 0.34,
+      "method": "expert_elicitation",
+      "annotator_id": "agent-martin-van-den-brink",
+      "rationale": "High-NA EUV (NXE:5000 series) is in qualification as of 2023-2024. Production readiness timeline depends on resist performance, anamorphic lens aberration control, and stochastic management — all of which are actively uncertain."
+    }
+  ],
+
+  "provenance_records": [
+    {
+      "id": "prov-wavelength-decision",
+      "source_id": "dec-wavelength-selection-1999",
+      "actor_id": "agent-martin-van-den-brink",
+      "action": "created",
+      "timestamp": "1999-06-01T00:00:00Z",
+      "data_hash": "sha256:b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4",
+      "downstream_ids": ["dec-tin-over-xenon-2007"],
+      "domain": "euv_lithography"
+    },
+    {
+      "id": "prov-cymer-acquisition",
+      "source_id": "dec-cymer-acquisition-2012",
+      "actor_id": "agent-asml-systems",
+      "action": "created",
+      "timestamp": "2012-07-09T00:00:00Z",
+      "data_hash": "sha256:d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5",
+      "downstream_ids": ["goal-tacit-knowledge-retention"],
+      "domain": "euv_lithography"
+    }
+  ],
+
+  "demo_queries": [
+    {
+      "id": "dq-why-acquire-cymer",
+      "question": "Why did ASML acquire Cymer for $2.5 billion?",
+      "answer_path": ["prec-cymer-arm-length-failure", "dec-cymer-acquisition-2012", "trace-droplet-generator-calibration"],
+      "narrative": "The acquisition was primarily a tacit knowledge play. The critical EUV source calibration knowledge lived in Cymer's engineers and could not be reliably transferred through supplier specification documents. The traces show exactly why: step 6 of the droplet generator calibration is unit-specific and cannot be documented — it must be transferred directly."
+    },
+    {
+      "id": "dq-what-cant-be-documented",
+      "question": "What knowledge in EUV manufacturing can't be written down?",
+      "answer_path": ["trace-droplet-generator-calibration", "trace-hydrogen-cleaning-procedure"],
+      "narrative": "The two tacit traces show the specific decision points where explicit documentation fails: the unit-specific laser alignment offset (trace 1, step 6) and the over-cleaning judgment call (trace 2, step 4). These are not gaps in the documentation — they are knowledge that is fundamentally tacit because it depends on accumulated experience with a specific machine's behavior."
+    }
+  ]
+}
