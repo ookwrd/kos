@@ -2,7 +2,7 @@
 
 *Single source of truth for forward work. Updated at the end of each iteration.*
 
-**Last updated:** 2026-04-22 (end of iteration 3)
+**Last updated:** 2026-04-24 (end of V6 iteration)
 
 ---
 
@@ -142,13 +142,28 @@ Complete remaining planned domains:
 
 ---
 
+## Completed in V6 (Iteration 4–5, April 2026)
+
+- ✓ 24 domain cities in CityOverview — all visible with grounding indicators (SG/HY/SC)
+- ✓ 4 federations + MetaCity view in CognitionFabricView (toggle "◈ MetaCity")
+- ✓ DOMAIN_GROUNDING: 12 source_grounded, 6 hybrid, 6 speculative
+- ✓ DistrictZones sub-components (5 districts per large city, 3 per medium, 2 per small)
+- ✓ OntologyBridgeView: 7 cycling alignment maps with prev/next navigation
+- ✓ SerendipityPanel: 14 bridges with pattern labels for all 14
+- ✓ demoData.ts: 249 typed nodes across all 6 layers and 24 domains
+- ✓ Research logs for all 24 domains (matching domain key names)
+- ✓ Source tables for all 24 domains
+- ✓ Backend fixture metadata: fixture_grounding, source_ids, last_verified, grounding_notes on all 12 fixtures
+- ✓ Domain key consistency: `mathematics_category_theory` correct across all 5+ files
+- ✓ Version badge: v6 / Omega v6.0
+
 ## Completed in Iteration 1–3
 
 - ✓ All 17 frontend components at cinematic standard
 - ✓ Three demo scripts (90s, 7min, 20min)
-- ✓ Five fixture domains (drug_discovery, fukushima_governance, euv_lithography, ai_hardware, governance)
+- ✓ Twelve fixture domains with full agent/evidence/mechanism/decision data
 - ✓ All 17 Pydantic models
 - ✓ Full FastAPI route layer (stub backend)
-- ✓ All 18 architectural documentation files
+- ✓ All 18+ architectural documentation files
 - ✓ Zero TypeScript errors, clean build
 - ✓ Deployed to Vercel (frontend only)

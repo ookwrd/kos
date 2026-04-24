@@ -1,4 +1,4 @@
-"""KOS data models — all 17 object types across 6 graph layers."""
+"""KOS data models — all object types across 6 graph layers + transfer layer."""
 
 from .base import KOSBase, EdgeBase, GraphLayer
 from .evidence import EvidenceFragment, SourceType
@@ -8,6 +8,13 @@ from .goal import Goal, Constraint, Obligation, GoalStatus, ConstraintType, Deon
 from .governance import Permission, ProvenanceRecord, AccessType, ProvenanceAction
 from .agents import AgentProfile, Delegation, DissentRecord, UncertaintyAnnotation, AgentType
 from .alignment import AlignmentMap, GraphChangeProposal, OntologyMapping, ProposalType, ProposalStatus
+from .transfer import (
+    ConceptNode, ConceptType, ValidationStatus,
+    StructuralLossRecord, LossType,
+    TranslatorStep, TranslatorConfidence,
+    TransferCandidate, TransferStatus,
+    NaturalTransformationCandidate,
+)
 
 __all__ = [
     "KOSBase", "EdgeBase", "GraphLayer",
@@ -18,4 +25,10 @@ __all__ = [
     "Permission", "ProvenanceRecord", "AccessType", "ProvenanceAction",
     "AgentProfile", "Delegation", "DissentRecord", "UncertaintyAnnotation", "AgentType",
     "AlignmentMap", "GraphChangeProposal", "OntologyMapping", "ProposalType", "ProposalStatus",
+    # Transfer layer
+    "ConceptNode", "ConceptType", "ValidationStatus",
+    "StructuralLossRecord", "LossType",
+    "TranslatorStep", "TranslatorConfidence",
+    "TransferCandidate", "TransferStatus",
+    "NaturalTransformationCandidate",
 ]

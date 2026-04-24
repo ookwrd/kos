@@ -1,0 +1,320 @@
+{
+  "domain": "climate_policy",
+  "description": "Climate science and policy governance domain. Real-world decisions at the IPCC and COP negotiations \u2014 where calibrated scientific consensus meets political authority. Structural parallels with fukushima_governance: expert evidence repeatedly acknowledged then discounted by governance bodies under economic pressure.",
+  "fixture_grounding": "source_grounded",
+  "source_ids": [
+    "ev-ipcc-ar6-wg1-2021",
+    "ev-ipcc-ar6-carbon-budget",
+    "ev-cop28-uae-consensus-2023"
+  ],
+  "last_verified": "2026-04-24",
+  "grounding_notes": "IPCC AR6 is the authoritative scientific assessment (2021). COP decisions are official UNFCCC documents. Stern Review (2006) for discount rate analysis. Tipping threshold ranges from Lenton et al. 2019 (Nature).",
+  "agents": [
+    {
+      "id": "ag-hansen",
+      "name": "Dr. James Hansen",
+      "agent_type": "human",
+      "domain": "climate_policy",
+      "competences": [
+        "climate_modeling",
+        "paleoclimate",
+        "carbon_budget_estimation",
+        "policy_communication"
+      ],
+      "beliefs": {
+        "safe_co2_ceiling_ppm": 0.97,
+        "current_ndc_commitments_insufficient": 0.99,
+        "nuclear_necessary_for_net_zero": 0.88
+      },
+      "authority_scope": [
+        "climate_policy"
+      ],
+      "calibration_score": 0.91,
+      "attributes": {
+        "role": "Former NASA GISS director, climate scientist",
+        "note": "1988 Congressional testimony \u2014 first major public attribution of anthropogenic warming. His 350ppm target was adopted; his warnings about glacier loss and sea level have been consistently validated.",
+        "dissent_history": "Repeatedly criticized IPCC assessments as too conservative, and COP commitments as insufficient"
+      }
+    },
+    {
+      "id": "ag-hayhoe",
+      "name": "Dr. Katharine Hayhoe",
+      "agent_type": "human",
+      "domain": "climate_policy",
+      "competences": [
+        "climate_attribution",
+        "regional_impact_modeling",
+        "science_communication",
+        "evangelical_outreach"
+      ],
+      "beliefs": {
+        "current_ndc_commitments_insufficient": 0.93,
+        "1_5c_target_achievable_with_current_policy": 0.22,
+        "communication_is_bottleneck": 0.89
+      },
+      "authority_scope": [
+        "climate_policy"
+      ],
+      "calibration_score": 0.86,
+      "attributes": {
+        "role": "Chief Scientist, The Nature Conservancy; Professor, Texas Tech",
+        "note": "Specializes in making climate risk tangible at regional and community level. High communication calibration."
+      }
+    },
+    {
+      "id": "ag-ipcc-wg1",
+      "name": "IPCC Working Group I",
+      "agent_type": "institution",
+      "domain": "climate_policy",
+      "competences": [
+        "global_climate_assessment",
+        "attribution_science",
+        "scenario_modeling"
+      ],
+      "beliefs": {
+        "anthropogenic_warming_unequivocal": 0.99,
+        "1_5c_crossable_by_2030s": 0.87,
+        "current_ndc_commitments_insufficient": 0.91
+      },
+      "authority_scope": [
+        "climate_policy",
+        "ipcc_assessment"
+      ],
+      "calibration_score": 0.88,
+      "attributes": {
+        "note": "AR6 (2021) declared 'code red for humanity'. Historically assessments have been politically conservative due to consensus requirement across 195 member governments."
+      }
+    },
+    {
+      "id": "ag-cop26-presidency",
+      "name": "COP26 Presidency (UK)",
+      "agent_type": "institution",
+      "domain": "climate_policy",
+      "competences": [
+        "negotiation_facilitation",
+        "agreement_drafting",
+        "political_management"
+      ],
+      "beliefs": {
+        "glasgow_agreement_sufficient": 0.62,
+        "1_5c_target_achievable_with_current_policy": 0.55
+      },
+      "authority_scope": [
+        "climate_policy",
+        "cop_agreements"
+      ],
+      "calibration_score": 0.52,
+      "attributes": {
+        "note": "Declared Glasgow 'a turning point'. Post-analysis by Climate Action Tracker: pledges put world on track for 2.4\u00b0C \u2014 well above 1.5\u00b0C target."
+      }
+    },
+    {
+      "id": "ag-climate-action-tracker",
+      "name": "Climate Action Tracker",
+      "agent_type": "institution",
+      "domain": "climate_policy",
+      "competences": [
+        "ndc_assessment",
+        "policy_gap_analysis",
+        "warming_trajectory_modeling"
+      ],
+      "beliefs": {
+        "glasgow_agreement_sufficient": 0.08,
+        "current_ndc_commitments_insufficient": 0.98,
+        "warming_trajectory_post_glasgow_c": 0.91
+      },
+      "authority_scope": [
+        "climate_policy"
+      ],
+      "calibration_score": 0.84,
+      "attributes": {
+        "note": "Independent scientific assessment. Consistently more pessimistic than official COP communications \u2014 and consistently closer to subsequent observed data."
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-carbon-budget",
+      "label": "Remaining Carbon Budget (1.5\u00b0C)",
+      "entity_type": "constraint",
+      "domain": "climate_policy",
+      "attributes": {
+        "ipcc_ar6_estimate_gtco2": 500,
+        "current_annual_emissions_gtco2": 40,
+        "years_remaining_at_current_pace": 12.5,
+        "uncertainty_range": "300\u2013900 GtCO2 depending on non-CO2 forcing assumptions"
+      }
+    },
+    {
+      "id": "ent-sr15",
+      "label": "IPCC SR1.5 (2018)",
+      "entity_type": "evidence_artifact",
+      "domain": "climate_policy",
+      "attributes": {
+        "full_name": "Special Report on Global Warming of 1.5\u00b0C",
+        "key_finding": "Limiting warming to 1.5\u00b0C requires 45% CO2 reduction by 2030 and net-zero by 2050",
+        "political_reception": "Acknowledged by all COP parties; NDCs submitted post-SR1.5 collectively projected 2.7\u00b0C"
+      }
+    },
+    {
+      "id": "ent-glasgow-pact",
+      "label": "Glasgow Climate Pact (2021)",
+      "entity_type": "governance_artifact",
+      "domain": "climate_policy",
+      "attributes": {
+        "claimed_ambition": "Keep 1.5\u00b0C alive",
+        "actual_warming_trajectory_c": 2.4,
+        "key_concession": "'Phase down' instead of 'phase out' coal \u2014 India and China demanded",
+        "loss_and_damage": "No finance mechanism agreed \u2014 deferred to 2022"
+      }
+    },
+    {
+      "id": "ent-hansen-1988-testimony",
+      "label": "Hansen 1988 Congressional Testimony",
+      "entity_type": "evidence_artifact",
+      "domain": "climate_policy",
+      "attributes": {
+        "date": "1988-06-23",
+        "claim": "Global warming is here, is caused by human activity, and poses serious risks",
+        "reception": "Unprecedented media coverage; Reagan/Bush administrations did not alter policy",
+        "retrospective_accuracy": "All three scenarios presented were broadly correct; warming slightly above middle scenario"
+      }
+    },
+    {
+      "id": "ent-ndc-gap",
+      "label": "NDC Implementation Gap",
+      "entity_type": "measurement",
+      "domain": "climate_policy",
+      "attributes": {
+        "description": "Difference between committed NDCs and emissions reductions needed for 1.5\u00b0C",
+        "gap_by_2030_gtco2": 23,
+        "equivalent_to": "Current annual US + EU + China emissions combined",
+        "source": "UNEP Emissions Gap Report 2022"
+      }
+    },
+    {
+      "id": "ent-tipping-points",
+      "label": "Climate Tipping Points",
+      "entity_type": "mechanism",
+      "domain": "climate_policy",
+      "attributes": {
+        "definition": "Thresholds beyond which self-reinforcing feedbacks drive further warming independent of human action",
+        "examples": [
+          "West Antarctic ice sheet collapse",
+          "Amazon dieback",
+          "permafrost carbon release"
+        ],
+        "ipcc_assessment": "Some tipping points possible below 2\u00b0C; cascades possible above 2\u00b0C",
+        "uncertainty": 0.45,
+        "note": "Tipping point risk is consistently excluded from official cost-benefit analyses due to difficulty of quantification"
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-carbon-feedback",
+      "name": "Carbon Cycle Feedback",
+      "mechanism_type": "physical_process",
+      "domain": "climate_policy",
+      "inputs": [
+        "atmospheric_co2",
+        "temperature_increase"
+      ],
+      "outputs": [
+        "permafrost_release",
+        "ocean_acidification",
+        "reduced_carbon_sink"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.86
+    },
+    {
+      "id": "mech-political-discount",
+      "name": "Political Time-Horizon Discounting",
+      "mechanism_type": "institutional_process",
+      "domain": "climate_policy",
+      "inputs": [
+        "electoral_cycle_years",
+        "policy_cost_visibility",
+        "climate_risk_visibility"
+      ],
+      "outputs": [
+        "policy_ambition_reduction",
+        "implementation_gap"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.93,
+      "notes": "Governments systematically underweight long-horizon climate costs vs. short-horizon political costs. Well-documented in policy literature."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-glasgow-coal-phasedown",
+      "question": "Should the Glasgow Pact commit to 'phase out' or 'phase down' unabated coal?",
+      "outcome": "Phase down \u2014 India and China objection accepted in final hours",
+      "rationale": "India's Environment Minister stated phase-out language unfair to developing nations. UK COP Presidency accepted 'phase down' to secure agreement rather than lose consensus.",
+      "actor_id": "ag-cop26-presidency",
+      "domain": "climate_policy",
+      "is_exception": true,
+      "evidence_ids": [
+        "ev-cat-assessment"
+      ],
+      "notes": "Science said phase-out was necessary. Authority said phase-down was politically achievable. Pattern matches fukushima_governance seawall decision."
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-hansen-cop26",
+      "actor_id": "ag-hansen",
+      "target_id": "dec-glasgow-coal-phasedown",
+      "disagreement_type": "normative",
+      "rationale": "Glasgow was a failure. We're in a situation where politicians and fossil fuel industry representatives can go to Glasgow and say we're going to keep warming below 1.5\u00b0C, while planning to open new oil fields. The gap between rhetoric and reality has never been wider.",
+      "resolution_status": "open",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-cat-assessment",
+      "source_type": "primary_literature",
+      "content_ref": "Climate Action Tracker (2021) - Glasgow's 2030 credibility gap: net zero's lip service to climate action",
+      "media_type": "text",
+      "validated_by": [
+        "ag-climate-action-tracker"
+      ],
+      "uncertainty": 0.09,
+      "notes": "Post-Glasgow assessment: NDC pledges consistent with 2.4\u00b0C, not 1.5\u00b0C"
+    },
+    {
+      "id": "ev-ipcc-ar6",
+      "source_type": "primary_literature",
+      "content_ref": "IPCC AR6 Working Group I (2021) - Climate Change 2021: The Physical Science Basis",
+      "media_type": "text",
+      "validated_by": [
+        "ag-ipcc-wg1"
+      ],
+      "uncertainty": 0.06
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-political-discount-tepco",
+      "claim": "The COP26 'phase down' vs 'phase out' compromise is structurally identical to the TEPCO seawall decision: governance bodies acknowledge expert scientific evidence then discount it under political/economic pressure",
+      "source_domain": "climate_policy",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": [
+        "dec-glasgow-coal-phasedown",
+        "dissent-hansen-cop26",
+        "ag-cop26-presidency"
+      ],
+      "target_node_ids": [
+        "dec-seawall-2008",
+        "dissent-tepco-eng",
+        "inst-tepco-mgmt"
+      ],
+      "confidence": 0.88,
+      "novelty_score": 0.85,
+      "structural_loss": "COP26 was a multilateral negotiation across 195 states; TEPCO seawall was a single corporate decision. Scale and reversibility differ. Pattern of evidence-to-policy discount is identical."
+    }
+  ]
+}

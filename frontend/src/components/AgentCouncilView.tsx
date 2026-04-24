@@ -88,6 +88,30 @@ const DEMO_AGENTS: AgentDemo[] = [
     dissent_count: 0,
     color: "#a855f7",
   },
+  {
+    id: "agent-ed-pierson",
+    label: "Ed Pierson",
+    agent_type: "human",
+    domain: "aviation_safety",
+    calibration_score: 0.91,
+    competences: ["aerospace manufacturing", "production quality", "safety culture", "systems integration"],
+    beliefs: { "mcas_single_sensor_safe": 0.06, "production_quality_adequate": 0.08, "schedule_overriding_safety": 0.94 },
+    authority_scope: ["manufacturing:authority", "safety:dissent — no cert authority"],
+    dissent_count: 2,
+    color: "#94a3b8",
+  },
+  {
+    id: "agent-boeing-mgmt",
+    label: "Boeing Program Mgmt",
+    agent_type: "institution",
+    domain: "aviation_safety",
+    calibration_score: 0.38,
+    competences: ["program management", "schedule management", "cost optimization"],
+    beliefs: { "mcas_single_sensor_safe": 0.85, "production_quality_adequate": 0.76, "schedule_overriding_safety": 0.15 },
+    authority_scope: ["design:approve", "certification:strategy", "production:schedule"],
+    dissent_count: 0,
+    color: "#94a3b8",
+  },
 ];
 
 const TYPE_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
@@ -100,6 +124,7 @@ const DOMAIN_COLORS: Record<string, string> = {
   drug_discovery:       "#3b82f6",
   fukushima_governance: "#f97316",
   euv_lithography:      "#a855f7",
+  aviation_safety:      "#94a3b8",
 };
 
 export function AgentCouncilView({ className = "" }: { className?: string }) {

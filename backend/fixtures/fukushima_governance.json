@@ -1,16 +1,28 @@
 {
   "domain": "fukushima_governance",
-  "name": "Fukushima Daiichi — Nuclear Safety Governance Failure",
+  "name": "Fukushima Daiichi \u2014 Nuclear Safety Governance Failure",
   "version": "1.0",
-  "description": "The 2008–2011 decision chain at TEPCO and NISA that deferred seawall upgrades despite a credible internal assessment of 15.7m tsunami risk. The plant's seawall was 5.7m. On March 11, 2011, the tsunami reached 14.1–15.5m. Source: National Diet of Japan NAIIC Report (2012), TEPCO internal documents, Funabashi & Kitazawa (2012) Bulletin of Atomic Scientists.",
-
+  "description": "The 2008\u20132011 decision chain at TEPCO and NISA that deferred seawall upgrades despite a credible internal assessment of 15.7m tsunami risk. The plant's seawall was 5.7m. On March 11, 2011, the tsunami reached 14.1\u201315.5m. Source: National Diet of Japan NAIIC Report (2012), TEPCO internal documents, Funabashi & Kitazawa (2012) Bulletin of Atomic Scientists.",
+  "fixture_grounding": "source_grounded",
+  "source_ids": [
+    "ev-naiic-2012",
+    "ev-tepco-seawall-2008",
+    "ev-yoshida-testimony-2011"
+  ],
+  "last_verified": "2026-04-24",
+  "grounding_notes": "NAIIC report (2012) is the primary authoritative source; all decision traces reconstructed from testimony. Yoshida authority override confirmed in NHK documentary and NAIIC Vol.6.",
   "agents": [
     {
       "id": "agent-tepco-mgmt",
       "name": "TEPCO Corporate Management",
       "agent_type": "institution",
       "domain": "fukushima_governance",
-      "competences": ["nuclear plant operations", "regulatory relations", "capital allocation", "risk management"],
+      "competences": [
+        "nuclear plant operations",
+        "regulatory relations",
+        "capital allocation",
+        "risk management"
+      ],
       "beliefs": {
         "15m_tsunami_is_credible": 0.15,
         "current_seawall_is_sufficient": 0.78,
@@ -21,16 +33,27 @@
         "goal-minimize-capex": 0.88,
         "goal-public-safety": 0.45
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.31,
-      "tags": ["institution", "operator", "decision-maker"]
+      "tags": [
+        "institution",
+        "operator",
+        "decision-maker"
+      ]
     },
     {
       "id": "agent-tepco-civil",
       "name": "TEPCO Civil Engineering Division",
       "agent_type": "human",
       "domain": "fukushima_governance",
-      "competences": ["tsunami modeling", "coastal engineering", "probabilistic hazard assessment", "seawall design"],
+      "competences": [
+        "tsunami modeling",
+        "coastal engineering",
+        "probabilistic hazard assessment",
+        "seawall design"
+      ],
       "beliefs": {
         "15m_tsunami_is_credible": 0.72,
         "current_seawall_is_sufficient": 0.21,
@@ -40,16 +63,26 @@
         "goal-public-safety": 0.91,
         "goal-engineering-integrity": 0.88
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.76,
-      "tags": ["engineering", "internal-dissent"]
+      "tags": [
+        "engineering",
+        "internal-dissent"
+      ]
     },
     {
       "id": "agent-nisa",
-      "name": "NISA — Nuclear and Industrial Safety Agency",
+      "name": "NISA \u2014 Nuclear and Industrial Safety Agency",
       "agent_type": "institution",
       "domain": "fukushima_governance",
-      "competences": ["nuclear regulation", "safety standards", "inspection", "policy enforcement"],
+      "competences": [
+        "nuclear regulation",
+        "safety standards",
+        "inspection",
+        "policy enforcement"
+      ],
       "beliefs": {
         "15m_tsunami_is_credible": 0.28,
         "current_seawall_is_sufficient": 0.61,
@@ -60,34 +93,54 @@
         "goal-public-safety": 0.55,
         "goal-maintain-operations": 0.72
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.29,
-      "tags": ["regulator", "institution", "regulatory-capture"]
+      "tags": [
+        "regulator",
+        "institution",
+        "regulatory-capture"
+      ]
     },
     {
       "id": "agent-jsce-subcommittee",
       "name": "JSCE Nuclear Civil Engineering Subcommittee",
       "agent_type": "institution",
       "domain": "fukushima_governance",
-      "competences": ["civil engineering standards", "coastal engineering", "probabilistic tsunami assessment"],
+      "competences": [
+        "civil engineering standards",
+        "coastal engineering",
+        "probabilistic tsunami assessment"
+      ],
       "beliefs": {
         "15m_tsunami_is_credible": 0.44,
         "jogan_model_requires_more_study": 0.81,
         "current_standards_adequate": 0.58
       },
       "preferred_outcomes": {
-        "goal-engineering-standards": 0.90
+        "goal-engineering-standards": 0.9
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.55,
-      "tags": ["external-body", "standards", "review"]
+      "tags": [
+        "external-body",
+        "standards",
+        "review"
+      ]
     },
     {
       "id": "agent-onagawa-mgmt",
-      "name": "Tohoku Electric Power — Onagawa Plant Management",
+      "name": "Tohoku Electric Power \u2014 Onagawa Plant Management",
       "agent_type": "institution",
       "domain": "fukushima_governance",
-      "competences": ["nuclear plant operations", "coastal siting", "historical seismology"],
+      "competences": [
+        "nuclear plant operations",
+        "coastal siting",
+        "historical seismology"
+      ],
       "beliefs": {
         "15m_tsunami_is_credible": 0.85,
         "higher_seawall_justified_by_history": 0.93
@@ -96,16 +149,25 @@
         "goal-public-safety": 0.96,
         "goal-engineering-integrity": 0.94
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.89,
-      "tags": ["comparative-case", "good-practice"]
+      "tags": [
+        "comparative-case",
+        "good-practice"
+      ]
     },
     {
       "id": "agent-nrc-usa",
       "name": "US Nuclear Regulatory Commission",
       "agent_type": "institution",
       "domain": "fukushima_governance",
-      "competences": ["station blackout regulation", "beyond-design-basis events", "nuclear safety research"],
+      "competences": [
+        "station blackout regulation",
+        "beyond-design-basis events",
+        "nuclear safety research"
+      ],
       "beliefs": {
         "extended_SBO_is_credible_risk": 0.87,
         "backup_power_elevation_required": 0.79
@@ -113,88 +175,142 @@
       "preferred_outcomes": {
         "goal-public-safety": 0.97
       },
-      "authority_scope": ["fukushima_governance"],
+      "authority_scope": [
+        "fukushima_governance"
+      ],
       "calibration_score": 0.81,
-      "tags": ["external-regulator", "international", "SBO-expertise"]
+      "tags": [
+        "external-regulator",
+        "international",
+        "SBO-expertise"
+      ]
     }
   ],
-
   "evidence": [
     {
       "id": "ev-tepco-tsunami-assessment-2008",
       "source_type": "document",
-      "title": "TEPCO Internal Tsunami Height Assessment — Jogan Earthquake Model",
+      "title": "TEPCO Internal Tsunami Height Assessment \u2014 Jogan Earthquake Model",
       "content_ref": "internal://tepco/civil-engineering/tsunami-assessment-2008.pdf",
       "media_type": "application/pdf",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-tepco-civil"],
+      "validated_by": [
+        "agent-tepco-civil"
+      ],
       "uncertainty": 0.38,
-      "tags": ["tsunami", "hazard-assessment", "jogan", "internal", "suppressed"]
+      "tags": [
+        "tsunami",
+        "hazard-assessment",
+        "jogan",
+        "internal",
+        "suppressed"
+      ]
     },
     {
       "id": "ev-jogan-earthquake-geological-record",
       "source_type": "document",
-      "title": "Geological Evidence for the 869 AD Jogan Tsunami — Deposits Found 3–4km Inland",
+      "title": "Geological Evidence for the 869 AD Jogan Tsunami \u2014 Deposits Found 3\u20134km Inland",
       "content_ref": "doi:10.1016/j.quascirev.2007.12.009",
       "media_type": "application/pdf",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-tepco-civil", "agent-jsce-subcommittee"],
+      "validated_by": [
+        "agent-tepco-civil",
+        "agent-jsce-subcommittee"
+      ],
       "uncertainty": 0.19,
-      "tags": ["jogan", "paleotsunami", "geology", "public-record"]
+      "tags": [
+        "jogan",
+        "paleotsunami",
+        "geology",
+        "public-record"
+      ]
     },
     {
       "id": "ev-nrc-sbo-studies",
       "source_type": "document",
-      "title": "NRC Station Blackout Rule and Extended SBO Vulnerability Studies (1988–2003)",
+      "title": "NRC Station Blackout Rule and Extended SBO Vulnerability Studies (1988\u20132003)",
       "content_ref": "NUREG-1776",
       "media_type": "application/pdf",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-nrc-usa"],
+      "validated_by": [
+        "agent-nrc-usa"
+      ],
       "uncertainty": 0.12,
-      "tags": ["SBO", "extended-blackout", "NRC", "US-regulatory", "ignored"]
+      "tags": [
+        "SBO",
+        "extended-blackout",
+        "NRC",
+        "US-regulatory",
+        "ignored"
+      ]
     },
     {
       "id": "ev-onagawa-seawall-design-1967",
       "source_type": "document",
-      "title": "Onagawa Plant Coastal Engineering Specification — Yanosuke Hirai Seawall Decision (14.8m)",
+      "title": "Onagawa Plant Coastal Engineering Specification \u2014 Yanosuke Hirai Seawall Decision (14.8m)",
       "content_ref": "internal://tohoku-electric/onagawa/coastal-engineering-spec-1967.pdf",
       "media_type": "application/pdf",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-onagawa-mgmt"],
+      "validated_by": [
+        "agent-onagawa-mgmt"
+      ],
       "uncertainty": 0.08,
-      "tags": ["onagawa", "precedent", "seawall", "good-engineering", "hirai"]
+      "tags": [
+        "onagawa",
+        "precedent",
+        "seawall",
+        "good-engineering",
+        "hirai"
+      ]
     },
     {
       "id": "ev-tsunami-actual-heights-2011",
       "source_type": "sensor_window",
-      "title": "Post-Event Tsunami Run-up Survey — Fukushima Daiichi, March 11 2011",
+      "title": "Post-Event Tsunami Run-up Survey \u2014 Fukushima Daiichi, March 11 2011",
       "content_ref": "doi:10.1007/s11069-011-9990-7",
       "media_type": "text/csv",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-tepco-civil"],
+      "validated_by": [
+        "agent-tepco-civil"
+      ],
       "uncertainty": 0.06,
-      "tags": ["measured-outcome", "2011", "run-up", "14.1m-15.5m"]
+      "tags": [
+        "measured-outcome",
+        "2011",
+        "run-up",
+        "14.1m-15.5m"
+      ]
     },
     {
       "id": "ev-naiic-report-2012",
       "source_type": "document",
-      "title": "National Diet NAIIC Final Report — The Fukushima Nuclear Accident Was a Profoundly Manmade Disaster",
+      "title": "National Diet NAIIC Final Report \u2014 The Fukushima Nuclear Accident Was a Profoundly Manmade Disaster",
       "content_ref": "http://naiic.go.jp/en/",
       "media_type": "application/pdf",
       "domain": "fukushima_governance",
-      "validated_by": ["agent-nisa"],
+      "validated_by": [
+        "agent-nisa"
+      ],
       "uncertainty": 0.07,
-      "tags": ["investigation", "parliament", "manmade", "regulatory-capture", "authoritative"]
+      "tags": [
+        "investigation",
+        "parliament",
+        "manmade",
+        "regulatory-capture",
+        "authoritative"
+      ]
     }
   ],
-
   "entities": [
     {
       "id": "ent-fukushima-daiichi",
       "label": "Fukushima Daiichi Nuclear Power Plant",
       "entity_type": "facility",
       "domain": "fukushima_governance",
-      "aliases": ["Fukushima I", "1F"],
+      "aliases": [
+        "Fukushima I",
+        "1F"
+      ],
       "attributes": {
         "operator": "TEPCO",
         "units": 6,
@@ -208,12 +324,14 @@
       "label": "Onagawa Nuclear Power Plant",
       "entity_type": "facility",
       "domain": "fukushima_governance",
-      "aliases": ["Onagawa"],
+      "aliases": [
+        "Onagawa"
+      ],
       "attributes": {
         "operator": "Tohoku Electric Power",
         "seawall_height_m": 14.8,
         "actual_tsunami_2011_m": 13.0,
-        "outcome": "survived intact — became temporary evacuation shelter"
+        "outcome": "survived intact \u2014 became temporary evacuation shelter"
       }
     },
     {
@@ -254,7 +372,6 @@
       }
     }
   ],
-
   "mechanisms": [
     {
       "id": "mech-tsunami-flooding-SBO",
@@ -265,7 +382,10 @@
       "description": "A tsunami exceeding the seawall height floods the basement where emergency diesel generators are located, causing complete station blackout and loss of all active cooling.",
       "confidence": 0.97,
       "domain": "fukushima_governance",
-      "evidence_ids": ["ev-tsunami-actual-heights-2011", "ev-naiic-report-2012"]
+      "evidence_ids": [
+        "ev-tsunami-actual-heights-2011",
+        "ev-naiic-report-2012"
+      ]
     },
     {
       "id": "mech-institutional-capture-suppresses-evidence",
@@ -276,7 +396,10 @@
       "description": "Regulatory capture at NISA and organizational risk aversion at TEPCO management created structural incentives to downplay or defer inconvenient engineering assessments, preventing timely safety upgrades.",
       "confidence": 0.84,
       "domain": "fukushima_governance",
-      "evidence_ids": ["ev-naiic-report-2012", "ev-tepco-tsunami-assessment-2008"]
+      "evidence_ids": [
+        "ev-naiic-report-2012",
+        "ev-tepco-tsunami-assessment-2008"
+      ]
     },
     {
       "id": "mech-jogan-precedent-to-risk",
@@ -284,20 +407,24 @@
       "mechanism_type": "causal",
       "source_entity_id": "ent-jogan-earthquake-869ad",
       "target_entity_id": "ent-fukushima-daiichi",
-      "description": "Geological evidence of the 869 AD Jogan tsunami (run-up 3–4km inland) provides direct physical evidence that tsunamis of 10–15m are plausible at the Fukushima site. This evidence existed in the public geological record before 2008.",
+      "description": "Geological evidence of the 869 AD Jogan tsunami (run-up 3\u20134km inland) provides direct physical evidence that tsunamis of 10\u201315m are plausible at the Fukushima site. This evidence existed in the public geological record before 2008.",
       "confidence": 0.89,
       "domain": "fukushima_governance",
-      "evidence_ids": ["ev-jogan-earthquake-geological-record"]
+      "evidence_ids": [
+        "ev-jogan-earthquake-geological-record"
+      ]
     }
   ],
-
   "hypotheses": [
     {
       "id": "hyp-seawall-would-have-prevented-accident",
-      "statement": "A seawall of ≥15.7m would have prevented the critical tsunami inundation and station blackout, likely preventing core meltdown.",
+      "statement": "A seawall of \u226515.7m would have prevented the critical tsunami inundation and station blackout, likely preventing core meltdown.",
       "domain": "fukushima_governance",
       "status": "supported",
-      "evidence_for": ["ev-tsunami-actual-heights-2011", "ev-onagawa-seawall-design-1967"],
+      "evidence_for": [
+        "ev-tsunami-actual-heights-2011",
+        "ev-onagawa-seawall-design-1967"
+      ],
       "evidence_against": [],
       "prior": 0.85,
       "uncertainty": 0.18
@@ -307,34 +434,54 @@
       "statement": "NISA's structural relationship with the nuclear industry (organizational capture) was causally responsible for the failure to enforce safety upgrades following the 2008 assessment.",
       "domain": "fukushima_governance",
       "status": "supported",
-      "evidence_for": ["ev-naiic-report-2012"],
+      "evidence_for": [
+        "ev-naiic-report-2012"
+      ],
       "evidence_against": [],
       "prior": 0.78,
       "uncertainty": 0.21
     }
   ],
-
   "tacit_traces": [
     {
       "id": "trace-onagawa-hirai-decision-1967",
-      "title": "Yanosuke Hirai's Seawall Height Decision — Onagawa Plant, 1967",
+      "title": "Yanosuke Hirai's Seawall Height Decision \u2014 Onagawa Plant, 1967",
       "domain": "fukushima_governance",
       "actor_id": "agent-onagawa-mgmt",
       "trace_type": "design_decision",
       "description": "Senior engineer Yanosuke Hirai insisted on a 14.8m seawall for the Onagawa plant against significant cost pressure, citing historical accounts of large tsunamis hitting the Sanriku coast. His reasoning combined documented historical records, local oral tradition, and engineering intuition about worst-case scenarios. This decision was not derivable from the formal regulatory requirement (which required only a much lower seawall). It reflects situated knowledge of local geological and historical context that was not formalized in any standard.",
       "steps": [
-        {"step": 1, "action": "Reviewed historical written records of Sanriku coast tsunamis", "rationale": "Formal requirements based only on recent instrumentally-recorded events", "uncertainty": 0.15},
-        {"step": 2, "action": "Consulted local fishing community oral history of large tsunami events", "rationale": "Tacit local knowledge not in official records", "uncertainty": 0.35},
-        {"step": 3, "action": "Applied 2x safety margin over largest historically documented wave", "rationale": "Personal judgment: regulatory minimum was insufficient", "uncertainty": 0.28},
-        {"step": 4, "action": "Maintained position against cost-reduction pressure over 3-year design period", "rationale": "Engineering integrity over budget optimization", "uncertainty": 0.1}
+        {
+          "step": 1,
+          "action": "Reviewed historical written records of Sanriku coast tsunamis",
+          "rationale": "Formal requirements based only on recent instrumentally-recorded events",
+          "uncertainty": 0.15
+        },
+        {
+          "step": 2,
+          "action": "Consulted local fishing community oral history of large tsunami events",
+          "rationale": "Tacit local knowledge not in official records",
+          "uncertainty": 0.35
+        },
+        {
+          "step": 3,
+          "action": "Applied 2x safety margin over largest historically documented wave",
+          "rationale": "Personal judgment: regulatory minimum was insufficient",
+          "uncertainty": 0.28
+        },
+        {
+          "step": 4,
+          "action": "Maintained position against cost-reduction pressure over 3-year design period",
+          "rationale": "Engineering integrity over budget optimization",
+          "uncertainty": 0.1
+        }
       ],
       "outcome": "Onagawa plant survived the 2011 tsunami (13m run-up) with no core damage. Became a refuge for 364 disaster survivors.",
       "counterfactual": "If Hirai had deferred to regulatory minimum (~3m), the plant would almost certainly have been destroyed.",
       "knowledge_type": "local_historical_knowledge + engineering_judgment",
-      "transferability": "low — required combination of tacit local knowledge and personal conviction to override cost pressure"
+      "transferability": "low \u2014 required combination of tacit local knowledge and personal conviction to override cost pressure"
     }
   ],
-
   "goals": [
     {
       "id": "goal-public-safety",
@@ -379,31 +526,40 @@
       "domain": "fukushima_governance"
     }
   ],
-
   "constraints": [
     {
       "id": "constraint-design-basis-tsunami",
       "description": "Plants must be protected against the design-basis tsunami, defined as the largest tsunami in the historical instrumental record. Regulatory minimum did not require consideration of paleotsunami evidence or probabilistic hazard.",
       "constraint_type": "hard",
-      "governed_entity_ids": ["goal-public-safety"],
+      "governed_entity_ids": [
+        "goal-public-safety"
+      ],
       "domain": "fukushima_governance"
     },
     {
       "id": "constraint-seawall-upgrade-blocked",
       "description": "TEPCO management decision: seawall upgrade deferred pending JSCE subcommittee review. No timeline specified. Effectively: until regulatory requirement forces action.",
       "constraint_type": "soft",
-      "governed_entity_ids": ["goal-public-safety", "goal-maintain-operations"],
+      "governed_entity_ids": [
+        "goal-public-safety",
+        "goal-maintain-operations"
+      ],
       "domain": "fukushima_governance"
     }
   ],
-
   "precedents": [
     {
       "id": "prec-onagawa-seawall-1967",
       "statement": "Yanosuke Hirai (Tohoku Electric) insisted on a 14.8m seawall for Onagawa plant in 1967 despite regulatory minimums of ~3m, citing historical tsunami records and oral tradition. The plant survived the 2011 tsunami (13m). This precedent demonstrates that exceeding regulatory minimums based on historical evidence is both possible and consequential.",
       "decision_trace_id": "dec-seawall-deferral-2008",
-      "applicability_conditions": ["coastal nuclear facility", "historical tsunami evidence available", "regulatory minimum below historical maximum"],
-      "domains": ["fukushima_governance"],
+      "applicability_conditions": [
+        "coastal nuclear facility",
+        "historical tsunami evidence available",
+        "regulatory minimum below historical maximum"
+      ],
+      "domains": [
+        "fukushima_governance"
+      ],
       "confidence": 0.93,
       "invocation_count": 0,
       "override_count": 1,
@@ -411,24 +567,32 @@
     },
     {
       "id": "prec-nrc-sbo-rule-1988",
-      "statement": "Following the 1988 NRC Station Blackout Rule, US nuclear plants were required to demonstrate capability to cope with extended station blackout for 4–8 hours. Japan did not adopt equivalent requirements. This regulatory precedent was available as a reference for NISA but was not applied.",
+      "statement": "Following the 1988 NRC Station Blackout Rule, US nuclear plants were required to demonstrate capability to cope with extended station blackout for 4\u20138 hours. Japan did not adopt equivalent requirements. This regulatory precedent was available as a reference for NISA but was not applied.",
       "decision_trace_id": "dec-seawall-deferral-2008",
-      "applicability_conditions": ["nuclear plant", "loss of external power scenario", "backup generator vulnerability"],
-      "domains": ["fukushima_governance"],
+      "applicability_conditions": [
+        "nuclear plant",
+        "loss of external power scenario",
+        "backup generator vulnerability"
+      ],
+      "domains": [
+        "fukushima_governance"
+      ],
       "confidence": 0.88,
       "invocation_count": 0,
       "override_count": 0,
       "domain": "fukushima_governance"
     }
   ],
-
   "decisions": [
     {
       "id": "dec-seawall-deferral-2008",
-      "question": "Should Fukushima Daiichi's seawall be upgraded to ≥15.7m in response to the 2008 internal tsunami height assessment?",
+      "question": "Should Fukushima Daiichi's seawall be upgraded to \u226515.7m in response to the 2008 internal tsunami height assessment?",
       "outcome": "deferred",
       "rationale": "TEPCO management decided to defer the seawall upgrade, referring the matter to the JSCE Nuclear Civil Engineering Subcommittee for further study. No upgrade schedule was established. The internal assessment showing 15.7m potential tsunami height was not disclosed to the public or the Diet. The cost of the upgrade was a significant factor in the deferral decision.",
-      "evidence_ids": ["ev-tepco-tsunami-assessment-2008", "ev-jogan-earthquake-geological-record"],
+      "evidence_ids": [
+        "ev-tepco-tsunami-assessment-2008",
+        "ev-jogan-earthquake-geological-record"
+      ],
       "actor_id": "agent-tepco-mgmt",
       "policy_ids": [],
       "precedent_ids": [],
@@ -440,15 +604,18 @@
       "question": "At what height should the Onagawa nuclear plant seawall be constructed?",
       "outcome": "accepted",
       "rationale": "Senior engineer Yanosuke Hirai insisted on 14.8m seawall height based on historical tsunami records and local oral tradition, significantly exceeding the regulatory minimum. Despite cost pressure and skepticism from superiors, the decision was ultimately accepted.",
-      "evidence_ids": ["ev-onagawa-seawall-design-1967"],
+      "evidence_ids": [
+        "ev-onagawa-seawall-design-1967"
+      ],
       "actor_id": "agent-onagawa-mgmt",
       "policy_ids": [],
-      "precedent_ids": ["prec-nrc-sbo-rule-1988"],
+      "precedent_ids": [
+        "prec-nrc-sbo-rule-1988"
+      ],
       "is_exception": true,
       "domain": "fukushima_governance"
     }
   ],
-
   "dissent_records": [
     {
       "id": "dissent-tepco-civil-2008",
@@ -457,7 +624,10 @@
       "dissent_type": "factual",
       "rationale": "Members of TEPCO's Civil Engineering Division who produced the 2008 tsunami assessment believed the 15.7m estimate was credible and that seawall upgrades should proceed. Their internal position was overridden by corporate management. This dissent was not given formal governance standing and was not escalated to NISA.",
       "resolution_status": "overruled",
-      "supporting_evidence_ids": ["ev-tepco-tsunami-assessment-2008", "ev-jogan-earthquake-geological-record"],
+      "supporting_evidence_ids": [
+        "ev-tepco-tsunami-assessment-2008",
+        "ev-jogan-earthquake-geological-record"
+      ],
       "domain": "fukushima_governance"
     },
     {
@@ -467,11 +637,12 @@
       "dissent_type": "procedural",
       "rationale": "US NRC station blackout studies (available since 1988) demonstrated that extended loss of backup power was a credible and severe risk scenario. Japanese regulators did not adopt equivalent requirements despite this publicly available evidence. This constitutes a dissent-by-omission: the NRC's evidence and requirements were not invoked in the Japanese regulatory process.",
       "resolution_status": "ignored",
-      "supporting_evidence_ids": ["ev-nrc-sbo-studies"],
+      "supporting_evidence_ids": [
+        "ev-nrc-sbo-studies"
+      ],
       "domain": "fukushima_governance"
     }
   ],
-
   "uncertainty_annotations": [
     {
       "id": "ua-15m-tsunami-credibility",
@@ -480,7 +651,7 @@
       "value": 0.38,
       "method": "expert_elicitation",
       "annotator_id": "agent-tepco-civil",
-      "rationale": "The 2008 internal assessment used the Jogan earthquake model but the probabilistic framework was contested by JSCE subcommittee. The estimate was plausible but not consensus. Actual 2011 tsunami (14.1–15.5m) retrospectively validates the estimate."
+      "rationale": "The 2008 internal assessment used the Jogan earthquake model but the probabilistic framework was contested by JSCE subcommittee. The estimate was plausible but not consensus. Actual 2011 tsunami (14.1\u201315.5m) retrospectively validates the estimate."
     },
     {
       "id": "ua-regulatory-capture",
@@ -492,7 +663,6 @@
       "rationale": "NAIIC report concluded the accident was fundamentally manmade due to regulatory failure, but attributing causal weight between capture, negligence, and structural issues requires careful qualification."
     }
   ],
-
   "provenance_records": [
     {
       "id": "prov-tsunami-assessment-2008",
@@ -501,7 +671,9 @@
       "action": "created",
       "timestamp": "2008-06-15T00:00:00Z",
       "data_hash": "sha256:f2a4c8e1b3d5f7a9c1e3b5d7f9a1c3e5b7d9f1a3c5e7b9d1f3a5c7e9b1d3f5a7",
-      "downstream_ids": ["dec-seawall-deferral-2008"],
+      "downstream_ids": [
+        "dec-seawall-deferral-2008"
+      ],
       "domain": "fukushima_governance"
     },
     {
@@ -511,22 +683,33 @@
       "action": "created",
       "timestamp": "2008-09-01T00:00:00Z",
       "data_hash": "sha256:a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8",
-      "downstream_ids": ["dissent-tepco-civil-2008"],
+      "downstream_ids": [
+        "dissent-tepco-civil-2008"
+      ],
       "domain": "fukushima_governance"
     }
   ],
-
   "demo_queries": [
     {
       "id": "dq-why-seawall-not-upgraded",
       "question": "Why was the Fukushima Daiichi seawall not upgraded despite the 2008 tsunami assessment?",
-      "answer_path": ["ev-tepco-tsunami-assessment-2008", "dec-seawall-deferral-2008", "dissent-tepco-civil-2008", "constraint-seawall-upgrade-blocked"],
+      "answer_path": [
+        "ev-tepco-tsunami-assessment-2008",
+        "dec-seawall-deferral-2008",
+        "dissent-tepco-civil-2008",
+        "constraint-seawall-upgrade-blocked"
+      ],
       "narrative": "The 2008 internal assessment found a 15.7m tsunami was plausible. The decision to defer was made by corporate management, overriding their own civil engineering team's concerns. No timeline was set. The dissent of the engineering team was not given governance standing."
     },
     {
       "id": "dq-what-would-governed-system-have-done",
       "question": "What would a governed collective intelligence system have done differently?",
-      "answer_path": ["constraint-design-basis-tsunami", "dissent-tepco-civil-2008", "prec-onagawa-seawall-1967", "prec-nrc-sbo-rule-1988"],
+      "answer_path": [
+        "constraint-design-basis-tsunami",
+        "dissent-tepco-civil-2008",
+        "prec-onagawa-seawall-1967",
+        "prec-nrc-sbo-rule-1988"
+      ],
       "narrative": "A governed system would have: surfaced the engineering team's dissent as a first-class record requiring resolution, automatically invoked the Onagawa precedent showing the viability of higher seawalls, flagged the NRC SBO rules as relevant external evidence, and blocked the deferral decision unless the uncertainty on the 15.7m estimate dropped below the safety threshold."
     }
   ]

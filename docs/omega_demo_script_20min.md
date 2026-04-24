@@ -1,242 +1,223 @@
-# Omega — 20-Minute Demo Script
+# Omega — 20-Minute Deep Demo Script
 
-> **Format:** Deep technical walkthrough with time for genuine exploration. Suitable for co-design sessions, research presentations, and lab meetings. Presenter should be comfortable with improvisation — this script provides structure and talking points, not a teleprompter.
-> **Audience:** ACI/AGI researchers, ML engineers building agent systems, institutional knowledge experts.
-> **Goal:** End with a concrete collaboration discussion. The audience should be able to point at something specific they want to help build.
-
----
-
-## 0:00 — Framing the Problem Space (3 minutes)
-
-### The Core Tension
-
-> "The dominant approach to AI for knowledge work right now is: build a bigger model, fine-tune it, give it tools, wrap it in an agent loop. And that works — up to a point."
-
-> "The point where it breaks: accountability. When the model makes a decision, who decided? When it's wrong, what was the reasoning? When it conflicts with another model, which one do you trust?"
-
-> "These aren't engineering problems. They're epistemological problems. And they're much older than AI."
-
-*[Pause. Let it breathe.]*
-
-> "Collective intelligence researchers have studied these questions for decades — in the context of scientific communities, expert panels, juries, corporate boards, nuclear regulatory bodies. The finding is consistent: the quality of collective intelligence is not a function of individual intelligence. It's a function of *how information flows between agents*, and specifically how dissent, uncertainty, and provenance are handled."
-
-> "Omega is an attempt to operationalize those findings as software infrastructure."
-
-### What Omega Is Not
-
-> "Three things Omega deliberately is not:"
-
-> "Not a monolithic AGI. Omega has no 'brain.' The intelligence is distributed — between the agents, in the patterns of past decisions, in the calibration histories."
-
-> "Not a chat interface with a graph. The graph is not a retrieval index. It's the primary representation. Queries are graph traversals, not similarity searches."
-
-> "Not a RAG system. Retrieval-augmented generation retrieves evidence *for* a model. Omega records the decision *about* evidence — who evaluated it, under what constraints, with what dissent."
+> **Format:** Full architecture walkthrough + interactive exploration. Two presenters optimal (one drives, one narrates), or one confident solo.
+> **Audience:** Technical deep dive — PhD researchers, serious architects, potential collaborators who will probe the foundations.
+> **Goal:** Leave them convinced the architecture is principled, the data is real, and the research questions are tractable.
 
 ---
 
-## 3:00 — The Seven-Layer Architecture (4 minutes)
+## 0:00 — The Thesis (90 seconds)
 
-*[Open GraphCanvas. Start with all layers visible in dagre layout.]*
+> "I want to start by naming the failure mode we're building against."
 
-### Layer 1: Evidence
+> "Fukushima Daiichi nuclear disaster, 2011. Three reactors melted down. 154,000 people evacuated. The proximate cause: a 15.5-meter tsunami that overwhelmed a 5.7-meter seawall."
 
-> "Everything starts here. An EvidenceFragment is the atomic unit of the knowledge substrate. KRAS G12C binding data from a molecular docking run. A BBB permeability assay at 0.60. The tsunami deposit record from the Jogan earthquake in 869 AD."
+> "The actual cause: in 2008, TEPCO's civil engineers ran a probabilistic hazard model and returned an estimate of 15.7 meters. They objected formally to the decision to defer upgrading the seawall. Their objection was overruled by corporate management — calibration score 0.31 versus the engineers' 0.76 — and then it was not recorded. Not overruled with reasoning preserved. Erased."
 
-> "Each fragment carries: source type, media type, uncertainty value, validation status, and provenance chain. It's not a document. It's a data type."
+> "The same month, 40 kilometers away: Onagawa nuclear plant. Same earthquake. Same tsunami. Zero reactor failures. The difference: in 1967, civil engineer Yanosuke Hirai departed from the official evidence set, weighted oral tradition from local fishermen, and built a 14.8-meter seawall — nearly five times the regulatory minimum. His tacit judgment — that non-canonical evidence should override canonical evidence when consequences are asymmetric — is not in any procedure. It lives only in the fact that the wall was tall enough."
 
-*[Toggle to evidence layer only. Show the blue nodes.]*
+*[Pause.]*
 
-### Layer 2: Context Graph
+> "Intelligence — real collective intelligence — requires social infrastructure. Not just a bigger model. Not just better retrieval. The actual plumbing: who knew what, when, with what confidence, under whose authority, what they disagreed about, and whether the disagreement was preserved."
 
-*[Toggle on context layer. Orange diamond nodes.]*
+> "Omega is that plumbing."
 
-> "This is the most novel layer. Every decision that uses evidence produces a DecisionTrace node. Every DecisionTrace links to: the question it answered, the evidence it cited, the policies it invoked, every actor who participated, and any dissents that were raised."
-
-> "The result is a persistent, queryable record of *reasoning* — not just conclusions. You can replay any past decision exactly as it happened, with the uncertainty values that existed at that time."
-
-### Layer 3: Knowledge
-
-*[Toggle on knowledge layer. Green hexagons.]*
-
-> "Entities, mechanisms, hypotheses. The KRAS → MEK → ERK activation cascade. The hypothesis that EUV pre-pulse timing is the primary determinant of plasma stability. Causal graphs. Confidence scores. Evidence for and against."
-
-> "This is the 'what we believe' layer. Unlike a traditional ontology, every claim here has a provenance chain and uncertainty annotation."
-
-### Layers 4–7: Goal, Governance, Agents, Evolution
-
-*[Toggle layers in sequence as you describe each.]*
-
-> "Goal graph: who wants what, at what priority, with what metric. Goals can conflict — the system detects that."
-
-> "Governance graph: permissions, obligations, provenance records. Who has authority over what, with what expiry conditions."
-
-> "Agent ecology: AgentProfile nodes with calibration histories, belief states, competence vectors, delegation chains, and dissent records. Both human and AI agents."
-
-> "Evolution layer: GraphChangeProposal nodes — proposed new node types, edge schemas, cross-domain bridges. The system can propose its own evolution, subject to governance review."
-
-### Layout Modes
-
-*[Switch dagre → concentric → grid. Let each layout render.]*
-
-> "Three layout modes. Dagre is a hierarchical left-to-right — good for understanding causality. Concentric shows layer membership — good for understanding which epistemic type owns a node. Grid is a flat audit view."
+*[Open landing view. Let the thesis lines cycle.]*
 
 ---
 
-## 7:00 — Decision Replay: The Signature Feature (4 minutes)
+## 1:30 — The Architecture Overview (3 minutes)
 
-*[Open Replay tab. Drug Trial loaded.]*
+*[Click Enter the Substrate. GraphCanvas loads.]*
 
-### The Write Path
+### Six Epistemic Layers
 
-> "Let me explain how a decision gets into the system before we replay it."
+> "Omega structures knowledge into six typed layers. Each has a distinct epistemic function."
 
-> "When a decision is made, the actor — human or AI — calls record_decision(). This creates a DecisionTrace node and a sequence of replay steps. Each step is typed: question, evidence, policy, actor, dissent, precedent, outcome."
+- **Evidence (blue)** — raw fragments: assay results, sensor logs, geological surveys. First-class objects with uncertainty annotation, provenance chain, and validation tier (PSV / peer-reviewed / internal / anecdotal). Not embeddings — typed, queryable objects.
+- **Context (orange)** — decision traces and precedents. Every decision is a node: structured question, outcome, rationale, evidence IDs, policy IDs, actors. Precedents are decisions invoked as reference cases for subsequent decisions. This is how institutional memory accumulates.
+- **Knowledge (green)** — entities, causal mechanisms, hypotheses. Mechanisms are typed: activates, inhibits, regulates, correlates — with confidence scores. Hypotheses carry evidence-for and evidence-against lists.
+- **Goal (yellow)** — objectives, constraints, obligations. Constraints are typed: hard (binary gate), soft (weighted preference), deontic (must/must-not/may). Violating a hard constraint generates an exception record.
+- **Governance (purple)** — permissions, provenance records, authority chains. Every node mutation is a provenance record with SHA-256 hash of prior state. Full reconstruction is always possible.
+- **Agents (teal)** — human experts, AI tools, institutions. Each has a calibration score, a structured belief state, a competence domain, an authority scope, and a dissent history.
 
-> "Every evidence step links to specific EvidenceFragment nodes. Every policy step links to Constraint or Obligation nodes. Every actor step records the agent's belief state at the time of the decision."
-
-> "This isn't logging. It's structured epistemological bookkeeping."
-
-### Replay — Drug Trial
-
-*[Hit play. Walk through each step, narrating.]*
-
-**Step 1 — Question:**
-> "The question, as posed. Timestamped. Actor-attributed. The context of the decision."
-
-**Step 2 — Evidence (KRAS binding):**
-> "Evidence retrieved. Uncertainty 0.12 — low. Validated by Dr. Chen. Note the provenance link — you can click through to the full chain."
-
-**Step 3 — Policy Gate:**
-> "BBB permeability constraint check. Current value 0.54, threshold 0.60. Violated. The system doesn't soft-fail here — this is a hard gate."
-
-**Step 4 — Dissent:**
-> "Dr. Chen's dissent is recorded. Calibration 0.84. Reasoning preserved verbatim. Dissent status: preserved — it will appear in future analogous decisions."
-
-**Steps 5–7 — Precedent, Actor, Outcome:**
-> "The Gleevec precedent invoked. Committee deliberation. Conditional approval with monitoring mandate."
-
-### Replay — Fukushima
-
-*[Switch to Fukushima tab.]*
-
-> "Different domain. The 2008 seawall height decision. Walk through it — notice the TEPCO management override in step 3. The civil engineering team's estimate of 15.7m was dismissed as 'economically unfeasible.'"
-
-*[Pause at the policy violation.]*
-
-> "The constraint at the time required 5m height minimum. It was satisfied. So the decision was recorded as compliant. But the *dissent* from the engineering team — recommending 15.7m — is also in the record."
-
-> "In 2011, when the 14.1m tsunami hit, the system would have surfaced that dissent immediately. The question 'who knew, and when' has a traceable answer."
+*[Toggle layers.]*
 
 ---
 
-## 11:00 — The Agent Ecology (3 minutes)
+## 4:30 — Decision Replay: Three Scenarios (6 minutes)
 
-*[Switch to Council tab.]*
+*[Open Replay tab.]*
 
-### Calibration as Earned Authority
+### Scenario 1: Drug Trial (1 min)
 
-> "Six agents. Three domains. Let me explain calibration first."
+*[Select Drug Trial.]*
 
-*[Click TEPCO Management.]*
+> "Phase II oncology trial. Seven steps. The policy gate at step 3 — BBB permeability uncertainty 0.60 exceeds hard constraint threshold 0.40 — blocks progression architecturally. Not a flag. A gate."
 
-> "Calibration score: 0.31. This isn't an assessment of intelligence. It's a retrospective score: across past decisions analogous to this one, how often did this agent's confidence match the eventual outcome?"
+*[Advance to Step 5 — MolScreen-v2 preserved dissent.]*
 
-> "TEPCO management was highly confident that Jogan-scale events were rare. They were wrong. Their calibration decayed accordingly."
+> "AI agent MolScreen-v2 partially dissents. QSAR model: BBB+ probability 0.41, marginally above threshold. Overruled by clinical consensus. Permanently preserved — queryable. If this trial reappears in Phase III, the dissent is surfaced as prior art."
 
-*[Click TEPCO Civil Engineering.]*
+*[Step to Precedent, then Outcome.]*
 
-> "Calibration: 0.76. The engineering team was uncertain but directionally correct. Their calibration is higher — not because they have better titles, but because they had better epistemic practices."
+> "AMG-224 2022 precedent invoked. Applicability 0.82. The system knows the analogous case and its resolution."
 
-> "This is the key idea: authority in Omega is *earned* by track record, not assigned by position."
+### Scenario 2: Fukushima — The Core Demo (3 min)
 
-### Belief State as Structured Disagreement
+*[Select Fukushima.]*
 
-> "Each agent has a belief state — a dictionary of propositions and confidence values. When agents disagree, the system doesn't average. It records the disagreement as a signal."
+*[Advance through Steps 1–4 efficiently, pausing at Step 2 to note uncertainty 0.19.]*
 
-*[Compare Dr. Chen and MolScreen-v2 belief bars for CNS penetration.]*
+*[Land on Step 5 — the suppressed dissent.]*
+*[Red alarm card. Pulsing dot.]*
 
-> "Chen at 61%, MolScreen at 54%. Both uncertain. The *gap* between them — 7 points — is an epistemic opportunity. What evidence would resolve it? That's the next-best-question query."
+> "TEPCO Civil Engineering, calibration 0.76. 'The 10-meter deficit is not a modeling uncertainty — it is a physical fact.'"
 
-### Collective Assay
+*[4-second pause.]*
 
-*[Switch to Assay tab. Run Fukushima assay.]*
+> "Resolution: overruled. Preserved: false. Not in the governance record."
 
-> "Calibration-weighted synthesis. The math is simple — confidence * calibration, normalized — but the semantics are significant. A 95% confident uncalibrated agent contributes less than a 70% confident highly calibrated one."
+*[IF OMEGA EXISTED panel.]*
 
-*[Show constraint gate.]*
+> "Calibration 0.76 versus 0.31 — 2.4× epistemic weight. Every future review citing the 2008 assessment inherits this dissent. The decision chain is traceable."
 
-> "And the constraint is enforced. No matter what the agents believe, if the governance constraint says 'cost must not exceed allocation,' that's a gate."
+*[Outcome.]*
 
----
+> "Deferred. 15.5 meters. 40 minutes."
 
-## 14:00 — Cross-Domain Bridges and Open-Endedness (2 minutes)
+### Scenario 3: 737 MAX (1.5 min)
 
-*[Switch to Alignment tab. OntologyBridgeView.]*
+*[Select 737 MAX.]*
 
-> "Three domains in Omega now. Drug discovery, Fukushima governance, EUV lithography. They're not isolated — the system proposes bridges."
+> "Same structural failure mode: authority overriding calibrated objection, no governance channel, no preserved dissent."
 
-> "A 'bridge' is an AlignmentMap node. It says: this entity type in domain A has a functor-compatible mapping to this entity type in domain B. With gaps marked explicitly."
+*[Step 2 — Boeing FMEA, note conflict of interest, uncertainty 0.71.]*
+*[Step 5 — Ed Pierson dissent suppressed.]*
 
-*[Show the red gap nodes.]*
+> "Pierson, calibration 0.91. 'I am not comfortable with these airplanes flying.' Classified as labor dispute. Not forwarded to certification. Not recorded."
 
-> "The gaps are as important as the mappings. A gap means: there's a structural difference between how these two domains represent something. That difference is either an opportunity to learn, or a genuine ontological boundary."
+*[Step 7 — Outcome.]*
 
-*[Switch to Agency tab briefly.]*
-
-> "The ALife framing: think of domains as ecosystems. The alignment layer is the 'atmospheric layer' through which they interact. Evolution happens at the domain level — new entity types, new schemas — but governed by the substrate."
-
----
-
-## 16:00 — Open Research Questions (2 minutes)
-
-> "Where Omega is genuinely underdeveloped, and where collaboration would be most valuable:"
-
-**1. Formal Active Inference**
-> "Right now, 'next best question' is an EIG heuristic — expected information gain estimated from uncertainty annotations. The right formalism is active inference under a Markov blanket. We've sketched it in docs/research/02_alife_multiscale_cognition.md. It needs someone who actually works in predictive processing."
-
-**2. Categorical Functor Alignment**
-> "The bridge layer is conceptually grounded in olog theory — Spivak and Kent's work. The automated learning of functors between domain ontologies is unsolved. There's work in category theory applied to knowledge representation that may apply."
-
-**3. Calibration Dynamics**
-> "How should calibration decay over time? How does it transfer across domains? The current model is naive — exponential decay with manual domain weighting. There's a formal theory of epistemic calibration waiting to be properly integrated."
-
-**4. Dissent Topology**
-> "Which patterns of dissent correlate with better long-term outcomes? We have the data structure to study this — but no empirical framework yet. This is an interdisciplinary question: epistemology + ML + organizational theory."
+> "Approved. 346 fatalities. Pierson's vindication rate: 100%."
 
 ---
 
-## 18:00 — What We're Building Next (1 minute)
+## 10:30 — The Tacit Knowledge Layer (3 minutes)
 
-> "Three immediate priorities:"
+*[Switch to Tacit tab.]*
 
-> "Multi-domain alignment: automated bridge proposal between any two domain packs, with human review gating. The architecture is ready — the algorithm needs work."
+> "Knowledge that can't be written down is still knowledge. Omega has a dedicated layer."
 
-> "Temporal reasoning: right now all beliefs are point-in-time snapshots. We need belief evolution over decision sequences — how did confidence in this hypothesis change as evidence accumulated?"
+*[Show ASML EUV calibration trace. Point to the codifiability spectrum.]*
 
-> "Deployment path: Neo4j + ChromaDB + FastAPI backend is running. The frontend demo is standalone. The integration layer — connecting live agent activity to the graph write path — is the next engineering sprint."
+> "Five steps codifiable, one fully tacit — step 6: the judgment of whether the droplet stream looks 'quiet'. 6–18 months to transfer. If the engineer retires, the knowledge is gone."
 
----
+*[Switch to Onagawa trace. Point to Step 2.]*
 
-## 19:00 — Discussion Prompt (1 minute)
+> "Hirai's departure from the official evidence set. Codifiability: 0.1. The tacit skill is knowing when to go outside the canonical evidence set. You can't write that rule without destroying the skill."
 
-> "I want to end with a question, not a pitch."
+*[Show counterfactual panel.]*
 
-> "What is the hardest problem in your field that is fundamentally a problem of collective knowledge — where the answer exists, distributed across people and documents and past decisions, but cannot be assembled?"
-
-*[Let them respond.]*
-
-> "Because that's the problem Omega is designed to solve. The question for us is whether the architecture we've built is the right one for your specific version of it."
+> "The tacit layer is how Omega encodes the difference between the two engineers — same evidence, different judgment, one outcome prevented."
 
 ---
 
-## Notes for Presenter
+## 13:30 — Expert Calibration Layer (2 minutes)
 
-**If they ask about the backend:** It's FastAPI + Neo4j + ChromaDB. The frontend demo runs on static fixture data so it works offline. The live backend connects via WebSocket for real-time graph updates.
+*[Switch to Expert tab.]*
 
-**If they ask about the agent loop:** Omega doesn't prescribe an agent architecture. It provides the *record-keeping infrastructure* that any agent can write to. You can use LangChain agents, AutoGen, or custom code — as long as they call the KOS write path.
+*[Click through TEPCO Civil Engineering (0.76), TEPCO Management (0.31, declining), Ed Pierson (0.91, 100% vindication).]*
 
-**If they ask about cost:** We haven't run production load tests. Neo4j Community handles the demo comfortably. At institutional scale (10k decisions/day), we'd need Neo4j Enterprise or migration to a distributed graph store.
+> "The calibration ring. The sparkline. The dissent record. The design principle: calibration is earned visibility — higher-calibrated agents receive more epistemic authority in synthesis, not more screen space."
 
-**If they ask about privacy:** Every node has a governance layer. Permissions are first-class. A `sovereign` sensitivity tier exists for data that should never cross domain boundaries. The architecture supports data residency.
+> "Zero recorded dissents in a high-uncertainty environment is information: the agent is suppressing epistemic signals, not expressing confidence."
 
-**If they push on the ALife framing:** It's a conceptual map, not an implementation claim. The nested agency visualization is illustrative — we're not running ALife simulations. The claim is that the *design principles* from ALife research (nested identity, emergent individuality, open-ended evolution) are the right ones for building collective intelligence infrastructure.
+---
+
+## 15:30 — Cross-Domain Bridges (2 minutes)
+
+*[Switch to Discover tab.]*
+
+*[Click 737 MAX ↔ Challenger bridge. City view auto-activates. Bridge arc glows.]*
+
+> "Structural parallel: authority overriding calibrated objection, organizational silence, single-point failure normalized. Novelty 0.88. Same pattern, 33 years apart."
+
+*[Click climate_policy ↔ fukushima bridge.]*
+
+> "Political-authority discount of scientific calibration. Hayhoe 0.86 vs. COP26 Presidency 0.52. Glasgow coal phase-down language weakened against expert consensus. Structural match to Fukushima."
+
+> "Ten domains. Eight bridges. A structural atlas of how high-consequence failures work — not as case studies, but as graph patterns."
+
+---
+
+## 16:00 — The Distributed Cognition Fabric (90 seconds)
+
+*[Click ◈ Fabric. The CognitionFabricView loads.]*
+
+> "Let me show you the view that contextualizes Omega in the current landscape of distributed AI."
+
+> "In the last year, there's been significant industry thinking about what comes after individual AI agents — distributed cognition at scale. Cisco Outshift calls this the Internet of Cognition: shared intent, shared context, collective innovation. The insight is right: the bottleneck is not model capability. It's semantic isolation. Agents can process; they can't yet accumulate, transfer, and validate structured knowledge across institutional boundaries."
+
+*[Point to the vault nodes.]*
+
+> "Omega's vaults correspond to IoC's local cognition sites. Each has local sovereignty — full, partial, or federated. The governance model governs what leaves the vault, under what permissions, with what scope."
+
+*[Point to the three channel bands.]*
+
+> "Three channels: Shared Intent — aligned purposes, not consensus. Shared Context — governed knowledge exchange. Collective Innovation — abstractions invented collectively that no single vault had alone. The ratchet effect: once a problem is solved in one vault, the abstraction is available to others — but only through a validated, permission-gated transfer."
+
+*[Point to the moving packets.]*
+
+> "These are live transfer packets. The authority-override-of-dissent schema is moving from Fukushima governance to aviation safety to climate policy. It's moving as a structural object — with invariants, loss accounting, and validation tests. Not as a document. Not as a shared embedding. As a first-class governed artifact."
+
+*[Point to the cognition engines bar.]*
+
+> "Six cognition engines sit above the fabric: Transfer, Audit, Guardrail, Expert Twin, Collective Assay, Novelty. Where IoC talks about guardrails and accelerators, Omega makes them concrete: the Audit Engine computes provenance chains; the Guardrail Engine enforces permission gates; the Transfer Engine applies category-theoretic functor maps to move abstractions across domains."
+
+> "What Omega adds beyond current distributed cognition frameworks: provenance depth, executable permissions, tacit knowledge traces, category-theoretic transfer with structural loss accounting, and the ALife insight that collective intelligence must be ecologically open-ended to avoid monoculture."
+
+---
+
+## 17:30 — Research Frontier and Open Questions (90 seconds)
+
+> "Where the formal foundations are solid and where they're conceptual:"
+
+> "Solid: six-layer architecture, decision trace format, calibration-weighted synthesis mechanism, provenance chain with hash-based audit."
+
+> "Open: formal Bayesian update rule for calibration scores (current prototype uses static scores); sheaf-theoretic treatment of ontology alignment using category-theory functors; active inference layer for agent goal-directedness; formal treatment of open-endedness as an evolutionary process."
+
+> "The empirical case studies — Fukushima, 737 MAX, ASML, Challenger, Onagawa — validate the pattern and motivate the architecture. The formal specification is the research program."
+
+---
+
+## 19:00 — Close (60 seconds)
+
+*[Return to graph. Zoom out.]*
+
+> "Which of the 346 people who died in the 737 MAX crashes would be alive if Ed Pierson's dissent had been in a governed substrate, weighted by his 0.91 calibration score?"
+
+*[Pause.]*
+
+> "We can't know. But the architecture that would have given that question an answer is buildable. That's what Omega is."
+
+*[Leave the graph.]*
+
+---
+
+## Q&A Preparation
+
+**"How is this different from existing knowledge management?"**
+> "KMS stores documents. Omega stores decisions — with full epistemic genealogy: who decided, what evidence cited, what policies invoked, who dissented, what the calibration differential was. That's architecturally different from document storage."
+
+**"How do calibration scores get maintained?"**
+> "Seed scores from domain track records — clinical trial PI calibration, engineering project outcomes, AI model benchmarks. They update when decisions are reviewed against outcomes. The formal update rule is an open research question."
+
+**"Can this be gamed?"**
+> "Yes, and intentionally. Gaming the calibration system is a traceable governance event. The system doesn't prevent bad actors — it makes them legible."
+
+**"What does deployment require from organizations?"**
+> "Minimum: a decision logging protocol capturing question, actors, evidence cited, outcome. Less demanding than most compliance systems. Full value — calibration, precedent search, cross-domain bridges — accrues over time."
+
+**"What's the relationship to active inference / free energy principle?"**
+> "The agent layer is designed to accommodate an active inference formalization — treating goal-directed agents as free-energy minimizers whose beliefs and policies we track explicitly. The architecture is compatible; the implementation is future work. The AIF framing is most natural for the collective inference service — routing questions to minimize expected information gain."

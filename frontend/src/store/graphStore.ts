@@ -65,6 +65,14 @@ interface GraphState {
   proposals: GraphChangeProposal[];
   setProposals: (p: GraphChangeProposal[]) => void;
 
+  // Highlighted bridge (set by SerendipityPanel, consumed by CityOverview)
+  highlightedBridgeId: string | null;
+  setHighlightedBridge: (id: string | null) => void;
+
+  // Global view request (set by SerendipityPanel to switch to city view)
+  requestedView: "graph" | "city" | null;
+  requestView: (v: "graph" | "city" | null) => void;
+
   // Live WebSocket events
   liveEvents: unknown[];
   pushEvent: (e: unknown) => void;
@@ -107,6 +115,12 @@ export const useGraphStore = create<GraphState>((set, get) => ({
 
   proposals: [],
   setProposals: proposals => set({ proposals }),
+
+  highlightedBridgeId: null,
+  setHighlightedBridge: highlightedBridgeId => set({ highlightedBridgeId }),
+
+  requestedView: null,
+  requestView: requestedView => set({ requestedView }),
 
   liveEvents: [],
   pushEvent: e => set(s => ({ liveEvents: [e, ...s.liveEvents].slice(0, 50) })),

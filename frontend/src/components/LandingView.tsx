@@ -8,9 +8,13 @@ const PILLARS = [
 ];
 
 const DOMAINS = [
-  { id: "drug_discovery",         label: "Drug Discovery",            color: "#3b82f6", thesis: "From molecule to trial — governed" },
-  { id: "fukushima_governance",   label: "Institutional Governance",  color: "#f97316", thesis: "Decisioning under catastrophic uncertainty" },
-  { id: "euv_lithography",        label: "Industrial Operations",     color: "#22c55e", thesis: "Tacit knowledge as civilizational infrastructure" },
+  { id: "drug_discovery",         label: "Drug Discovery",       color: "#3b82f6" },
+  { id: "fukushima_governance",   label: "Governance",           color: "#f97316" },
+  { id: "euv_lithography",        label: "EUV Operations",       color: "#22c55e" },
+  { id: "climate_policy",         label: "Climate Policy",       color: "#06b6d4" },
+  { id: "extreme_environments",   label: "Extreme Environments", color: "#ef4444" },
+  { id: "aviation_safety",        label: "Aviation Safety",      color: "#94a3b8" },
+  { id: "pandemic_governance",    label: "Pandemic Governance",  color: "#a855f7" },
 ];
 
 const THESIS_LINES = [
@@ -171,6 +175,16 @@ export function LandingView({ onEnter, demoMode }: Props) {
             Operating in demo mode · No backend required
           </p>
         )}
+
+        {/* Research attribution */}
+        <div className="mt-8 flex items-center gap-2"
+          style={{ opacity: lineIdx >= 4 ? 0.4 : 0, transition: "opacity 0.6s 0.5s" }}>
+          <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
+          <span className="text-[10px] text-slate-700 tracking-widest uppercase">
+            A Cross Labs × Cognisee research prototype
+          </span>
+          <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
+        </div>
       </div>
 
       {/* Bottom gradient */}

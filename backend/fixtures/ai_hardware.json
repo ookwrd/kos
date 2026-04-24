@@ -1,7 +1,13 @@
 {
   "domain": "ai_hardware",
-  "description": "Next-gen AI accelerator manufacturing — tacit knowledge capture in photolithography",
-
+  "description": "Next-gen AI accelerator manufacturing \u2014 tacit knowledge capture in photolithography",
+  "fixture_grounding": "hybrid",
+  "source_ids": [
+    "ev-asml-euv-source-2018",
+    "ev-polanyi-tacit-1966"
+  ],
+  "last_verified": "2026-04-24",
+  "grounding_notes": "AI hardware fixture covers EUV-era chip design. Tacit knowledge components from Polanyi 1966 framework applied to fab expertise. Some delegation structures are speculative constructs.",
   "agents": [
     {
       "id": "agent-litho-engineer",
@@ -9,15 +15,23 @@
       "agent_type": "human",
       "domain": "ai_hardware",
       "competences": [
-        "EUV lithography", "photoresist chemistry", "pattern fidelity",
-        "etch process", "defect root-cause analysis"
+        "EUV lithography",
+        "photoresist chemistry",
+        "pattern fidelity",
+        "etch process",
+        "defect root-cause analysis"
       ],
       "beliefs": {
         "EUV_stochastic_effects_manageable": 0.71,
         "new_resist_chemistry_ready": 0.58
       },
-      "preferred_outcomes": {"goal-yield-improvement": 0.9, "goal-knowledge-transfer": 0.85},
-      "authority_scope": ["ai_hardware"],
+      "preferred_outcomes": {
+        "goal-yield-improvement": 0.9,
+        "goal-knowledge-transfer": 0.85
+      },
+      "authority_scope": [
+        "ai_hardware"
+      ],
       "calibration_score": 0.81
     },
     {
@@ -26,14 +40,23 @@
       "agent_type": "human",
       "domain": "ai_hardware",
       "competences": [
-        "metrology", "CD-SEM", "defect classification", "yield analysis", "SPC"
+        "metrology",
+        "CD-SEM",
+        "defect classification",
+        "yield analysis",
+        "SPC"
       ],
       "beliefs": {
         "EUV_stochastic_effects_manageable": 0.63,
         "new_resist_chemistry_ready": 0.44
       },
-      "preferred_outcomes": {"goal-yield-improvement": 0.95, "goal-process-stability": 0.9},
-      "authority_scope": ["ai_hardware"],
+      "preferred_outcomes": {
+        "goal-yield-improvement": 0.95,
+        "goal-process-stability": 0.9
+      },
+      "authority_scope": [
+        "ai_hardware"
+      ],
       "calibration_score": 0.86
     },
     {
@@ -42,41 +65,59 @@
       "agent_type": "ai",
       "domain": "ai_hardware",
       "competences": [
-        "process simulation", "stochastic lithography modelling",
-        "predictive defect mapping", "design-process co-optimisation"
+        "process simulation",
+        "stochastic lithography modelling",
+        "predictive defect mapping",
+        "design-process co-optimisation"
       ],
       "beliefs": {
         "EUV_stochastic_effects_manageable": 0.68,
         "new_resist_chemistry_ready": 0.52
       },
-      "preferred_outcomes": {"goal-simulation-accuracy": 0.9},
-      "authority_scope": ["ai_hardware"],
+      "preferred_outcomes": {
+        "goal-simulation-accuracy": 0.9
+      },
+      "authority_scope": [
+        "ai_hardware"
+      ],
       "calibration_score": 0.73
     }
   ],
-
   "evidence": [
     {
       "id": "ev-euv-stochastic-2024",
       "source_type": "document",
-      "title": "EUV Stochastic Defect Analysis — Q3 2024 Internal Report",
+      "title": "EUV Stochastic Defect Analysis \u2014 Q3 2024 Internal Report",
       "content_ref": "internal://fab/euv-stochastic-q3-2024.pdf",
       "media_type": "application/pdf",
       "domain": "ai_hardware",
-      "validated_by": ["agent-litho-engineer", "agent-qc-engineer"],
+      "validated_by": [
+        "agent-litho-engineer",
+        "agent-qc-engineer"
+      ],
       "uncertainty": 0.35,
-      "tags": ["EUV", "stochastic", "defects"]
+      "tags": [
+        "EUV",
+        "stochastic",
+        "defects"
+      ]
     },
     {
       "id": "ev-resist-trials-2024",
       "source_type": "sensor_window",
-      "title": "New organometallic resist characterisation — trial data",
+      "title": "New organometallic resist characterisation \u2014 trial data",
       "content_ref": "internal://fab/resist-trial-sept2024.csv",
       "media_type": "text/csv",
       "domain": "ai_hardware",
-      "validated_by": ["agent-litho-engineer"],
+      "validated_by": [
+        "agent-litho-engineer"
+      ],
       "uncertainty": 0.58,
-      "tags": ["resist", "organometallic", "EUV"]
+      "tags": [
+        "resist",
+        "organometallic",
+        "EUV"
+      ]
     },
     {
       "id": "ev-tacit-kenji-exposure-recipe",
@@ -85,92 +126,203 @@
       "content_ref": "internal://knowledge-capture/kenji-euv-session-2024-10-15.md",
       "media_type": "text/markdown",
       "domain": "ai_hardware",
-      "validated_by": ["agent-qc-engineer"],
+      "validated_by": [
+        "agent-qc-engineer"
+      ],
       "uncertainty": 0.55,
-      "tags": ["tacit-knowledge", "exposure-recipe", "EUV"]
+      "tags": [
+        "tacit-knowledge",
+        "exposure-recipe",
+        "EUV"
+      ]
     }
   ],
-
   "entities": [
-    {"id": "ent-EUV-scanner", "label": "EUV Scanner (ASML NXE:3600D)", "entity_type": "technology",
-     "domain": "ai_hardware",
-     "attributes": {"wavelength_nm": 13.5, "NA": 0.33, "resolution_nm": 13}},
-    {"id": "ent-photoresist", "label": "Organometallic EUV Photoresist", "entity_type": "material",
-     "domain": "ai_hardware",
-     "attributes": {"type": "organometallic", "sensitivity": "high", "LWR_nm": 2.1}},
-    {"id": "ent-stochastic-defect", "label": "EUV Stochastic Defect", "entity_type": "event",
-     "domain": "ai_hardware",
-     "attributes": {"origin": "photon shot noise + resist absorption statistics"}},
-    {"id": "ent-interconnect-layer", "label": "M0 Interconnect Layer", "entity_type": "process",
-     "domain": "ai_hardware",
-     "attributes": {"pitch_nm": 24, "material": "cobalt", "layer": "BEOL"}},
-    {"id": "ent-AI-accelerator-die", "label": "AI Accelerator Die (2nm node)", "entity_type": "technology",
-     "domain": "ai_hardware",
-     "attributes": {"transistors": "90B", "node": "2nm", "application": "inference"}}
+    {
+      "id": "ent-EUV-scanner",
+      "label": "EUV Scanner (ASML NXE:3600D)",
+      "entity_type": "technology",
+      "domain": "ai_hardware",
+      "attributes": {
+        "wavelength_nm": 13.5,
+        "NA": 0.33,
+        "resolution_nm": 13
+      }
+    },
+    {
+      "id": "ent-photoresist",
+      "label": "Organometallic EUV Photoresist",
+      "entity_type": "material",
+      "domain": "ai_hardware",
+      "attributes": {
+        "type": "organometallic",
+        "sensitivity": "high",
+        "LWR_nm": 2.1
+      }
+    },
+    {
+      "id": "ent-stochastic-defect",
+      "label": "EUV Stochastic Defect",
+      "entity_type": "event",
+      "domain": "ai_hardware",
+      "attributes": {
+        "origin": "photon shot noise + resist absorption statistics"
+      }
+    },
+    {
+      "id": "ent-interconnect-layer",
+      "label": "M0 Interconnect Layer",
+      "entity_type": "process",
+      "domain": "ai_hardware",
+      "attributes": {
+        "pitch_nm": 24,
+        "material": "cobalt",
+        "layer": "BEOL"
+      }
+    },
+    {
+      "id": "ent-AI-accelerator-die",
+      "label": "AI Accelerator Die (2nm node)",
+      "entity_type": "technology",
+      "domain": "ai_hardware",
+      "attributes": {
+        "transistors": "90B",
+        "node": "2nm",
+        "application": "inference"
+      }
+    }
   ],
-
   "mechanisms": [
-    {"id": "mech-euv-exposes-resist", "name": "EUV photons expose photoresist", "mechanism_type": "causal",
-     "source_entity_id": "ent-EUV-scanner", "target_entity_id": "ent-photoresist",
-     "description": "EUV photons at 13.5nm absorbed by organometallic resist, causing chemical amplification via acid-catalysed deprotection",
-     "confidence": 0.95, "domain": "ai_hardware",
-     "evidence_ids": ["ev-euv-stochastic-2024"]},
-    {"id": "mech-stochastic-creates-defects", "name": "Photon shot noise generates stochastic defects", "mechanism_type": "causal",
-     "source_entity_id": "ent-photoresist", "target_entity_id": "ent-stochastic-defect",
-     "description": "Low EUV photon flux per pixel (typically 10-20 photons) creates Poisson-distributed exposure variance, leading to stochastic line-edge roughness and bridging defects",
-     "confidence": 0.88, "domain": "ai_hardware",
-     "evidence_ids": ["ev-euv-stochastic-2024"]},
-    {"id": "mech-defects-impact-yield", "name": "Stochastic defects reduce interconnect yield", "mechanism_type": "causal",
-     "source_entity_id": "ent-stochastic-defect", "target_entity_id": "ent-interconnect-layer",
-     "description": "Bridging defects at 24nm pitch cause shorts in M0 layer; missing contacts cause opens",
-     "confidence": 0.91, "domain": "ai_hardware",
-     "evidence_ids": ["ev-euv-stochastic-2024"]}
+    {
+      "id": "mech-euv-exposes-resist",
+      "name": "EUV photons expose photoresist",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-EUV-scanner",
+      "target_entity_id": "ent-photoresist",
+      "description": "EUV photons at 13.5nm absorbed by organometallic resist, causing chemical amplification via acid-catalysed deprotection",
+      "confidence": 0.95,
+      "domain": "ai_hardware",
+      "evidence_ids": [
+        "ev-euv-stochastic-2024"
+      ]
+    },
+    {
+      "id": "mech-stochastic-creates-defects",
+      "name": "Photon shot noise generates stochastic defects",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-photoresist",
+      "target_entity_id": "ent-stochastic-defect",
+      "description": "Low EUV photon flux per pixel (typically 10-20 photons) creates Poisson-distributed exposure variance, leading to stochastic line-edge roughness and bridging defects",
+      "confidence": 0.88,
+      "domain": "ai_hardware",
+      "evidence_ids": [
+        "ev-euv-stochastic-2024"
+      ]
+    },
+    {
+      "id": "mech-defects-impact-yield",
+      "name": "Stochastic defects reduce interconnect yield",
+      "mechanism_type": "causal",
+      "source_entity_id": "ent-stochastic-defect",
+      "target_entity_id": "ent-interconnect-layer",
+      "description": "Bridging defects at 24nm pitch cause shorts in M0 layer; missing contacts cause opens",
+      "confidence": 0.91,
+      "domain": "ai_hardware",
+      "evidence_ids": [
+        "ev-euv-stochastic-2024"
+      ]
+    }
   ],
-
   "hypotheses": [
-    {"id": "hyp-resist-dose-tradeoff",
-     "statement": "Increasing EUV dose by 15% reduces stochastic defect density below 0.01/cm² at cost of throughput reduction",
-     "domain": "ai_hardware", "status": "proposed",
-     "evidence_for": ["ev-euv-stochastic-2024"],
-     "evidence_against": [],
-     "entity_ids": ["ent-EUV-scanner", "ent-stochastic-defect"],
-     "prior": 0.62, "uncertainty": 0.55},
-    {"id": "hyp-organometallic-resist-win",
-     "statement": "Organometallic resist formulation achieves < 2nm LWR at production dose without throughput penalty",
-     "domain": "ai_hardware", "status": "contested",
-     "evidence_for": ["ev-resist-trials-2024"],
-     "evidence_against": [],
-     "entity_ids": ["ent-photoresist"],
-     "prior": 0.48, "uncertainty": 0.68}
+    {
+      "id": "hyp-resist-dose-tradeoff",
+      "statement": "Increasing EUV dose by 15% reduces stochastic defect density below 0.01/cm\u00b2 at cost of throughput reduction",
+      "domain": "ai_hardware",
+      "status": "proposed",
+      "evidence_for": [
+        "ev-euv-stochastic-2024"
+      ],
+      "evidence_against": [],
+      "entity_ids": [
+        "ent-EUV-scanner",
+        "ent-stochastic-defect"
+      ],
+      "prior": 0.62,
+      "uncertainty": 0.55
+    },
+    {
+      "id": "hyp-organometallic-resist-win",
+      "statement": "Organometallic resist formulation achieves < 2nm LWR at production dose without throughput penalty",
+      "domain": "ai_hardware",
+      "status": "contested",
+      "evidence_for": [
+        "ev-resist-trials-2024"
+      ],
+      "evidence_against": [],
+      "entity_ids": [
+        "ent-photoresist"
+      ],
+      "prior": 0.48,
+      "uncertainty": 0.68
+    }
   ],
-
   "goals": [
-    {"id": "goal-yield-improvement", "title": "Achieve ≥ 85% die yield on 2nm AI accelerator",
-     "status": "active", "horizon": "short", "priority": 0.95,
-     "owner_id": "agent-qc-engineer", "domain": "ai_hardware",
-     "metric": "die_yield_pct", "metric_target": 85.0},
-    {"id": "goal-process-stability", "title": "Achieve SPC Cpk ≥ 1.33 across EUV layers",
-     "status": "active", "horizon": "short", "priority": 0.9,
-     "owner_id": "agent-qc-engineer", "domain": "ai_hardware",
-     "metric": "cpk", "metric_target": 1.33},
-    {"id": "goal-knowledge-transfer", "title": "Capture Kenji's tacit EUV process knowledge before retirement",
-     "status": "active", "horizon": "medium", "priority": 0.85,
-     "owner_id": "agent-litho-engineer", "domain": "ai_hardware",
-     "metric": "knowledge_fragments_captured", "metric_target": 50.0},
-    {"id": "goal-simulation-accuracy", "title": "ProcessTwin achieves < 3% CD error vs. measured",
-     "status": "active", "horizon": "medium", "priority": 0.8,
-     "owner_id": "agent-digital-twin", "domain": "ai_hardware",
-     "parent_goal_id": "goal-yield-improvement",
-     "metric": "cd_error_pct", "metric_target": 3.0}
+    {
+      "id": "goal-yield-improvement",
+      "title": "Achieve \u2265 85% die yield on 2nm AI accelerator",
+      "status": "active",
+      "horizon": "short",
+      "priority": 0.95,
+      "owner_id": "agent-qc-engineer",
+      "domain": "ai_hardware",
+      "metric": "die_yield_pct",
+      "metric_target": 85.0
+    },
+    {
+      "id": "goal-process-stability",
+      "title": "Achieve SPC Cpk \u2265 1.33 across EUV layers",
+      "status": "active",
+      "horizon": "short",
+      "priority": 0.9,
+      "owner_id": "agent-qc-engineer",
+      "domain": "ai_hardware",
+      "metric": "cpk",
+      "metric_target": 1.33
+    },
+    {
+      "id": "goal-knowledge-transfer",
+      "title": "Capture Kenji's tacit EUV process knowledge before retirement",
+      "status": "active",
+      "horizon": "medium",
+      "priority": 0.85,
+      "owner_id": "agent-litho-engineer",
+      "domain": "ai_hardware",
+      "metric": "knowledge_fragments_captured",
+      "metric_target": 50.0
+    },
+    {
+      "id": "goal-simulation-accuracy",
+      "title": "ProcessTwin achieves < 3% CD error vs. measured",
+      "status": "active",
+      "horizon": "medium",
+      "priority": 0.8,
+      "owner_id": "agent-digital-twin",
+      "domain": "ai_hardware",
+      "parent_goal_id": "goal-yield-improvement",
+      "metric": "cd_error_pct",
+      "metric_target": 3.0
+    }
   ],
-
   "decisions": [
     {
       "id": "dec-resist-qualification-2024",
       "question": "Should the new organometallic resist be qualified for production at 24nm M0 pitch?",
       "outcome": "deferred",
-      "rationale": "Trial data shows LWR < 2nm in 6 of 8 wafer runs, but 2 runs showed bridging defect density > 0.05/cm². Root cause not yet identified (could be dose uniformity or resist lot variation). Deferring qualification until root cause is resolved and ≥ 3 consecutive clean wafer runs achieved. ProcessTwin stochastic model needs updating with new resist parameters before further prediction is reliable.",
-      "evidence_ids": ["ev-resist-trials-2024", "ev-euv-stochastic-2024"],
+      "rationale": "Trial data shows LWR < 2nm in 6 of 8 wafer runs, but 2 runs showed bridging defect density > 0.05/cm\u00b2. Root cause not yet identified (could be dose uniformity or resist lot variation). Deferring qualification until root cause is resolved and \u2265 3 consecutive clean wafer runs achieved. ProcessTwin stochastic model needs updating with new resist parameters before further prediction is reliable.",
+      "evidence_ids": [
+        "ev-resist-trials-2024",
+        "ev-euv-stochastic-2024"
+      ],
       "actor_id": "agent-qc-engineer",
       "policy_ids": [],
       "precedent_ids": [],
@@ -178,7 +330,6 @@
       "domain": "ai_hardware"
     }
   ],
-
   "delegations": [
     {
       "id": "deleg-twin-modelling",
@@ -186,11 +337,12 @@
       "delegatee_id": "agent-digital-twin",
       "scope": "Update stochastic lithography model with trial resist parameters and generate predictive defect map",
       "reversible": true,
-      "conditions": ["Litho engineer must review and approve simulation results before production use"],
+      "conditions": [
+        "Litho engineer must review and approve simulation results before production use"
+      ],
       "active": true
     }
   ],
-
   "dissent_records": [
     {
       "id": "dissent-kenji-dose",
@@ -199,21 +351,30 @@
       "dissent_type": "methodological",
       "rationale": "The 2 failing wafer runs coincided with a scanner maintenance cycle. The defects are likely tool-induced, not resist-induced. Extending the deferral delays qualification by 6 weeks unnecessarily. Recommend replicate runs post-maintenance before attributing root cause to resist.",
       "resolution_status": "open",
-      "supporting_evidence_ids": ["ev-tacit-kenji-exposure-recipe"],
+      "supporting_evidence_ids": [
+        "ev-tacit-kenji-exposure-recipe"
+      ],
       "domain": "ai_hardware"
     }
   ],
-
   "uncertainty_annotations": [
-    {"id": "ua-resist-root-cause", "target_id": "dec-resist-qualification-2024",
-     "dimension": "root cause of bridging defects (resist vs. scanner)",
-     "value": 0.78,
-     "method": "expert_elicitation", "annotator_id": "agent-litho-engineer",
-     "rationale": "Cannot distinguish resist lot variation from scanner dose non-uniformity without controlled split-lot experiment"},
-    {"id": "ua-twin-model-accuracy", "target_id": "goal-simulation-accuracy",
-     "dimension": "ProcessTwin accuracy for new resist chemistry",
-     "value": 0.65,
-     "method": "model_confidence", "annotator_id": "agent-digital-twin",
-     "rationale": "Training data did not include organometallic resist; model extrapolates beyond distribution"}
+    {
+      "id": "ua-resist-root-cause",
+      "target_id": "dec-resist-qualification-2024",
+      "dimension": "root cause of bridging defects (resist vs. scanner)",
+      "value": 0.78,
+      "method": "expert_elicitation",
+      "annotator_id": "agent-litho-engineer",
+      "rationale": "Cannot distinguish resist lot variation from scanner dose non-uniformity without controlled split-lot experiment"
+    },
+    {
+      "id": "ua-twin-model-accuracy",
+      "target_id": "goal-simulation-accuracy",
+      "dimension": "ProcessTwin accuracy for new resist chemistry",
+      "value": 0.65,
+      "method": "model_confidence",
+      "annotator_id": "agent-digital-twin",
+      "rationale": "Training data did not include organometallic resist; model extrapolates beyond distribution"
+    }
   ]
 }

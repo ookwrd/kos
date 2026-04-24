@@ -1,78 +1,67 @@
 # Omega — 90-Second Demo Script
 
-> **Format:** Single continuous flow. No slides. Cursor moves on screen. One thesis, three gestures.
-> **Audience:** Technically literate first-contact — VC, collaborator, conference hallway.
-> **Goal:** Plant one idea: collective intelligence needs social infrastructure, not a bigger model.
+> **Format:** Single continuous flow. No slides. One thesis, two gestures, one image.
+> **Audience:** Technical first contact — VC, collaborator, conference hallway.
+> **Goal:** Plant one idea: intelligence without institutional memory produces catastrophes that were preventable.
 
 ---
 
-## The Setup (15 seconds)
+## The Thesis (10 seconds)
 
-> "Most AI systems today are either one massive model doing everything, or a chat interface grafted onto a knowledge graph. Omega is neither."
+*[Land on the Omega landing screen. The thesis lines cycle: "Intelligence is not a single mind. / It is an ecology of knowing."]*
 
-*[Land on the Omega landing screen — the thesis lines cycling. Let it breathe for 3 seconds.]*
+> "What you're about to see isn't another AI dashboard. It's the social substrate that makes collective intelligence legible."
 
-> "It's a substrate for collective intelligence — the infrastructure underneath how groups of experts, institutions, and AI agents actually know things together."
-
-*[Click 'Enter Omega'. The graph materializes.]*
+*[Click 'Enter the Substrate'. The graph materializes behind the fade.]*
 
 ---
 
-## Gesture 1 — The Decision (30 seconds)
+## Gesture 1 — The Catastrophe (40 seconds)
 
-*[Click the Replay tab. The Drug Trial decision is loaded.]*
+*[Click the Replay tab. Select "Fukushima" from the scenario tabs.]*
 
-> "Here's a real decision: a Phase II oncology trial approval. Seven steps. Watch what the system captures that a document can't."
+> "March 2008. TEPCO's civil engineers ran a tsunami hazard model. Result: 15.7 meters. Seawall height: 5.7 meters. Ten-meter gap."
 
-*[Hit play. Let it run to step 3 — the policy gate.]*
+*[Hit play. Advance to Step 5 — the suppressed dissent.]*
 
-> "Step three — the BBB permeability constraint. The AI agent MolScreen-v2 flagged it at 0.54. The constraint threshold is 0.60. Violated."
+> "The engineers objected. Formally. The objection was overruled by corporate management — calibration score 0.31. And then..."
 
-*[Pause.]*
+*[Pause on the red alarm card: "⊗ Dissent suppressed — not recorded in substrate."]*
 
-> "But the trial was approved anyway. Why? Because Dr. Chen dissented — and Omega *preserved* that dissent."
+> "It was erased. Not just overruled. The governance record shows nothing. When the JSCE review happened in 2010, there was no substrate to surface it."
 
-*[Step to the outcome. Show the amber dissent badge.]*
+*[Pause. Let the "If Omega existed" counterfactual be visible.]*
 
-> "The dissent is in the record. Queryable. If this drug harms someone in Phase III, the question 'who knew what, and when' has an answer."
-
----
-
-## Gesture 2 — The Council (25 seconds)
-
-*[Switch to the Council tab. Click ASML Systems Eng.]*
-
-> "Now — EUV lithography. Completely different domain. ASML engineers, Carl Zeiss optics, tacit knowledge about tin droplet plasma dynamics that doesn't exist in any paper."
-
-*[Show belief bars.]*
-
-> "Calibration score 0.82. Beliefs about pre-pulse criticality at 91% confidence. The system knows this agent's track record across past decisions — not just their title."
-
-*[Switch to Assay tab.]*
-
-> "When we run a collective assay — 'is yield target achievable?' — the synthesis is calibration-weighted. TEPCO management at 0.31 calibration has less pull than the civil engineer at 0.76. That's not opinion. That's institutional memory."
+> "On March 11, 2011, the tsunami reached 15.5 meters. Three reactors melted down."
 
 ---
 
-## The Punchline (20 seconds)
+## Gesture 2 — The Difference (25 seconds)
 
-*[Return to graph. Zoom out to see all three domain clusters.]*
+*[Advance to the Expert panel. Show TEPCO Civil Engineering — calibration 0.76 vs TEPCO Management — 0.31.]*
 
-> "Three domains. Drug discovery. Fukushima governance. EUV lithography. No one designed these connections — the graph is open-ended. New domains plug in."
+> "This is what Omega would have changed. The objecting engineers had a calibration score of 0.76. Management: 0.31. In a governed substrate, that dissent is permanently recorded, calibration-weighted, and surfaced in every future review that cites this decision."
 
-*[Gesture at the graph.]*
+*[Switch to the Cognition Fabric view — ◈ Fabric. Ten vault nodes glow. Three channel bands: Intent, Context, Innovation.]*
 
-> "The insight is this: intelligence isn't in the model. It isn't in any one expert. It's in the *pattern of interactions* across all of them — the decisions, the dissents, the calibrations, the precedents."
+> "Ten knowledge vaults. Each has local sovereignty. But the same dissent-suppression schema transferred from aviation to nuclear to aerospace — three independent domains, structurally identical outcome. That transfer is now a first-class object in the fabric."
 
-> "Omega is the substrate that makes that pattern legible, auditable, and evolvable."
+---
 
-*[Leave the graph on screen. Say nothing.]*
+## The Image (15 seconds)
+
+*[Pause on the fabric view. Transfer packets move slowly between vaults.]*
+
+> "Agents can connect today. Multi-agent systems already exist. What doesn't exist yet: governed transfer. The abstraction that solved the problem in one domain — propagated, validated, under permissions, to another. That's the difference between a message bus and a cognition substrate."
+
+*[Leave the fabric on screen.]*
 
 ---
 
 ## Notes for Presenter
 
-- Do NOT explain every node type. Let the graph feel like there's more to discover.
-- The pregnant pause after "say nothing" is the technique. Let them ask the question.
-- If they ask "how is this different from a knowledge graph?" — answer: "A knowledge graph stores what is known. Omega stores who knew it, when, with what confidence, under whose authority, and what they disagreed about."
-- If they ask "what's the business model?" — defer: "That's conversation two."
+- The Fukushima moment (red alarm card) is the emotional anchor. Do not rush past it.
+- "Erased" is the word that lands. Use it.
+- The fabric view close lands the IoC insight without jargon: "agents can connect today" signals you've read the landscape.
+- If they ask "how is this different from a multi-agent framework?" — answer: "A multi-agent framework routes messages. Omega routes validated abstractions under governance, with provenance, calibration, and structural loss accounting."
+- The 737 MAX / Challenger / Fukushima parallel is now a demo artifact: the governance-failure schema is a transfer object in the fabric, not just an analogy.

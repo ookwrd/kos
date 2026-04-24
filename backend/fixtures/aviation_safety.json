@@ -1,0 +1,331 @@
+{
+  "domain": "aviation_safety",
+  "description": "Aviation safety governance domain. The Boeing 737 MAX MCAS failure \u2014 a textbook case of institutional normalization of known risk, regulatory capture, and the systematic discounting of engineer dissent under schedule pressure. Structural parallels with extreme_environments (Challenger normalization) and fukushima_governance (authority override of expert evidence).",
+  "fixture_grounding": "source_grounded",
+  "source_ids": [
+    "ev-ual173-ntsb-1979",
+    "ev-737max-house-2020",
+    "ev-crm-helmreich-1999"
+  ],
+  "last_verified": "2026-04-24",
+  "grounding_notes": "NTSB reports are public domain. 737 MAX investigation is House Transportation Committee public record. CRM peer-reviewed in Int'l J Aviation Psychology 1999.",
+  "agents": [
+    {
+      "id": "ag-faa-aio",
+      "name": "FAA Aircraft Certification Office",
+      "agent_type": "institution",
+      "domain": "aviation_safety",
+      "competences": [
+        "airworthiness_certification",
+        "safety_analysis_review",
+        "type_certification"
+      ],
+      "beliefs": {
+        "mcas_adequately_analyzed_2017": 0.71,
+        "oa_delegation_appropriate": 0.68,
+        "737max_safe_for_certification_2017": 0.74
+      },
+      "authority_scope": [
+        "aviation_safety",
+        "faa_certification"
+      ],
+      "calibration_score": 0.44,
+      "attributes": {
+        "role": "US FAA unit responsible for type certification of Boeing aircraft",
+        "note": "FAA delegated 96% of certification work to Boeing's own ODA (Organization Designation Authorization) representatives \u2014 Boeing employees certifying Boeing aircraft. Congressional investigation (2020) found systematic management pressure on ODA employees to approve safety analyses.",
+        "dissent_history": "FAA safety engineer warned about MCAS single-sensor vulnerability in 2016; concern not escalated to certification decision"
+      }
+    },
+    {
+      "id": "ag-boeing-management",
+      "name": "Boeing Commercial Airplanes Leadership",
+      "agent_type": "institution",
+      "domain": "aviation_safety",
+      "competences": [
+        "aircraft_design",
+        "production_management",
+        "regulatory_navigation"
+      ],
+      "beliefs": {
+        "mcas_adequately_analyzed_2017": 0.78,
+        "737max_requires_new_type_rating": 0.18,
+        "schedule_pressure_compatible_with_safety": 0.72
+      },
+      "authority_scope": [
+        "aviation_safety"
+      ],
+      "calibration_score": 0.38,
+      "attributes": {
+        "role": "Boeing Commercial Airplanes senior management, 2014-2020",
+        "note": "737 MAX program driven by competitive pressure from Airbus A320neo. Management decision to mount larger LEAP-1B engines on existing 737 frame rather than develop new aircraft \u2014 created nose-up pitch tendency requiring MCAS. MCAS described to FAA as a 'small software tweak'; authority envelope was subsequently expanded without FAA notification.",
+        "dissent_history": "Multiple internal Boeing engineers raised concerns about MCAS; 2019 internal Slack messages revealed awareness of safety issues and deliberate concealment from FAA"
+      }
+    },
+    {
+      "id": "ag-ed-pierson",
+      "name": "Ed Pierson",
+      "agent_type": "human",
+      "domain": "aviation_safety",
+      "competences": [
+        "production_quality",
+        "military_aviation",
+        "safety_management"
+      ],
+      "beliefs": {
+        "737max_production_safety_compromised": 0.97,
+        "schedule_pressure_caused_quality_failures": 0.96,
+        "boeing_management_ignored_warnings": 0.98
+      },
+      "authority_scope": [
+        "aviation_safety"
+      ],
+      "calibration_score": 0.91,
+      "attributes": {
+        "role": "Former Boeing senior manager, 737 MAX final assembly line (Renton, WA)",
+        "note": "Repeatedly warned Boeing management in 2018 that production schedule pressure was creating factory safety problems. Recommended halting production to address quality issues. Was overridden. Testified before Congress in 2019 after JT610 and ET302 crashes.",
+        "dissent_history": "Formal written warnings to Boeing management June-August 2018; congressional testimony 2019"
+      }
+    },
+    {
+      "id": "ag-ntsb-investigator",
+      "name": "NTSB / JATR Technical Review",
+      "agent_type": "institution",
+      "domain": "aviation_safety",
+      "competences": [
+        "accident_investigation",
+        "systems_safety_analysis",
+        "certification_audit"
+      ],
+      "beliefs": {
+        "mcas_single_sensor_architecture_insufficient": 0.98,
+        "faa_oda_delegation_flawed": 0.92,
+        "737max_design_required_enhanced_training": 0.95
+      },
+      "authority_scope": [
+        "aviation_safety"
+      ],
+      "calibration_score": 0.89,
+      "attributes": {
+        "note": "Joint Authorities Technical Review (JATR, 2019): found FAA did not adequately assess MCAS hazard category; MCAS was classified as non-hazardous, enabling reduced oversight. Actual behavior was catastrophic. Single-sensor reliance was a design decision that was never explicitly reviewed."
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-mcas",
+      "label": "Maneuvering Characteristics Augmentation System (MCAS)",
+      "entity_type": "mechanism",
+      "domain": "aviation_safety",
+      "attributes": {
+        "purpose": "Counter nose-up pitch tendency from LEAP-1B engine placement on modified 737 airframe",
+        "certification_description": "Small software change; presented to FAA as low-authority, limited-envelope system",
+        "actual_authority": "Could apply up to 2.5\u00b0 stabilizer trim per activation, repeatedly, without bound",
+        "single_sensor_dependency": "Relied on single angle-of-attack sensor \u2014 no redundancy",
+        "pilot_awareness": "System not documented in 737 MAX flight manual delivered to airlines",
+        "aoa_disagree_alert": "Alert indicating AoA sensor mismatch was an optional paid add-on not selected by Lion Air or Ethiopian Airlines"
+      }
+    },
+    {
+      "id": "ent-jt610",
+      "label": "Lion Air Flight JT610 (Oct 2018)",
+      "entity_type": "evidence_artifact",
+      "domain": "aviation_safety",
+      "attributes": {
+        "date": "2018-10-29",
+        "aircraft": "Boeing 737 MAX 8",
+        "cause": "MCAS activated on erroneous AoA sensor input; repeatedly pushed nose down; crew unable to recover",
+        "fatalities": 189,
+        "boeing_response": "Issued bulletin clarifying MCAS procedures; did not ground fleet; did not inform FAA of full MCAS authority",
+        "faa_response": "Did not ground aircraft; issued airworthiness directive to address runaway stabilizer"
+      }
+    },
+    {
+      "id": "ent-et302",
+      "label": "Ethiopian Airlines Flight ET302 (Mar 2019)",
+      "entity_type": "evidence_artifact",
+      "domain": "aviation_safety",
+      "attributes": {
+        "date": "2019-03-10",
+        "aircraft": "Boeing 737 MAX 8",
+        "cause": "Identical MCAS failure mode to JT610",
+        "fatalities": 157,
+        "days_after_jt610": 133,
+        "grounding": "737 MAX grounded globally March 13 2019; FAA was last major regulator to act (most others grounded March 11-12)",
+        "note": "Ethiopian crew had followed emergency procedures from Boeing bulletin issued after JT610; still could not recover. Procedures were inadequate."
+      }
+    },
+    {
+      "id": "ent-oda-system",
+      "label": "FAA Organization Designation Authorization (ODA)",
+      "entity_type": "governance_artifact",
+      "domain": "aviation_safety",
+      "attributes": {
+        "description": "FAA program allowing manufacturers to designate their own employees to perform certification work on behalf of FAA",
+        "737max_delegation_pct": 96,
+        "design_intent": "Efficiency \u2014 FAA lacked resources to review all certifications directly",
+        "failure_mode": "Boeing management pressure on ODA employees to approve analyses quickly; congressional investigation found systematic management intimidation",
+        "structural_analogy": "Self-certification of safety \u2014 analogous to TEPCO self-reporting its own tsunami risk assessments"
+      }
+    },
+    {
+      "id": "ent-737max-grounding",
+      "label": "737 MAX Global Grounding (Mar-Nov 2020)",
+      "entity_type": "governance_artifact",
+      "domain": "aviation_safety",
+      "attributes": {
+        "duration_days": 608,
+        "financial_cost_boeing_billion": 20,
+        "aircraft_grounded": 387,
+        "recertification_changes": [
+          "MCAS single-to-dual sensor",
+          "AoA disagree alert standard",
+          "revised pilot training",
+          "updated software authority limits"
+        ],
+        "return_to_service": "2020-11-18 (US)"
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-regulatory-capture",
+      "name": "Regulatory Capture via Self-Certification",
+      "mechanism_type": "institutional_process",
+      "domain": "aviation_safety",
+      "inputs": [
+        "resource_constrained_regulator",
+        "manufacturer_technical_expertise",
+        "commercial_pressure"
+      ],
+      "outputs": [
+        "delegated_certification",
+        "reduced_oversight",
+        "management_pressure_on_certifiers"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.91,
+      "notes": "ODA system created structural conditions for regulatory capture. When certifiers are employees of the certified entity, independence requires cultural protection that management pressure can erode. Pattern: authority entrusted with safety judgment is systematically influenced by the entity being regulated."
+    },
+    {
+      "id": "mech-deviance-schedule",
+      "name": "Schedule-Driven Normalization of Risk",
+      "mechanism_type": "institutional_process",
+      "domain": "aviation_safety",
+      "inputs": [
+        "competitive_schedule_pressure",
+        "incremental_design_changes",
+        "cost_of_new_type_rating"
+      ],
+      "outputs": [
+        "expanded_mcas_authority_undisclosed",
+        "reduced_pilot_training",
+        "underclassified_hazard_level"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.93,
+      "notes": "Each individual deviation from safety norm was small: slightly expanded MCAS authority, slightly lower pilot training requirement, slightly reduced hazard classification. No single decision was obviously catastrophic. Collectively they created the failure mode. This is the O-ring normalization pattern: Challenger \u2192 737 MAX."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-mcas-single-sensor",
+      "question": "Should MCAS rely on a single angle-of-attack sensor, or require dual-sensor agreement before activation?",
+      "outcome": "Single-sensor architecture approved \u2014 AoA disagree alert made optional paid add-on",
+      "rationale": "Cost and schedule. Dual-sensor requirement would have required significant redesign and potentially triggered new type rating requirement. Single-sensor classified as acceptable given assumed low-authority, limited-envelope operation.",
+      "actor_id": "ag-boeing-management",
+      "domain": "aviation_safety",
+      "is_exception": true,
+      "evidence_ids": [
+        "ev-jatr-report"
+      ],
+      "notes": "MCAS authority was subsequently expanded after certification without FAA notification. The hazard classification assumed original limited authority. Expanded authority was never re-evaluated. Identical to TEPCO seawall: decision made at one risk level, context changed, re-evaluation never triggered."
+    },
+    {
+      "id": "dec-faa-noground-post-jt610",
+      "question": "Should FAA ground 737 MAX fleet after Lion Air JT610 crash (Oct 2018)?",
+      "outcome": "Fleet not grounded. Airworthiness directive issued. Boeing bulletin issued.",
+      "rationale": "FAA and Boeing concluded JT610 caused by crew failure to follow runaway stabilizer procedures; MCAS link not fully disclosed to FAA by Boeing post-crash.",
+      "actor_id": "ag-faa-aio",
+      "domain": "aviation_safety",
+      "is_exception": true,
+      "evidence_ids": [
+        "ev-jatr-report"
+      ],
+      "notes": "Boeing did not disclose full MCAS authority to FAA after JT610. FAA was therefore reasoning from incomplete information. ET302 (133 days later) killed 157 more with identical failure. Gap between institutional knowledge and regulatory action \u2014 parallel to TEPCO's 2006 internal tsunami study that was never shared with regulators."
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-pierson-production",
+      "actor_id": "ag-ed-pierson",
+      "target_id": "dec-faa-noground-post-jt610",
+      "disagreement_type": "normative",
+      "rationale": "Production was not in control. I recommended halting production. I was overridden by management who were focused on delivery schedules. The factory was in chaos \u2014 wrong parts, untrained workers, enormous schedule pressure. This was not a safe environment to be building airplanes that carry hundreds of people.",
+      "resolution_status": "resolved",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-jatr-report",
+      "source_type": "primary_literature",
+      "content_ref": "Joint Authorities Technical Review (JATR, 2019) \u2014 Observations, Findings, and Recommendations. FAA, Transport Canada, EASA + 7 other authorities. October 11, 2019.",
+      "media_type": "text",
+      "validated_by": [
+        "ag-ntsb-investigator"
+      ],
+      "uncertainty": 0.06,
+      "notes": "Found MCAS hazard classification inadequate; found FAA ODA oversight insufficient; recommended enhanced oversight mechanisms"
+    },
+    {
+      "id": "ev-house-report",
+      "source_type": "primary_literature",
+      "content_ref": "US House Transportation Committee Final Report (2020) \u2014 'The Design, Development and Certification of the Boeing 737 MAX'. December 2020.",
+      "media_type": "text",
+      "validated_by": [
+        "ag-ntsb-investigator"
+      ],
+      "uncertainty": 0.08,
+      "notes": "Found systematic management pressure on ODA employees; found Boeing concealed MCAS authority expansion from FAA; found FAA leadership prioritized schedule over safety concerns raised by engineers"
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-737max-challenger",
+      "claim": "Boeing 737 MAX MCAS failure is a direct structural parallel to Challenger O-ring failure: incremental normalization of known risk under schedule pressure, systematic discounting of engineer warnings, catastrophic failure that was subsequently traceable to decisions already visible before the accident",
+      "source_domain": "aviation_safety",
+      "target_domain": "extreme_environments",
+      "source_node_ids": [
+        "dec-mcas-single-sensor",
+        "mech-deviance-schedule",
+        "ag-ed-pierson"
+      ],
+      "target_node_ids": [
+        "dec-challenger-launch",
+        "dissent-boisjoly-launch",
+        "mech-normalization-of-deviance"
+      ],
+      "confidence": 0.94,
+      "novelty_score": 0.88,
+      "structural_loss": "Challenger was a discrete launch decision; MCAS was an accumulation of design decisions over years. The normalization mechanism is identical; the temporal structure differs. Both involved named engineers who raised formal dissents that were overridden."
+    },
+    {
+      "id": "bridge-737max-tepco-self-cert",
+      "claim": "FAA's ODA self-certification system is structurally identical to TEPCO's self-assessment of tsunami risk: the regulated entity performs the safety analysis, regulatory capture removes independent verification, catastrophic failure reveals the gap",
+      "source_domain": "aviation_safety",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": [
+        "ent-oda-system",
+        "dec-faa-noground-post-jt610",
+        "mech-regulatory-capture"
+      ],
+      "target_node_ids": [
+        "dec-seawall-2008",
+        "inst-tepco-mgmt"
+      ],
+      "confidence": 0.87,
+      "novelty_score": 0.85,
+      "structural_loss": "ODA was explicit regulatory delegation; TEPCO self-assessment was informal. Boeing's concealment of MCAS authority from FAA is an additional element with no direct Fukushima parallel \u2014 it moves from negligence toward active deception."
+    }
+  ]
+}

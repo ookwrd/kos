@@ -15,13 +15,16 @@ import { PermissionExplorer } from "./components/PermissionExplorer";
 import { NestedAgencyView } from "./components/NestedAgencyView";
 import { SerendipityPanel } from "./components/SerendipityPanel";
 import { LandingView } from "./components/LandingView";
+import { TransferWorkbench } from "./components/TransferWorkbench";
+import { ConceptAtlasView } from "./components/ConceptAtlasView";
+import { CognitionFabricView } from "./components/CognitionFabricView";
 import { useGraphData, useDecisionReplay } from "./hooks/useGraphData";
 import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency";
-type CenterView = "graph" | "city";
+type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas";
+type CenterView = "graph" | "city" | "fabric";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string; desc: string }[] = [
   { id: "replay",     label: "Replay",     icon: "▶", tip: "Decision Replay",      desc: "Step through any decision trace with actors, evidence, and policy gates" },
@@ -39,16 +42,39 @@ const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string; desc
   { id: "evolution",   label: "Evolution",   icon: "⊞", tip: "Graph Evolution",   desc: "Open-ended proposals: new nodes, bridges, densifications — subject to governance" },
   { id: "permissions", label: "Access",      icon: "⬡", tip: "Permission Matrix", desc: "Who can read, write, or govern which nodes and layers" },
   { id: "agency",      label: "Agency",      icon: "⊘", tip: "Nested Agency",     desc: "Hierarchy of agents and institutions — delegation chains, authority scopes" },
+  { id: "transfer",    label: "Transfer",    icon: "⇕", tip: "Transfer Workbench", desc: "Cross-domain transfer via abstraction — functor lab, abstraction elevator, structural loss accounting" },
+  { id: "atlas",       label: "Atlas",       icon: "◈", tip: "Concept Atlas",      desc: "2D scatter of all concept nodes by abstraction level and substrate distance — click to inspect" },
 ];
 
 const DOMAIN_META: Record<string, { color: string; label: string; desc: string }> = {
-  drug_discovery:         { color: "#3b82f6", label: "Drug",         desc: "KRAS pathway, clinical trial governance, expert calibration" },
-  fukushima_governance:   { color: "#f97316", label: "Governance",   desc: "TEPCO seawall decision — authority override, calibration decay" },
-  euv_lithography:        { color: "#22c55e", label: "EUV",          desc: "Pre-pulse tacit knowledge, ASML process engineering" },
-  math_category_theory:   { color: "#8b5cf6", label: "Category",     desc: "Formal category theory — reflexive meta-domain for KOS transfer" },
-  surgical_robotics:      { color: "#ec4899", label: "Surgery",      desc: "da Vinci haptic calibration, OR Safety Committee override" },
-  semiconductor_hardware: { color: "#eab308", label: "Fab",          desc: "Plasma etch process window, yield governance, Kim's dissent" },
-  extreme_environments:   { color: "#ef4444", label: "Extreme",      desc: "Challenger O-ring — normalization of deviance, Boisjoly warning" },
+  // Governance & Safety
+  fukushima_governance:                { color: "#f97316", label: "Governance",   desc: "TEPCO seawall — authority override, calibration decay, dissent suppression" },
+  aviation_safety:                     { color: "#94a3b8", label: "Aviation",     desc: "737 MAX MCAS, ODA regulatory capture, Ed Pierson dissent" },
+  pandemic_governance:                 { color: "#a855f7", label: "Pandemic",     desc: "WHO PHEIC delay, mask reversal, aerosol science dissent" },
+  climate_policy:                      { color: "#06b6d4", label: "Climate",      desc: "Hansen, IPCC, COP26 — political discount of expert evidence" },
+  disaster_response_operations:        { color: "#fb923c", label: "Disaster",     desc: "Incident command, resource routing, multi-agency coordination under uncertainty" },
+  public_health_coordination:          { color: "#fbbf24", label: "Public Health",desc: "Surveillance systems, outbreak response, expert-authority tension" },
+  // Advanced Manufacturing
+  euv_lithography:                     { color: "#22c55e", label: "EUV",          desc: "ASML pre-pulse tacit knowledge, source instability, process engineering" },
+  semiconductor_hardware:              { color: "#eab308", label: "Fab",          desc: "Plasma etch process window, yield governance, Kim's dissent" },
+  surgical_robotics:                   { color: "#ec4899", label: "Surgery",      desc: "da Vinci haptic calibration, OR Safety Committee override" },
+  industrial_quality_control:          { color: "#84cc16", label: "Industrial QC",desc: "SPC, defect detection, process drift under production pressure" },
+  supply_chain_resilience:             { color: "#0ea5e9", label: "Supply Chain", desc: "Bottleneck identification, shock absorption, rerouting strategies" },
+  extreme_environments:                { color: "#ef4444", label: "Extreme",      desc: "Challenger O-ring, normalization of deviance, robotic autonomy" },
+  // Discovery Science
+  drug_discovery:                      { color: "#3b82f6", label: "Drug",         desc: "KRAS pathway, BBB penetration, clinical trial calibration" },
+  translational_biomedicine:           { color: "#60a5fa", label: "Translational",desc: "Bench-to-bedside, trial design, regulatory evidence standards" },
+  developmental_biology_morphogenesis: { color: "#34d399", label: "Morphogenesis",desc: "Turing patterns, Levin multiscale control, morphogen gradients" },
+  causality_and_complex_systems:       { color: "#38bdf8", label: "Causality",    desc: "Pearl DAGs, invariant prediction, causal inference under intervention" },
+  experimental_design_and_measurement: { color: "#818cf8", label: "Experimental", desc: "RCT design, measurement validity, bias identification" },
+  expert_preservation:                 { color: "#d97706", label: "Expert Pres.", desc: "Tacit knowledge capture before expert retirement, succession protocols" },
+  // Mathematical Transfer
+  mathematics_category_theory:         { color: "#8b5cf6", label: "Category",     desc: "Functors, natural transformations, ologs — cross-domain transfer mathematics" },
+  algebraic_structures:                { color: "#a78bfa", label: "Algebra",      desc: "Groups, rings, Galois theory, Reed-Solomon codes — finite field transfer" },
+  graph_theory_and_networks:           { color: "#c084fc", label: "Graph Theory", desc: "Spectral methods, network flow, community detection, epidemiological networks" },
+  information_theory:                  { color: "#d946ef", label: "Info Theory",  desc: "Shannon entropy, channel capacity, Landauer principle, rate-distortion" },
+  optimization_and_control:            { color: "#4ade80", label: "Optimization", desc: "Bellman equations, optimal control, optimal transport, PID theory" },
+  scientific_model_transfer:           { color: "#cbd5e1", label: "Model Xfer",   desc: "Abstraction extraction, invariant preservation, domain-to-domain bridge validation" },
 };
 
 // ── Tooltip ───────────────────────────────────────────────────────────────────
@@ -316,7 +342,7 @@ export default function App() {
   const {
     selectedNode, overview, error, loading,
     domainFilter, setDomainFilter, liveEvents,
-    setAlignmentMap,
+    setAlignmentMap, requestedView, requestView,
   } = useGraphStore();
 
   useGraphData();
@@ -340,11 +366,23 @@ export default function App() {
   useEffect(() => { if (selectedDecisionId) setLeftTab("replay"); }, [selectedDecisionId]);
   useEffect(() => { if (selectedNode?.layer === "agents") setRightTab("twin"); }, [selectedNode]);
 
+  // Respond to cross-component view requests (e.g. SerendipityPanel → City)
+  useEffect(() => {
+    if (requestedView) {
+      setCenterView(requestedView);
+      requestView(null);
+    }
+  }, [requestedView, requestView]);
+
   const alignPairs = [
-    ["drug_discovery", "fukushima_governance"],
-    ["drug_discovery", "euv_lithography"],
-    ["surgical_robotics", "fukushima_governance"],
+    ["drug_discovery",       "fukushima_governance"],
     ["extreme_environments", "fukushima_governance"],
+    ["climate_policy",       "fukushima_governance"],
+    ["aviation_safety",      "extreme_environments"],
+    ["pandemic_governance",  "fukushima_governance"],
+    ["surgical_robotics",    "euv_lithography"],
+    ["mathematics_category_theory", "euv_lithography"],
+    ["semiconductor_hardware","drug_discovery"],
   ];
   const alignIdx = useRef(0);
 
@@ -407,7 +445,7 @@ export default function App() {
           </div>
           <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
             style={{ backgroundColor: "#6366f115", color: "#6366f1", border: "1px solid #6366f125" }}>
-            v3
+            v6
           </span>
           {demoMode && (
             <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
@@ -433,18 +471,19 @@ export default function App() {
         {/* Center view toggle */}
         <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
           style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
-          {(["graph", "city"] as CenterView[]).map(v => (
+          {(["graph", "city", "fabric"] as CenterView[]).map(v => (
             <button key={v} onClick={() => setCenterView(v)}
               className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
               style={{
                 backgroundColor: centerView === v ? "rgba(99,102,241,0.15)" : "transparent",
                 color: centerView === v ? "#818cf8" : "#334155",
               }}>
-              {v === "graph" ? "⬡ Graph" : "⬛ City"}
+              {v === "graph" ? "⬡ Graph" : v === "city" ? "⬛ City" : "◈ Fabric"}
             </button>
           ))}
-          <Tooltip title={centerView === "graph" ? "Graph View" : "City View"}
-            body={centerView === "graph" ? "Multi-layer knowledge graph with Cytoscape — click any node to inspect" : "3D city of knowledge domains — buildings are node clusters, arcs are cross-domain bridges"}
+          <Tooltip
+            title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : "Cognition Fabric"}
+            body={centerView === "graph" ? "Multi-layer knowledge graph with Cytoscape — click any node to inspect" : centerView === "city" ? "3D city of knowledge domains — buildings are node clusters, arcs are cross-domain bridges" : "Distributed cognition fabric — knowledge vaults, shared intent channels, context fabric, collective innovation, cognition engines"}
             anchor={centerAnchor} side="bottom" />
         </div>
 
@@ -514,11 +553,9 @@ export default function App() {
 
         {/* Center */}
         <main className="flex-1 overflow-hidden p-2 relative">
-          {centerView === "graph" ? (
-            <GraphCanvas className="w-full h-full" />
-          ) : (
-            <CityOverview className="w-full h-full" />
-          )}
+          {centerView === "graph"   && <GraphCanvas           className="w-full h-full" />}
+          {centerView === "city"    && <CityOverview           className="w-full h-full" />}
+          {centerView === "fabric"  && <CognitionFabricView    className="w-full h-full" />}
         </main>
 
         {/* Right sidebar */}
@@ -542,6 +579,8 @@ export default function App() {
               {rightTab === "permissions" && <PermissionExplorer     className="h-full" />}
               {rightTab === "agency"      && <NestedAgencyView       className="h-full" />}
               {rightTab === "evolution"   && <GraphEvolutionTimeline  className="h-full" />}
+              {rightTab === "transfer"    && <TransferWorkbench       className="h-full" />}
+              {rightTab === "atlas"       && <ConceptAtlasView        className="h-full" />}
             </div>
           </aside>
         )}
@@ -587,8 +626,8 @@ export default function App() {
         )}
 
         <div className="flex items-center gap-4 flex-shrink-0 text-[9px] text-slate-800">
-          <span>7 knowledge cities · 5 bridges</span>
-          <span>Omega v3.0</span>
+          <span>24 knowledge cities · 6 metro regions · 50+ bridges</span>
+          <span>Omega v6.0</span>
         </div>
       </footer>
     </div>

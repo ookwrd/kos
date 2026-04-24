@@ -1,0 +1,346 @@
+{
+  "domain": "pandemic_governance",
+  "description": "COVID-19 pandemic governance domain. WHO decisions, mask guidance reversal, vaccine rollout prioritization, and the structural tension between precautionary action and economic pressure. Parallels with fukushima_governance: expert evidence acknowledged then discounted under political and economic pressure at moments of institutional uncertainty.",
+  "fixture_grounding": "source_grounded",
+  "source_ids": [
+    "ev-morawska-239-letter-2020",
+    "ev-who-aerosol-guidance-2021",
+    "ev-who-pheic-jan2020"
+  ],
+  "last_verified": "2026-04-24",
+  "grounding_notes": "WHO aerosol guidance timeline reconstructed from public WHO technical briefs. Morawska 2020 (Clinical Infectious Diseases) is the key 239-author dissent document. R0 eigenvalue from Keeling & Rohani 2007.",
+  "agents": [
+    {
+      "id": "ag-who-erd",
+      "name": "WHO Emergency Response Directorate",
+      "agent_type": "institution",
+      "domain": "pandemic_governance",
+      "competences": [
+        "pandemic_surveillance",
+        "public_health_guidance",
+        "international_coordination"
+      ],
+      "beliefs": {
+        "human_to_human_transmission_confirmed_jan2020": 0.97,
+        "aerosol_transmission_primary_route": 0.82,
+        "early_border_controls_effective": 0.71
+      },
+      "authority_scope": [
+        "pandemic_governance",
+        "who_guidance"
+      ],
+      "calibration_score": 0.61,
+      "attributes": {
+        "role": "WHO's operational arm for health emergency response",
+        "note": "WHO declared PHEIC on Jan 30 2020 \u2014 weeks after evidence of human-to-human transmission was available. Delayed partly by deference to Chinese government position. Aerosol transmission guidance lagged scientific consensus by 6+ months.",
+        "dissent_history": "Internal WHO scientists urged faster aerosol acknowledgment; external aerosol scientists (Linsey Marr, Jose-Luis Jimenez) published open letters"
+      }
+    },
+    {
+      "id": "ag-fauci",
+      "name": "Dr. Anthony Fauci",
+      "agent_type": "human",
+      "domain": "pandemic_governance",
+      "competences": [
+        "infectious_disease",
+        "vaccine_development",
+        "pandemic_policy"
+      ],
+      "beliefs": {
+        "masks_effective_general_public_feb2020": 0.55,
+        "masks_effective_general_public_apr2020": 0.92,
+        "mrna_vaccines_effective_against_ancestral_strain": 0.98,
+        "indoor_aerosol_transmission_primary": 0.88
+      },
+      "authority_scope": [
+        "pandemic_governance",
+        "us_federal_health"
+      ],
+      "calibration_score": 0.78,
+      "attributes": {
+        "role": "Director, NIAID; lead NIAID scientist for COVID response",
+        "note": "Feb 2020 mask guidance reversal: initially advised against public mask use (supply preservation rationale); reversed in April 2020. Publicly acknowledged this as supply-driven communication rather than scientific position.",
+        "dissent_history": "Dissented from political pressure to endorse unvalidated therapeutics (hydroxychloroquine, bleach)"
+      }
+    },
+    {
+      "id": "ag-linsey-marr",
+      "name": "Dr. Linsey Marr",
+      "agent_type": "human",
+      "domain": "pandemic_governance",
+      "competences": [
+        "aerosol_science",
+        "indoor_air_quality",
+        "respiratory_transmission"
+      ],
+      "beliefs": {
+        "aerosol_transmission_primary_route": 0.97,
+        "who_droplet_guidance_incorrect": 0.96,
+        "ventilation_underemphasized": 0.99
+      },
+      "authority_scope": [
+        "pandemic_governance"
+      ],
+      "calibration_score": 0.92,
+      "attributes": {
+        "role": "Professor of Civil and Environmental Engineering, Virginia Tech; aerosol scientist",
+        "note": "One of 239 scientists who co-signed open letter to WHO urging acknowledgment of aerosol transmission (July 2020). WHO initially dismissed, then partially acknowledged aerosol route in October 2020 \u2014 9 months after evidence was clear."
+      }
+    },
+    {
+      "id": "ag-covax-facility",
+      "name": "COVAX Facility (Gavi/CEPI/WHO)",
+      "agent_type": "institution",
+      "domain": "pandemic_governance",
+      "competences": [
+        "vaccine_procurement",
+        "equitable_distribution",
+        "multilateral_coordination"
+      ],
+      "beliefs": {
+        "dose_hoarding_by_rich_countries_occurring": 0.94,
+        "iprs_waiver_needed": 0.71,
+        "bilateral_deals_undermining_equity": 0.88
+      },
+      "authority_scope": [
+        "pandemic_governance",
+        "global_health_equity"
+      ],
+      "calibration_score": 0.68,
+      "attributes": {
+        "note": "COVAX target: 2B doses to lower-income countries by end 2021. Actual delivery: 900M doses. High-income countries received 3x more doses per capita than lower-income. Structural cause: bilateral advance purchase agreements signed before COVAX established."
+      }
+    },
+    {
+      "id": "ag-cdc-2020",
+      "name": "US CDC (2020-2021)",
+      "agent_type": "institution",
+      "domain": "pandemic_governance",
+      "competences": [
+        "disease_surveillance",
+        "public_health_guidance",
+        "contact_tracing"
+      ],
+      "beliefs": {
+        "outdoor_surface_transmission_primary_route": 0.72,
+        "aerosol_transmission_confirmed_jul2020": 0.61,
+        "school_closures_warranted": 0.58
+      },
+      "authority_scope": [
+        "pandemic_governance",
+        "us_federal_health"
+      ],
+      "calibration_score": 0.55,
+      "attributes": {
+        "note": "CDC initially overemphasized fomite/surface transmission. Posted 6-foot distancing rule as clear guideline despite aerosol evidence showing transmission at longer ranges indoors. Political interference from White House documented in 2020 MMWR guidance.",
+        "dissent_history": "Career CDC scientists opposed White House editing of MMWR reports; multiple resignations and whistleblower accounts"
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "ent-pheic-2020",
+      "label": "WHO PHEIC Declaration (Jan 30 2020)",
+      "entity_type": "governance_artifact",
+      "domain": "pandemic_governance",
+      "attributes": {
+        "declared": "2020-01-30",
+        "human_to_human_transmission_known_since": "2020-01-14",
+        "days_delayed": 16,
+        "rationale_for_delay": "WHO deference to Chinese government position; concern about stigmatizing China's response",
+        "pandemic_declaration_followed": "2020-03-11"
+      }
+    },
+    {
+      "id": "ent-mask-guidance-reversal",
+      "label": "CDC/WHO Mask Guidance Reversal (Apr 2020)",
+      "entity_type": "decision_artifact",
+      "domain": "pandemic_governance",
+      "attributes": {
+        "initial_guidance_feb2020": "Masks not recommended for general public \u2014 reserve for healthcare workers",
+        "revised_guidance_apr2020": "Cloth face coverings recommended in public settings",
+        "stated_rationale_for_initial_guidance": "Supply preservation; insufficient evidence of asymptomatic transmission",
+        "actual_scientific_position_feb2020": "Aerosol evidence already suggested community masking value; supply was the primary driver of initial guidance",
+        "outcome": "Guidance reversal contributed to public confusion and erosion of trust in health authorities"
+      }
+    },
+    {
+      "id": "ent-aerosol-letter",
+      "label": "Open Letter on Aerosol Transmission (July 2020)",
+      "entity_type": "evidence_artifact",
+      "domain": "pandemic_governance",
+      "attributes": {
+        "signatories": 239,
+        "publication": "Clinical Infectious Diseases (July 2020)",
+        "claim": "SARS-CoV-2 is transmitted by aerosols; WHO guidance underestimates indoor airborne risk",
+        "who_initial_response": "Dismissed as lacking sufficient evidence",
+        "who_acknowledgment_date": "2020-10-05",
+        "months_to_acknowledgment": 3
+      }
+    },
+    {
+      "id": "ent-vaccine-equity-gap",
+      "label": "COVID-19 Vaccine Equity Gap",
+      "entity_type": "measurement",
+      "domain": "pandemic_governance",
+      "attributes": {
+        "high_income_doses_per_100": 220,
+        "low_income_doses_per_100": 28,
+        "covax_target_2021": "2 billion doses",
+        "covax_actual_2021": "900 million doses",
+        "primary_cause": "Bilateral advance purchase agreements by rich countries locked up supply before COVAX established",
+        "excess_mortality_estimate_from_gap_millions": 1.3
+      }
+    },
+    {
+      "id": "ent-excess-mortality",
+      "label": "Excess Mortality (2020-2022)",
+      "entity_type": "measurement",
+      "domain": "pandemic_governance",
+      "attributes": {
+        "who_estimate_million": 14.9,
+        "official_covid_deaths_million": 6.2,
+        "ratio": 2.4,
+        "note": "Excess mortality captures both direct COVID deaths and deaths from overwhelmed health systems, delayed care, and other pandemic effects. The gap between official and excess counts reflects reporting failures in many countries."
+      }
+    }
+  ],
+  "mechanisms": [
+    {
+      "id": "mech-political-interference",
+      "name": "Political Override of Scientific Guidance",
+      "mechanism_type": "institutional_process",
+      "domain": "pandemic_governance",
+      "inputs": [
+        "scientific_consensus",
+        "political_pressure",
+        "economic_cost_of_action"
+      ],
+      "outputs": [
+        "delayed_guidance",
+        "weakened_policy",
+        "public_confusion"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.88,
+      "notes": "Documented in CDC MMWR interference, WHO PHEIC delay, mask reversal. Mechanistically identical to political-discount mechanism in climate_policy and to TEPCO management overrides in fukushima_governance."
+    },
+    {
+      "id": "mech-information-hazard",
+      "name": "Precautionary Communication Suppression",
+      "mechanism_type": "institutional_process",
+      "domain": "pandemic_governance",
+      "inputs": [
+        "supply_shortage",
+        "expert_recommendation",
+        "institutional_authority"
+      ],
+      "outputs": [
+        "inverted_guidance",
+        "supply_mismatch_solved_short_term",
+        "trust_erosion_long_term"
+      ],
+      "causal_direction": "forward",
+      "confidence": 0.82,
+      "notes": "Mask guidance was suppressed to protect supply for healthcare workers \u2014 a rational short-term decision that created long-term credibility damage. Structural parallel to 'noble lie' problem in risk communication literature."
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-pheic-delay",
+      "question": "Should WHO declare PHEIC immediately upon confirmation of human-to-human transmission (Jan 14 2020)?",
+      "outcome": "Declaration delayed 16 days \u2014 Jan 30 2020",
+      "rationale": "WHO deferred to Chinese government position; concerned about stigmatization and economic impact; awaited additional evidence despite existing surveillance data",
+      "actor_id": "ag-who-erd",
+      "domain": "pandemic_governance",
+      "is_exception": true,
+      "evidence_ids": [
+        "ev-who-timeline"
+      ],
+      "notes": "Human-to-human transmission confirmed Jan 14 by WHO internal communications. Declaration on Jan 30. Pattern identical to TEPCO seawall: institution acknowledges evidence, defers decision under political pressure."
+    },
+    {
+      "id": "dec-mask-guidance",
+      "question": "Should public masking be recommended in February 2020 when aerosol evidence was available?",
+      "outcome": "Initial guidance: masks not recommended. Reversed April 2020.",
+      "rationale": "Supply preservation for healthcare workers. Stated justification: insufficient evidence of asymptomatic transmission.",
+      "actor_id": "ag-cdc-2020",
+      "domain": "pandemic_governance",
+      "is_exception": true,
+      "evidence_ids": [
+        "ev-aerosol-science"
+      ],
+      "notes": "Supply was the actual constraint; the scientific justification was constructed post-hoc. Fauci later acknowledged this publicly. Structural dishonesty in public health communication \u2014 parallel to 'phase down' language in climate governance."
+    }
+  ],
+  "dissents": [
+    {
+      "id": "dissent-aerosol-scientists",
+      "actor_id": "ag-linsey-marr",
+      "target_id": "dec-mask-guidance",
+      "disagreement_type": "empirical",
+      "rationale": "WHO and CDC droplet doctrine was scientifically incorrect and directly contradicted by decades of aerosol physics research. The 5-micron droplet/aerosol distinction was an arbitrary historical artifact, not a meaningful physical boundary.",
+      "resolution_status": "resolved",
+      "preserved": true
+    }
+  ],
+  "evidence": [
+    {
+      "id": "ev-who-timeline",
+      "source_type": "primary_literature",
+      "content_ref": "WHO COVID-19 timeline: WHO Director-General's opening remarks at media briefing \u2014 Jan 30 2020; Huang et al., Lancet, Jan 24 2020 (clinical features of first 41 cases confirming human-to-human transmission)",
+      "media_type": "text",
+      "validated_by": [
+        "ag-who-erd"
+      ],
+      "uncertainty": 0.07
+    },
+    {
+      "id": "ev-aerosol-science",
+      "source_type": "primary_literature",
+      "content_ref": "Morawska & Milton (2020). 'It is time to address airborne transmission of COVID-19.' Clinical Infectious Diseases. 239 signatories.",
+      "media_type": "text",
+      "validated_by": [
+        "ag-linsey-marr"
+      ],
+      "uncertainty": 0.05
+    }
+  ],
+  "bridge_candidates": [
+    {
+      "id": "bridge-who-tepco-delay",
+      "claim": "WHO's delay in declaring PHEIC despite internal evidence of human-to-human transmission is structurally identical to TEPCO management's delay in upgrading the Fukushima seawall: institutional authority acknowledges technical evidence then defers action under political pressure",
+      "source_domain": "pandemic_governance",
+      "target_domain": "fukushima_governance",
+      "source_node_ids": [
+        "dec-pheic-delay",
+        "ag-who-erd",
+        "ent-pheic-2020"
+      ],
+      "target_node_ids": [
+        "dec-seawall-2008",
+        "inst-tepco-mgmt"
+      ],
+      "confidence": 0.86,
+      "novelty_score": 0.8,
+      "structural_loss": "WHO delay was 16 days; TEPCO delay was 3 years. WHO faced geopolitical deference; TEPCO faced economic cost. Both are institutional-authority-delays-known-risk-under-external-pressure patterns."
+    },
+    {
+      "id": "bridge-mask-glasglow-noble-lie",
+      "claim": "CDC mask guidance suppression (supply-driven but scientifically justified) is structurally parallel to COP26 'phase down' language: authority constructs communicable justification for a decision driven by non-scientific constraint",
+      "source_domain": "pandemic_governance",
+      "target_domain": "climate_policy",
+      "source_node_ids": [
+        "dec-mask-guidance",
+        "mech-information-hazard"
+      ],
+      "target_node_ids": [
+        "dec-glasgow-coal-phasedown",
+        "ag-cop26-presidency"
+      ],
+      "confidence": 0.79,
+      "novelty_score": 0.83,
+      "structural_loss": "Supply shortage was a real short-term constraint; political feasibility at COP was a negotiating limit. Both are 'noble lie' variants but the ethical weight differs \u2014 public health deception has more direct harm pathway."
+    }
+  ]
+}
