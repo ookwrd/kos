@@ -456,17 +456,17 @@ export default function App() {
           )}
         </div>
 
-        {/* Domain filter */}
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <span className="text-[8px] text-slate-700 uppercase tracking-widest mr-1">Domain</span>
-          <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
-          {(domains.length > 0 ? domains : Object.keys(DOMAIN_META)).map(d => (
-            <DomainPip key={d} domain={d} active={domainFilter === d}
-              onClick={() => setDomainFilter(domainFilter === d ? null : d)} />
-          ))}
+        {/* Domain filter — scrollable strip */}
+        <div className="flex items-center gap-1 min-w-0" style={{ flex: "1 1 0", overflow: "hidden" }}>
+          <span className="text-[8px] text-slate-700 uppercase tracking-widest mr-1 flex-shrink-0">Domain</span>
+          <div className="flex items-center gap-1 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+            <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
+            {(domains.length > 0 ? domains : Object.keys(DOMAIN_META)).map(d => (
+              <DomainPip key={d} domain={d} active={domainFilter === d}
+                onClick={() => setDomainFilter(domainFilter === d ? null : d)} />
+            ))}
+          </div>
         </div>
-
-        <div className="flex-1" />
 
         {/* Center view toggle */}
         <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
