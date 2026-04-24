@@ -17,13 +17,14 @@ import { SerendipityPanel } from "./components/SerendipityPanel";
 import { LandingView } from "./components/LandingView";
 import { TransferWorkbench } from "./components/TransferWorkbench";
 import { ConceptAtlasView } from "./components/ConceptAtlasView";
+import { ResearchTraceView } from "./components/ResearchTraceView";
 import { CognitionFabricView } from "./components/CognitionFabricView";
 import { useGraphData, useDecisionReplay } from "./hooks/useGraphData";
 import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas";
+type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas" | "research";
 type CenterView = "graph" | "city" | "fabric";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string; desc: string }[] = [
@@ -44,6 +45,7 @@ const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string; desc
   { id: "agency",      label: "Agency",      icon: "⊘", tip: "Nested Agency",     desc: "Hierarchy of agents and institutions — delegation chains, authority scopes" },
   { id: "transfer",    label: "Transfer",    icon: "⇕", tip: "Transfer Workbench", desc: "Cross-domain transfer via abstraction — functor lab, abstraction elevator, structural loss accounting" },
   { id: "atlas",       label: "Atlas",       icon: "◈", tip: "Concept Atlas",      desc: "2D scatter of all concept nodes by abstraction level and substrate distance — click to inspect" },
+  { id: "research",   label: "Research",    icon: "⊛", tip: "ARC Research Engine", desc: "AutoResearchClaw pipeline — sources, claims, contradictions, abstractions, transfer opportunities" },
 ];
 
 const DOMAIN_META: Record<string, { color: string; label: string; desc: string }> = {
@@ -329,8 +331,9 @@ function DomainPip({ domain, active, onClick }: { domain: string; active: boolea
 export default function App() {
   const [landed, setLanded] = useState(false);
   const [leftTab, setLeftTab]   = useState<LeftTab>("replay");
-  const [rightTab, setRightTab] = useState<RightTab>("council");
+  const [rightTab, setRightTab] = useState<RightTab>("transfer");
   const [centerView, setCenterView] = useState<CenterView>("graph");
+  const [defaultScenario, setDefaultScenario] = useState<string>("fukushima");
   const [leftOpen, setLeftOpen]   = useState(true);
   const [rightOpen, setRightOpen] = useState(true);
   const [wsConnected, setWsConnected] = useState(false);
@@ -418,7 +421,18 @@ export default function App() {
   const { anchor: centerAnchor, show: centerShow, hide: centerHide } = useTooltip();
 
   if (!landed) {
-    return <LandingView onEnter={() => setLanded(true)} demoMode={demoMode} />;
+    return (
+      <LandingView
+        onEnter={() => setLanded(true)}
+        onEnterDecision={() => {
+          setDefaultScenario("fukushima");
+          setLeftTab("replay");
+          setRightTab("transfer");
+          setLanded(true);
+        }}
+        demoMode={demoMode}
+      />
+    );
   }
 
   return (
@@ -445,7 +459,7 @@ export default function App() {
           </div>
           <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
             style={{ backgroundColor: "#6366f115", color: "#6366f1", border: "1px solid #6366f125" }}>
-            v6
+            v8
           </span>
           {demoMode && (
             <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
@@ -541,7 +555,7 @@ export default function App() {
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
               <LeftTabStrip active={leftTab} onChange={setLeftTab} />
               <div style={{ flex: 1, overflow: "hidden" }}>
-                {leftTab === "replay"     && <DecisionReplay      className="h-full" />}
+                {leftTab === "replay"     && <DecisionReplay      className="h-full" initialScenario={defaultScenario} />}
                 {leftTab === "provenance" && <ProvenanceInspector  className="h-full" />}
                 {leftTab === "tacit"      && <TacitTraceViewer     className="h-full" />}
                 {leftTab === "inference"  && <InferencePanel       className="h-full" />}
@@ -579,8 +593,9 @@ export default function App() {
               {rightTab === "permissions" && <PermissionExplorer     className="h-full" />}
               {rightTab === "agency"      && <NestedAgencyView       className="h-full" />}
               {rightTab === "evolution"   && <GraphEvolutionTimeline  className="h-full" />}
-              {rightTab === "transfer"    && <TransferWorkbench       className="h-full" />}
+              {rightTab === "transfer"    && <TransferWorkbench       className="h-full" initialCase={defaultScenario === "fukushima" ? "transfer-dissent-governance" : undefined} />}
               {rightTab === "atlas"       && <ConceptAtlasView        className="h-full" />}
+              {rightTab === "research"    && <ResearchTraceView       className="h-full" />}
             </div>
           </aside>
         )}
@@ -627,7 +642,7 @@ export default function App() {
 
         <div className="flex items-center gap-4 flex-shrink-0 text-[9px] text-slate-800">
           <span>24 knowledge cities · 6 metro regions · 50+ bridges</span>
-          <span>Omega v6.0</span>
+          <span>Omega v8.0</span>
         </div>
       </footer>
     </div>

@@ -108,6 +108,112 @@ const ELEVATOR_LEVEL_LABELS: Record<string, string> = {
 
 const DEMO_TRANSFERS: TransferCase[] = [
   {
+    id: "transfer-dissent-governance",
+    label: "Normalization of Deviance",
+    source_domain: "extreme_environments",
+    target_domain: "aviation_safety",
+    source_color: "#ef4444",
+    target_color: "#94a3b8",
+    via_concept: {
+      id: "schema-auth-override",
+      label: "Authority-override-of-calibrated-dissent schema",
+      concept_type: "schema",
+      domain: "cross",
+      abstraction_level: 0.72,
+      substrate_distance: 0.40,
+      transferability: 0.91,
+      description: "An expert with a high calibration track record raises a specific, documented safety concern. An authority with a lower calibration track record overrides the concern for institutional reasons (schedule, cost, precedent). The decision is not recorded as a dissent. A catastrophic outcome occurs that was directly predicted by the suppressed expert.",
+      invariants: ["expert dissent", "authority override", "dissent suppression", "catastrophic vindication"],
+    },
+    elevator: [
+      { level: "substrate",      domain: "extreme_environments", color: "#ef4444", label: "O-ring failure data at low temperatures — Morton Thiokol charts showing erosion at <53°F", codifiability: 0.80 },
+      { level: "mechanism",      domain: "extreme_environments", color: "#ef4444", label: "Boisjoly warning (July 1985) — specific, documented, overruled. Launch at 28°F on Jan 28 1986. O-ring fails.", codifiability: 0.82 },
+      { level: "schema",         domain: "cross",                color: "#8b5cf6", label: "Authority-override-of-calibrated-dissent — expert dissent raised, suppressed, vindicated after catastrophe", codifiability: 0.75, note: "Diane Vaughan (1996): 'normalization of deviance' — organizations treat deviance as normal until catastrophe makes it visible. Named in 1996; knowable before both Fukushima and 737 MAX." },
+      { level: "instantiation",  domain: "fukushima_governance", color: "#f97316", label: "TEPCO Civil Engineering dissent (2008) — 10m seawall deficit raised, overruled. March 2011: 14.1m tsunami. Calibration score: overruled engineer 0.76; authority 0.31.", codifiability: 0.75 },
+      { level: "instantiation",  domain: "aviation_safety",      color: "#94a3b8", label: "Ed Pierson Boeing warning (2018) — MCAS single-sensor risk raised to management, overruled. 346 fatalities across two crashes.", codifiability: 0.80 },
+      { level: "validation",     domain: "cross",                color: "#06b6d4", label: "Cross-domain schema validation — 3 independent cases confirm identical decision structure and outcome class. CalibrationDifferential ≥ 0.3 in each case.", codifiability: 0.72 },
+    ],
+    primary_translator: {
+      label: "Governance Failure Schema Translator",
+      steps: [
+        { source_id: "boisjoly-dissent",    source_label: "Boisjoly O-ring warning",           target_id: "pierson-dissent",         target_label: "Ed Pierson MCAS warning",         confidence: "exact",      preserved: ["expert with documented track record", "specific technical concern", "written and dated"], lost: undefined },
+        { source_id: "nasa-override",       source_label: "NASA management launch decision",    target_id: "boeing-override",         target_label: "Boeing management approval",      confidence: "exact",      preserved: ["authority with lower track record overrules expert"] },
+        { source_id: "suppression-record",  source_label: "No formal dissent record at NASA",   target_id: "boeing-no-record",        target_label: "Internal pushback not documented", confidence: "close",      preserved: ["absence of governance record"],  lost: "Boeing's suppression was commercial; NASA's was procedural" },
+        { source_id: "challenger-outcome",  source_label: "Challenger explosion — 7 fatalities", target_id: "mcas-outcome",           target_label: "346 fatalities, 2 crashes",       confidence: "analogical", preserved: ["catastrophic outcome traceable to overruled warning"],  lost: "Scale: 7 vs 346. Temporal structure: instant vs. months." },
+      ],
+    },
+    structural_losses: [
+      { id: "sl-gov-1", what: "Temporal structure",      why: "Challenger: 6-month decision to launch. MCAS: multi-year accumulation of design decisions. Fukushima: 3-year deferral", consequence: "The schema is temporally symmetric — but timeline determines which interventions were possible and when" },
+      { id: "sl-gov-2", what: "Institutional character", why: "NASA = public safety agency. Boeing = commercial manufacturer. TEPCO = regulated utility", consequence: "Accountability mechanisms differ substantially; the schema is preserved but consequences for non-compliance differ" },
+    ],
+    validation_protocols: [
+      { id: "vp-gov-1", test: "CalibrationDifferential test", expected: "In each case, dissenting expert's calibration > authority's calibration by ≥ 0.3",                   domain: "cross" },
+      { id: "vp-gov-2", test: "Dissent suppression flag",     expected: "In each case, no formal dissent record exists at the time of the override decision",               domain: "cross" },
+      { id: "vp-gov-3", test: "Prediction specificity test",  expected: "In each case, the dissenting expert predicted the specific failure mode that occurred",            domain: "cross" },
+    ],
+    transfer_claim: "The authority-override-of-calibrated-dissent schema is a genuine domain-invariant. It has been instantiated in aerospace, nuclear, and aviation with structurally identical decision patterns and outcome classes. This is not analogy — it is schema reuse. Omega is the substrate that makes the schema permanent, queryable, and transferable before the next disaster.",
+    historical_note: "Diane Vaughan (1996, The Challenger Launch Decision) named the mechanism 'normalization of deviance.' Her analysis predates Fukushima (2011) and 737 MAX (2018-19) by 15 and 22 years respectively. The schema was knowable and transferable. It was not institutionally acted on.",
+  },
+
+  {
+    id: "transfer-process-window-euv-kras",
+    label: "EUV Process Window → KRAS Therapeutic Window",
+    source_domain: "euv_lithography",
+    target_domain: "drug_discovery",
+    source_color: "#22c55e",
+    target_color: "#3b82f6",
+    via_concept: {
+      id: "concept-bounded-viable-envelope",
+      label: "Bounded viable operating envelope",
+      concept_type: "invariant",
+      domain: "cross",
+      abstraction_level: 0.70,
+      substrate_distance: 0.78,
+      transferability: 0.76,
+      description: "Any complex process reliably produces desired outputs only within a finite bounded region of its parameter space. Outside this region the system fails — either by under-driving (insufficient effect) or over-driving (destructive overshoot). The boundary is not fixed: it drifts with system state, environment, and accumulated wear.",
+      invariants: ["finite feasible region", "failure modes at both boundaries", "boundary drift over time", "requires systematic scanning to map"],
+    },
+    elevator: [
+      { level: "substrate",      domain: "euv_lithography",  color: "#22c55e", label: "Focus-Exposure Matrix (FEM) — systematic grid scan of {dose, focus} reveals wafer pattern quality across parameter space", codifiability: 0.85, note: "Standard ASML lithography metrology: ~200 die exposures covering the full 2D parameter grid" },
+      { level: "mechanism",      domain: "euv_lithography",  color: "#22c55e", label: "Process window: the {dose, focus} region where CD tolerance ≤ ±10% and LER ≤ threshold — used to set safe operating margins", codifiability: 0.78 },
+      { level: "invariant",      domain: "cross",            color: "#ec4899", label: "Bounded viable operating envelope — every physical process has a finite feasible region; failure is symmetric at both boundaries; boundary drifts with process age", codifiability: 0.82, note: "This is the domain-invariant structure. The FEM protocol is its operational expression in lithography." },
+      { level: "instantiation",  domain: "drug_discovery",   color: "#3b82f6", label: "KRASG12C therapeutic window — sotorasib Phase I dose escalation (CodeBreaK100): dose-response plateau between 960mg/day and toxicity boundary; sub-therapeutic below 240mg/day", codifiability: 0.70 },
+      { level: "schema",         domain: "cross",            color: "#8b5cf6", label: "FEM-to-DEM (Dose-Efficacy Matrix) transfer — systematic multi-parameter scan of {dose, schedule} analogous to FEM grid, to map full therapeutic envelope", codifiability: 0.62, note: "Transfer claim: KRAS combination therapy (KRASG12C + MEK inhibitor) needs a 2D DEM analogous to EUV FEM — neither drug development nor clinical trial design currently uses this systematic 2D scanning approach" },
+      { level: "validation",     domain: "drug_discovery",   color: "#06b6d4", label: "DEM validation protocol — systematic {sotorasib dose, cobimetinib dose} matrix in PDX models; map response surface; validate that boundary drift follows analogous physics to process window drift under repeated cycling", codifiability: 0.68 },
+    ],
+    primary_translator: {
+      label: "Process Envelope Translator",
+      steps: [
+        { source_id: "euv-dose",           source_label: "EUV exposure dose (mJ/cm²)",         target_id: "drug-dose",         target_label: "Sotorasib dose (mg/day)",              confidence: "close",      preserved: ["continuous scalar parameter", "failure modes at both extremes"],   lost: "dose has physical energy units; drug dose has pharmacokinetic complexity" },
+        { source_id: "euv-focus",          source_label: "Focus offset (nm)",                   target_id: "drug-schedule",     target_label: "Dosing schedule (q.d. vs b.i.d.)",     confidence: "partial",    preserved: ["second parameter axis that expands the feasible region"],           lost: "focus is a physical offset; schedule is a temporal pattern — different mathematics" },
+        { source_id: "euv-process-window", source_label: "FEM process window region",           target_id: "drug-window",       target_label: "Therapeutic window envelope",          confidence: "close",      preserved: ["bounded feasible region", "failure at both boundaries", "window shrinkage with drift"] },
+        { source_id: "euv-cd-metric",      source_label: "Critical dimension (CD) uniformity",  target_id: "drug-response",     target_label: "Tumor response rate (RECIST ORR)",      confidence: "analogical", preserved: ["scalar output metric for process quality"],                          lost: "CD is a geometric measure; ORR is a clinical endpoint — very different measurement ecosystems" },
+        { source_id: "euv-fem-protocol",   source_label: "Focus-Exposure Matrix (FEM) scan",    target_id: "drug-dem-protocol", target_label: "Dose-Efficacy Matrix (DEM) scan",       confidence: "partial",    preserved: ["systematic 2D grid exploration of parameter space"],                 lost: "FEM takes hours on a wafer; DEM takes months in vivo — cadence completely different" },
+      ],
+    },
+    competing_translator: {
+      label: "Dose-Response Curve Translator (conventional)",
+      steps: [
+        { source_id: "euv-dose-axis",      source_label: "EUV dose (1D)",     target_id: "drug-dose-1d",   target_label: "Drug dose 1D curve",   confidence: "exact",    preserved: ["1D parameter sweep", "response curve shape"],  lost: undefined },
+        { source_id: "euv-margin",         source_label: "Process margin",    target_id: "drug-margin",    target_label: "Therapeutic index",    confidence: "exact",    preserved: ["margin = window width", "safety quantification"] },
+      ],
+      divergence: "The conventional translator (dose-response curve) maps only the 1D projection of the process window. The FEM-to-DEM translator preserves the 2D structure — the insight that a second parameter (schedule, combination) can expand the feasible region in drug development, just as focus offsets expand the EUV process window. The 2D structure is the transfer innovation.",
+    },
+    structural_losses: [
+      { id: "sl-pw-1", what: "Measurement cadence",        why: "EUV FEM: complete in hours. KRAS DEM: months per parameter combination in vivo", consequence: "The 2D systematic scan that takes 1 day in lithography takes 3 years in clinical development — the operational transfer requires pre-clinical proxies (PDX models, organoids) to be viable" },
+      { id: "sl-pw-2", what: "Boundary physics",           why: "EUV: boundary is optical physics (diffraction limits). Drug: boundary is pharmacokinetic/pharmacodynamic (PK/PD) complexity", consequence: "Process window drift in EUV follows known physics; therapeutic window drift (tumor evolution, resistance acquisition) is far less predictable" },
+      { id: "sl-pw-3", what: "Output metric dimensionality", why: "EUV has one primary output metric (CD uniformity). KRAS drug response has multiple competing endpoints (ORR, PFS, OS, toxicity)", consequence: "The 'window' in drug development is multi-objective — not all outputs can be simultaneously optimized; this requires Pareto frontier analysis absent from the EUV analogy" },
+    ],
+    validation_protocols: [
+      { id: "vp-pw-1", test: "2D DEM surface reconstruction",     expected: "KRASG12C + MEK inhibitor response surface in PDX shows closed contour (bounded window) analogous to FEM ellipse",                  domain: "drug_discovery" },
+      { id: "vp-pw-2", test: "Boundary drift test",               expected: "Repeated cycles of sotorasib treatment shrink the therapeutic envelope by >20% in 6 months (analogous to EUV process window drift under aging source)", domain: "drug_discovery" },
+      { id: "vp-pw-3", test: "Schedule-axis expansion test",      expected: "Intermittent dosing schedules (the 'focus offset' analog) expand viable DEM region by >30% vs. continuous dosing in 3+ tumor models", domain: "drug_discovery" },
+    ],
+    transfer_claim: "EUV lithography's Focus-Exposure Matrix protocol — a systematic 2D parameter scan to map the process window — has no direct analog in drug development. The structural parallel suggests that KRAS combination therapy optimization (dose × schedule grid) could be run as a 'Dose-Efficacy Matrix', revealing a bounded therapeutic envelope with the same structure as an EUV process window. The transfer is scientifically grounded; the experiment has not been done.",
+    historical_note: "This bridge is speculative (grounding tier: HY). The process window concept in lithography is a standard engineering tool; the therapeutic window in pharmacology is standard PK/PD. The 2D FEM-to-DEM transfer claim is novel — there is no published work applying lithography process window methodology to multi-parameter drug optimization.",
+  },
+
+  {
     id: "transfer-feedback-euv-surgery",
     label: "EUV Calibration → Surgical Robotics",
     source_domain: "euv_lithography",
@@ -210,53 +316,6 @@ const DEMO_TRANSFERS: TransferCase[] = [
     historical_note: "Shannon (1948) explicitly noted the connection to Boltzmann. Von Neumann reportedly told Shannon: 'You should call it entropy, for two reasons: first, the function is the same as the entropy in thermodynamics; second, most people don't know what entropy is, which means that in any debate you will always have the advantage.'",
   },
 
-  {
-    id: "transfer-dissent-governance",
-    label: "Challenger O-ring → Fukushima → 737 MAX",
-    source_domain: "extreme_environments",
-    target_domain: "aviation_safety",
-    source_color: "#ef4444",
-    target_color: "#94a3b8",
-    via_concept: {
-      id: "schema-auth-override",
-      label: "Authority-override-of-calibrated-dissent schema",
-      concept_type: "schema",
-      domain: "cross",
-      abstraction_level: 0.72,
-      substrate_distance: 0.40,
-      transferability: 0.91,
-      description: "An expert with a high calibration track record raises a specific, documented safety concern. An authority with a lower calibration track record overrides the concern for institutional reasons (schedule, cost, precedent). The decision is not recorded as a dissent. A catastrophic outcome occurs that was directly predicted by the suppressed expert.",
-      invariants: ["expert dissent", "authority override", "dissent suppression", "catastrophic vindication"],
-    },
-    elevator: [
-      { level: "substrate",      domain: "extreme_environments", color: "#ef4444", label: "O-ring failure data at low temperatures — Morton Thiokol charts showing erosion at <53°F", codifiability: 0.80 },
-      { level: "mechanism",      domain: "extreme_environments", color: "#ef4444", label: "Boisjoly warning (July 1985) — specific, documented, overruled. Launch at 28°F on Jan 28 1986. O-ring fails.", codifiability: 0.82 },
-      { level: "schema",         domain: "cross",                color: "#8b5cf6", label: "Authority-override-of-calibrated-dissent — expert dissent raised, suppressed, vindicated after catastrophe", codifiability: 0.75, note: "Diane Vaughan: 'normalization of deviance'" },
-      { level: "instantiation",  domain: "fukushima_governance", color: "#f97316", label: "TEPCO Civil Engineering dissent (2008) — 10m seawall deficit raised, overruled. March 2011: 14.1m tsunami.", codifiability: 0.75 },
-      { level: "instantiation",  domain: "aviation_safety",      color: "#94a3b8", label: "Ed Pierson Boeing warning (2018) — MCAS single-sensor risk raised, overruled. 346 fatalities.", codifiability: 0.80 },
-      { level: "validation",     domain: "cross",                color: "#06b6d4", label: "Cross-domain schema validation — 3 independent cases confirm: same decision structure, same outcome class", codifiability: 0.72 },
-    ],
-    primary_translator: {
-      label: "Governance Failure Schema Translator",
-      steps: [
-        { source_id: "boisjoly-dissent",    source_label: "Boisjoly O-ring warning",           target_id: "pierson-dissent",         target_label: "Ed Pierson MCAS warning",         confidence: "exact",      preserved: ["expert with documented track record", "specific technical concern", "written and dated"], lost: undefined },
-        { source_id: "nasa-override",       source_label: "NASA management launch decision",    target_id: "boeing-override",         target_label: "Boeing management approval",      confidence: "exact",      preserved: ["authority with lower track record overrules expert"] },
-        { source_id: "suppression-record",  source_label: "No formal dissent record at NASA",   target_id: "boeing-no-record",        target_label: "Internal pushback not documented", confidence: "close",      preserved: ["absence of governance record"],  lost: "Boeing's suppression was commercial; NASA's was procedural" },
-        { source_id: "challenger-outcome",  source_label: "Challenger explosion — 7 fatalities", target_id: "mcas-outcome",           target_label: "346 fatalities, 2 crashes",       confidence: "analogical", preserved: ["catastrophic outcome traceable to overruled warning"],  lost: "Scale: 7 vs 346. Temporal structure: instant vs. months." },
-      ],
-    },
-    structural_losses: [
-      { id: "sl-gov-1", what: "Temporal structure",      why: "Challenger: 6-month decision to launch. MCAS: multi-year accumulation of design decisions. Fukushima: 3-year deferral", consequence: "The schema is temporally symmetric — but timeline determines which interventions were possible and when" },
-      { id: "sl-gov-2", what: "Institutional character", why: "NASA = public safety agency. Boeing = commercial manufacturer. TEPCO = regulated utility", consequence: "Accountability mechanisms differ substantially; the schema is preserved but consequences for non-compliance differ" },
-    ],
-    validation_protocols: [
-      { id: "vp-gov-1", test: "CalibrationDifferential test", expected: "In each case, dissenting expert's calibration > authority's calibration by ≥ 0.3",                   domain: "cross" },
-      { id: "vp-gov-2", test: "Dissent suppression flag",     expected: "In each case, no formal dissent record exists at the time of the override decision",               domain: "cross" },
-      { id: "vp-gov-3", test: "Prediction specificity test",  expected: "In each case, the dissenting expert predicted the specific failure mode that occurred",            domain: "cross" },
-    ],
-    transfer_claim: "The authority-override-of-calibrated-dissent schema is a genuine domain-invariant. It has been instantiated in aerospace, nuclear, and aviation with structurally identical decision patterns and outcome classes. This is not analogy — it is schema reuse.",
-    historical_note: "Diane Vaughan (1996, The Challenger Launch Decision) named the mechanism 'normalization of deviance.' Her analysis predates Fukushima (2011) and 737 MAX (2018-19). The schema was knowable in 1996; it was not acted on institutionally.",
-  },
 ];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -475,8 +534,8 @@ function ValidationPanel({ protocols }: { protocols: ValidationProtocol[] }) {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export function TransferWorkbench({ className = "" }: { className?: string }) {
-  const [activeId, setActiveId] = useState(DEMO_TRANSFERS[0].id);
+export function TransferWorkbench({ className = "", initialCase }: { className?: string; initialCase?: string }) {
+  const [activeId, setActiveId] = useState(initialCase ?? DEMO_TRANSFERS[0].id);
   const [activeTab, setActiveTab] = useState<"elevator" | "translator" | "loss" | "validation">("elevator");
 
   const tc = DEMO_TRANSFERS.find(t => t.id === activeId) ?? DEMO_TRANSFERS[0];

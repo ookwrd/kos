@@ -289,11 +289,11 @@ const SCENARIOS = [
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
-interface Props { className?: string }
+interface Props { className?: string; initialScenario?: string }
 
-export function DecisionReplay({ className = "" }: Props) {
+export function DecisionReplay({ className = "", initialScenario }: Props) {
   const { replayResult, replayStep, setReplayStep } = useGraphStore();
-  const [scenario, setScenario] = useState<string>("drug_discovery");
+  const [scenario, setScenario] = useState<string>(initialScenario ?? "fukushima");
   const [autoPlay, setAutoPlay] = useState(false);
 
   const activeScenario = SCENARIOS.find(s => s.id === scenario)!;

@@ -27,10 +27,11 @@ const THESIS_LINES = [
 
 interface Props {
   onEnter: () => void;
+  onEnterDecision?: () => void;
   demoMode: boolean;
 }
 
-export function LandingView({ onEnter, demoMode }: Props) {
+export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
   const [lineIdx, setLineIdx] = useState(0);
   const [entered, setEntered] = useState(false);
 
@@ -44,6 +45,11 @@ export function LandingView({ onEnter, demoMode }: Props) {
   const handleEnter = () => {
     setEntered(true);
     setTimeout(onEnter, 600);
+  };
+
+  const handleEnterDecision = () => {
+    setEntered(true);
+    setTimeout(() => onEnterDecision?.(), 600);
   };
 
   return (
@@ -145,30 +151,55 @@ export function LandingView({ onEnter, demoMode }: Props) {
           <span className="line-through">Prettier RAG</span>
         </div>
 
-        {/* Enter button */}
-        <button
-          onClick={handleEnter}
-          className="group relative px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+        {/* Entry buttons */}
+        <div className="flex items-center gap-4"
           style={{
-            backgroundColor: "rgba(99,102,241,0.15)",
-            border: "1px solid rgba(99,102,241,0.4)",
-            color: "#818cf8",
             opacity: lineIdx >= 3 ? 1 : 0,
             transform: lineIdx >= 3 ? "translateY(0)" : "translateY(8px)",
             transition: "all 0.4s 0.2s",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.3)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#a5b4fc";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.15)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#818cf8";
-          }}
-        >
-          Enter the Substrate
-          <span className="ml-2">→</span>
-        </button>
+          }}>
+          {/* Primary: Decision Board */}
+          <button
+            onClick={handleEnterDecision}
+            className="group relative px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+            style={{
+              backgroundColor: "rgba(249,115,22,0.15)",
+              border: "1px solid rgba(249,115,22,0.5)",
+              color: "#fb923c",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.28)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#fdba74";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.15)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#fb923c";
+            }}
+          >
+            ▶ Show me a hard decision
+          </button>
+
+          {/* Secondary: Explore */}
+          <button
+            onClick={handleEnter}
+            className="group relative px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{
+              backgroundColor: "rgba(99,102,241,0.08)",
+              border: "1px solid rgba(99,102,241,0.25)",
+              color: "#6366f1",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.18)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#818cf8";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.08)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#6366f1";
+            }}
+          >
+            Explore the substrate →
+          </button>
+        </div>
 
         {demoMode && (
           <p className="text-[10px] text-slate-600 mt-4">
