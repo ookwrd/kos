@@ -212,7 +212,7 @@ export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
           style={{ opacity: lineIdx >= 4 ? 0.4 : 0, transition: "opacity 0.6s 0.5s" }}>
           <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
           <span className="text-[10px] text-slate-700 tracking-widest uppercase">
-            A Cross Labs × Cognisee research prototype
+            Knowledge Operating System · research prototype
           </span>
           <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
         </div>

@@ -7,6 +7,17 @@ interface ExpertBelief {
   domain?: string;
 }
 
+interface CalibrationDecision {
+  decision: string;
+  outcome: "vindicated" | "overruled" | "vindicated_post_failure" | "inconclusive";
+  year: number;
+}
+
+interface DomainEnvelope {
+  authoritative: string[];
+  not_authoritative?: string[];
+}
+
 interface ExpertTwin {
   id: string;
   name: string;
@@ -15,8 +26,10 @@ interface ExpertTwin {
   title?: string;
   calibration_score: number;
   calibration_history?: number[];
+  calibration_decision_history?: CalibrationDecision[];
   competences: string[];
   authority_scope?: string[];
+  domain_envelope?: DomainEnvelope;
   beliefs: ExpertBelief[];
   dissent_count?: number;
   dissent_vindicated?: number;
@@ -61,6 +74,14 @@ const DEMO_TWINS: ExpertTwin[] = [
     ],
     dissent_count: 1,
     dissent_vindicated: 1,
+    calibration_decision_history: [
+      { decision: "2008 tsunami risk assessment — seawall upgrade needed", outcome: "vindicated_post_failure", year: 2008 },
+      { decision: "Generator relocation to high ground required", outcome: "overruled", year: 2008 },
+    ],
+    domain_envelope: {
+      authoritative: ["coastal engineering", "tsunami risk", "seawall design", "probabilistic hazard analysis"],
+      not_authoritative: ["corporate finance", "regulatory strategy", "public relations"],
+    },
     bio: "Internal technical division responsible for the 2008 tsunami assessment. Dissent overruled by corporate management. Assessment vindicated March 11, 2011.",
   },
   {
@@ -98,6 +119,15 @@ const DEMO_TWINS: ExpertTwin[] = [
     ],
     dissent_count: 2,
     dissent_vindicated: 2,
+    calibration_decision_history: [
+      { decision: "Production quality sufficient for schedule", outcome: "overruled", year: 2018 },
+      { decision: "737 MAX production should halt pending safety audit", outcome: "vindicated_post_failure", year: 2018 },
+      { decision: "Workforce chaotic, quality checks inconsistent", outcome: "vindicated", year: 2019 },
+    ],
+    domain_envelope: {
+      authoritative: ["aerospace manufacturing", "production quality", "safety culture"],
+      not_authoritative: ["MCAS software design", "FAA certification", "airworthiness standards"],
+    },
     bio: "Filed direct safety complaints with Boeing leadership and the FAA in July 2018 — 3 months before JT610. Classified as a labor dispute. Objections were fully vindicated by subsequent crashes. Testified before Congress in 2019.",
   },
   {
@@ -362,10 +392,66 @@ export function ExpertTwinView({ className = "" }: { className?: string }) {
           </div>
         )}
 
+        {/* Calibration decision history */}
+        {twin.calibration_decision_history && twin.calibration_decision_history.length > 0 && (
+          <div>
+            <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-600 mb-1.5">Decision track record</div>
+            <div className="space-y-1">
+              {twin.calibration_decision_history.map((d, i) => {
+                const outcomeStyle = {
+                  vindicated:              { color: "#4ade80", label: "vindicated",        bg: "rgba(34,197,94,0.08)"   },
+                  vindicated_post_failure: { color: "#f59e0b", label: "vindicated (post-failure)", bg: "rgba(245,158,11,0.08)" },
+                  overruled:               { color: "#f87171", label: "overruled",          bg: "rgba(239,68,68,0.08)"   },
+                  inconclusive:            { color: "#94a3b8", label: "inconclusive",       bg: "rgba(148,163,184,0.05)" },
+                }[d.outcome];
+                return (
+                  <div key={i} className="flex items-start gap-2 rounded px-2 py-1.5 text-[9px]"
+                    style={{ backgroundColor: outcomeStyle.bg, border: `1px solid ${outcomeStyle.color}22` }}>
+                    <span className="font-mono text-slate-600 flex-shrink-0">{d.year}</span>
+                    <span className="text-slate-400 flex-1 leading-snug">{d.decision}</span>
+                    <span className="font-bold flex-shrink-0" style={{ color: outcomeStyle.color }}>{outcomeStyle.label}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Domain envelope */}
+        {twin.domain_envelope && (
+          <div>
+            <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-600 mb-1.5">Domain envelope</div>
+            <div className="space-y-1">
+              <div className="text-[8px] text-slate-600 uppercase tracking-widest mb-0.5">Authoritative</div>
+              <div className="flex flex-wrap gap-1 mb-2">
+                {twin.domain_envelope.authoritative.map(d => (
+                  <span key={d} className="text-[9px] px-1.5 py-0.5 rounded"
+                    style={{ backgroundColor: "rgba(34,197,94,0.08)", color: "#4ade80", border: "1px solid rgba(34,197,94,0.18)" }}>
+                    {d}
+                  </span>
+                ))}
+              </div>
+              {twin.domain_envelope.not_authoritative && twin.domain_envelope.not_authoritative.length > 0 && (
+                <>
+                  <div className="text-[8px] text-slate-600 uppercase tracking-widest mb-0.5">Not authoritative</div>
+                  <div className="flex flex-wrap gap-1">
+                    {twin.domain_envelope.not_authoritative.map(d => (
+                      <span key={d} className="text-[9px] px-1.5 py-0.5 rounded"
+                        style={{ backgroundColor: "rgba(239,68,68,0.06)", color: "#94a3b8", border: "1px solid rgba(239,68,68,0.12)" }}>
+                        {d}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Calibration history sparkline */}
         {twin.calibration_history && twin.calibration_history.length > 1 && (
           <div>
-            <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-600 mb-1.5">Calibration history</div>
+            <div className="text-[8px] font-bold uppercase tracking-[0.2em] text-slate-600 mb-1.5">Calibration trajectory</div>
             <CalibrationSparkline history={twin.calibration_history} score={twin.calibration_score} />
           </div>
         )}

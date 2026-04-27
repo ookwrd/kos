@@ -6,9 +6,33 @@
 
 import { create } from "zustand";
 import type {
-  GraphOverview, GraphNode, ReplayResult, AlignmentMap,
+  GraphOverview, GraphNode, GraphEdge, ReplayResult, AlignmentMap,
   ExpertRouting, NextBestQuestion, GraphChangeProposal,
 } from "../api/client";
+
+function loadLocalNodes(): GraphNode[] {
+  try { return JSON.parse(localStorage.getItem("kos-local-nodes") ?? "[]"); } catch { return []; }
+}
+function loadLocalEdges(): GraphEdge[] {
+  try { return JSON.parse(localStorage.getItem("kos-local-edges") ?? "[]"); } catch { return []; }
+}
+function mergeLocalIntoOverview(o: GraphOverview, nodes: GraphNode[], edges: GraphEdge[]): GraphOverview {
+  if (nodes.length === 0) return o;
+  const layers = { ...o.layers };
+  for (const node of nodes) {
+    const l = node.layer;
+    layers[l] = { nodes: [...(layers[l]?.nodes ?? []), node], edges: layers[l]?.edges ?? [] };
+  }
+  return {
+    ...o,
+    layers,
+    summary: {
+      ...o.summary,
+      total_nodes: o.summary.total_nodes + nodes.length,
+      total_edges: o.summary.total_edges + edges.length,
+    },
+  };
+}
 
 export type LayerKey = "evidence" | "context" | "knowledge" | "goal" | "governance" | "agents";
 
@@ -65,6 +89,12 @@ interface GraphState {
   proposals: GraphChangeProposal[];
   setProposals: (p: GraphChangeProposal[]) => void;
 
+  // Local write path — session + localStorage-persisted nodes committed by user
+  localNodes: GraphNode[];
+  localEdges: GraphEdge[];
+  commitLocalNode: (node: GraphNode, edges?: GraphEdge[]) => void;
+  clearLocalNodes: () => void;
+
   // Highlighted bridge (set by SerendipityPanel, consumed by CityOverview)
   highlightedBridgeId: string | null;
   setHighlightedBridge: (id: string | null) => void;
@@ -82,7 +112,7 @@ export const useGraphStore = create<GraphState>((set, get) => ({
   overview: null,
   loading: false,
   error: null,
-  setOverview: overview => set({ overview }),
+  setOverview: o => set(s => ({ overview: mergeLocalIntoOverview(o, s.localNodes, s.localEdges) })),
   setLoading: loading => set({ loading }),
   setError: error => set({ error }),
 
@@ -115,6 +145,33 @@ export const useGraphStore = create<GraphState>((set, get) => ({
 
   proposals: [],
   setProposals: proposals => set({ proposals }),
+
+  localNodes: loadLocalNodes(),
+  localEdges: loadLocalEdges(),
+  commitLocalNode: (node, edges = []) => {
+    const { localNodes, localEdges, overview } = get();
+    const newNodes = [...localNodes, node];
+    const newEdges = [...localEdges, ...edges];
+    try {
+      localStorage.setItem("kos-local-nodes", JSON.stringify(newNodes));
+      localStorage.setItem("kos-local-edges", JSON.stringify(newEdges));
+    } catch {}
+    const updatedOverview = overview ? mergeLocalIntoOverview(
+      { ...overview, summary: { ...overview.summary, total_nodes: overview.summary.total_nodes - localNodes.length, total_edges: overview.summary.total_edges - localEdges.length } },
+      newNodes, newEdges
+    ) : null;
+    set({ localNodes: newNodes, localEdges: newEdges, ...(updatedOverview ? { overview: updatedOverview } : {}) });
+  },
+  clearLocalNodes: () => {
+    try { localStorage.removeItem("kos-local-nodes"); localStorage.removeItem("kos-local-edges"); } catch {}
+    set(s => {
+      if (!s.overview) return { localNodes: [], localEdges: [] };
+      return { localNodes: [], localEdges: [], overview: mergeLocalIntoOverview(
+        { ...s.overview, summary: { ...s.overview.summary, total_nodes: s.overview.summary.total_nodes - s.localNodes.length, total_edges: s.overview.summary.total_edges - s.localEdges.length } },
+        [], []
+      )};
+    });
+  },
 
   highlightedBridgeId: null,
   setHighlightedBridge: highlightedBridgeId => set({ highlightedBridgeId }),

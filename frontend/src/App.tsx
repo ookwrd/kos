@@ -464,8 +464,8 @@ export default function App() {
           {demoMode && (
             <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
               style={{ backgroundColor: "#f9731615", color: "#fb923c", border: "1px solid #f9731625" }}
-              title="No live backend — all data is embedded demo data">
-              demo
+              title="No live backend — graph loaded from embedded demo substrate">
+              demo mode · embedded substrate
             </span>
           )}
         </div>

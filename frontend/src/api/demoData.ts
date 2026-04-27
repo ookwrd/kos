@@ -193,6 +193,16 @@ export const DEMO_OVERVIEW: GraphOverview = {
           data: { domain: "scientific_model_transfer", source_type: "document", uncertainty: 0.19, tags: ["kuhn","paradigm","revolution","incommensurability","1962"] } },
         { id: "ev-gentner-structural-mapping-1983", label: "Gentner — structure-mapping theory of analogy (1983)", layer: "evidence", type: "evidence",
           data: { domain: "scientific_model_transfer", source_type: "document", uncertainty: 0.12, tags: ["gentner","structure-mapping","analogy","SMT","1983"] } },
+        // ── Kintsugi (craft tacit) — public/sourced ────────────────────────────
+        { id: "ev-urushi-polymerization", label: "Urushi lacquer polymerization — catechol oxidation chemistry", layer: "evidence", type: "evidence",
+          data: { domain: "kintsugi_restoration", source_type: "document", uncertainty: 0.14, tags: ["urushi","lacquer","polymerization","humidity","craft"] } },
+        { id: "ev-kintsugi-gold-tacit", label: "Makie gold powder application — humidity window judgment (tacit)", layer: "evidence", type: "evidence",
+          data: { domain: "kintsugi_restoration", source_type: "sensor_window", uncertainty: 0.71, tags: ["makie","gold","humidity","timing","tacit","codifiability-low"] } },
+        // ── Fermentation craft (tacit) — public ───────────────────────────────
+        { id: "ev-toji-moromi-timing", label: "Sake moromi pressing — toji olfactory judgment (tacit, no written protocol)", layer: "evidence", type: "evidence",
+          data: { domain: "fermentation_craft", source_type: "sensor_window", uncertainty: 0.75, tags: ["sake","moromi","toji","pressing","tacit","codifiability-near-zero"] } },
+        { id: "ev-koji-inoculation-window", label: "Koji inoculation window (Aspergillus oryzae) — temperature/humidity parameters", layer: "evidence", type: "evidence",
+          data: { domain: "fermentation_craft", source_type: "document", uncertainty: 0.31, tags: ["koji","aspergillus","miso","sake","inoculation","temperature"] } },
       ],
       edges: [],
     },
@@ -475,6 +485,18 @@ export const DEMO_OVERVIEW: GraphOverview = {
           data: { entity_type: "concept", domain: "scientific_model_transfer" } },
         { id: "mech-paradigm-incommensurability", label: "Paradigm shift → loss of cross-paradigm translation", layer: "knowledge", type: "Mechanism",
           data: { mechanism_type: "conceptual", confidence: 0.78, domain: "scientific_model_transfer" } },
+        // Kintsugi restoration — tacit craft knowledge
+        { id: "ent-urushi-lacquer", label: "Urushi lacquer (Toxicodendron vernicifluum) — working properties", layer: "knowledge", type: "knowledge",
+          data: { entity_type: "material", domain: "kintsugi_restoration", codifiability: 0.42, tacit_warning: "Humidity sensitivity and cure timing require years of embodied calibration." } },
+        { id: "ent-kintsugi-crack-judgment", label: "Crack-line reading — structural assessment before adhesion", layer: "knowledge", type: "knowledge",
+          data: { entity_type: "tacit_skill", domain: "kintsugi_restoration", codifiability: 0.08, tacit_warning: "Cannot be reduced to visual checklist; master judgment integrates touch, sound, and prior failure memory." } },
+        { id: "mech-lacquer-adhesion-judgment", label: "Urushi adhesion window → optimal bond formation judgment", layer: "knowledge", type: "Mechanism",
+          data: { mechanism_type: "tacit_process", confidence: 0.61, domain: "kintsugi_restoration", codifiability: 0.11 } },
+        // Fermentation craft — toji tacit knowledge
+        { id: "ent-toji-judgment", label: "Toji olfactory/tactile judgment — moromi fermentation state", layer: "knowledge", type: "knowledge",
+          data: { entity_type: "tacit_skill", domain: "fermentation_craft", codifiability: 0.06, tacit_warning: "Sensor arrays (e-nose, NIR) have not reproduced master pressing decisions at commercial scale." } },
+        { id: "mech-tacit-fermentation-correction", label: "Real-time fermentation correction → tacit sensory feedback loop", layer: "knowledge", type: "Mechanism",
+          data: { mechanism_type: "tacit_process", confidence: 0.55, domain: "fermentation_craft", codifiability: 0.09 } },
       ],
       edges: [
         // Drug discovery
@@ -696,13 +718,22 @@ export const DEMO_OVERVIEW: GraphOverview = {
         { source: "agent-oncologist-01", target: "agent-statistician-01", relation: "COLLABORATES_WITH" },
         { source: "agent-ipcc-wg1", target: "agent-cop26-presidency", relation: "ADVISES" },
         { source: "agent-who-emergency-committee", target: "agent-who-technical", relation: "INCLUDES" },
+        // Kintsugi restoration edges
+        { source: "ev-urushi-polymerization", target: "ent-urushi-lacquer", relation: "SUPPORTS" },
+        { source: "ev-kintsugi-gold-tacit", target: "ent-kintsugi-crack-judgment", relation: "SUPPORTS" },
+        { source: "ent-urushi-lacquer", target: "mech-lacquer-adhesion-judgment", relation: "HAS_MECHANISM" },
+        { source: "ent-kintsugi-crack-judgment", target: "mech-lacquer-adhesion-judgment", relation: "INFORMS" },
+        // Fermentation craft edges
+        { source: "ev-toji-moromi-timing", target: "ent-toji-judgment", relation: "SUPPORTS" },
+        { source: "ev-koji-inoculation-window", target: "ent-toji-judgment", relation: "SUPPORTS" },
+        { source: "ent-toji-judgment", target: "mech-tacit-fermentation-correction", relation: "HAS_MECHANISM" },
       ],
     },
   },
 
   summary: {
-    total_nodes: 249,
-    total_edges: 72,
+    total_nodes: 254,
+    total_edges: 80,
     domain: "all",
     layer_filter: null,
   },

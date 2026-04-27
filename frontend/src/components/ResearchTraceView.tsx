@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useGraphStore } from "../store/graphStore";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -493,19 +494,186 @@ function ClaimCard({ claim, sources }: { claim: ResearchClaim; sources: Research
   );
 }
 
+// ── Substrate Growth Panel ────────────────────────────────────────────────────
+
+const KINTSUGI_ARTIFACT = {
+  sourceId: "src-kintsugi-tacit-ev",
+  sourceTitle: "Kintsugi restoration practice — gold powder application timing (tacit)",
+  sourceAuthors: "Craft ethnography — public domain practice record",
+  sourceYear: 2021,
+  sourceType: "journal_article" as const,
+  trustScore: 0.82,
+  grounding: "hybrid" as const,
+  keyClaim: "Gold powder application depends on humidity and half-cured urushi timing. This judgment cannot be reduced to sensor thresholds — every automated attempt has failed to match master outcomes.",
+  proposedNodeId: "mech-kintsugi-humidity-window-judgment",
+  proposedNodeLabel: "Kintsugi humidity + cure window → gold adhesion judgment",
+  proposedLayer: "knowledge",
+  proposedType: "Mechanism",
+  proposedData: {
+    mechanism_type: "tacit_process",
+    domain: "kintsugi_restoration",
+    codifiability: 0.18,
+    confidence: 0.71,
+    tacit_warning: "No sensor array has matched master judgment. Codifiability: 0.18.",
+    committed_by: "local_demo_write",
+  },
+  proposedEdge: { source: "ev-kintsugi-gold-tacit", target: "mech-kintsugi-humidity-window-judgment", relation: "SUPPORTS" as const },
+};
+
+function provenanceHash(id: string): string {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (Math.imul(31, h) + id.charCodeAt(i)) | 0;
+  return "sha256:prov-" + Math.abs(h).toString(16).padStart(8, "0") + "a3f2c91b";
+}
+
+function SubstrateGrowthPanel({
+  committedIds, onCommit, onClear, localNodes,
+}: {
+  committedIds: Set<string>;
+  onCommit: (node: import("../api/client").GraphNode, edges?: import("../api/client").GraphEdge[]) => void;
+  onClear: () => void;
+  localNodes: import("../api/client").GraphNode[];
+}) {
+  const a = KINTSUGI_ARTIFACT;
+  const isCommitted = committedIds.has(a.proposedNodeId);
+  const [confirming, setConfirming] = useState(false);
+
+  const handleCommit = useCallback(() => {
+    setConfirming(true);
+    setTimeout(() => {
+      onCommit(
+        { id: a.proposedNodeId, label: a.proposedNodeLabel, layer: a.proposedLayer, type: a.proposedType, data: a.proposedData },
+        [a.proposedEdge],
+      );
+      setConfirming(false);
+    }, 600);
+  }, [onCommit, a]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      {/* Header */}
+      <div className="rounded-lg p-3" style={{ background: "rgba(34,197,94,0.05)", border: "1px solid rgba(34,197,94,0.15)" }}>
+        <div className="text-[9px] font-bold uppercase tracking-widest mb-1" style={{ color: "#4ade80" }}>
+          Substrate Growth · Local Write Path
+        </div>
+        <p className="text-[9px] text-slate-500 leading-relaxed">
+          Review extracted claims below. Approved nodes are written to your local session substrate and persist in localStorage.
+          Node count updates immediately. This is a local demo write path — Neo4j production write is pending backend integration.
+        </p>
+      </div>
+
+      {/* Seed artifact */}
+      <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        <div className="flex items-center gap-2 mb-2">
+          <div className="text-[8px] uppercase tracking-widest text-slate-600">Source record</div>
+          <GroundingBadge g={a.grounding} />
+          <TrustBar value={a.trustScore} color="#eab308" />
+        </div>
+        <div className="text-[10px] font-semibold text-slate-300 mb-0.5 leading-snug">{a.sourceTitle}</div>
+        <div className="text-[8px] text-slate-600 mb-2">{a.sourceAuthors} · {a.sourceYear}</div>
+        <p className="text-[9px] text-slate-400 leading-relaxed border-l-2 pl-2 mb-1" style={{ borderColor: "#eab308" }}>
+          "{a.keyClaim}"
+        </p>
+      </div>
+
+      {/* Extracted claim */}
+      <div className="rounded-lg p-3" style={{ background: "rgba(99,102,241,0.05)", border: "1px solid rgba(99,102,241,0.15)" }}>
+        <div className="text-[8px] uppercase tracking-widest text-indigo-500 mb-2">Extracted claim → proposed node</div>
+        <div className="flex items-center gap-1.5 mb-1.5">
+          <span className="text-[8px] px-1.5 py-0.5 rounded font-bold uppercase tracking-widest"
+            style={{ background: "rgba(139,92,246,0.15)", color: "#a78bfa", border: "1px solid rgba(139,92,246,0.25)" }}>
+            Mechanism
+          </span>
+          <span className="text-[8px] px-1.5 py-0.5 rounded font-mono"
+            style={{ background: "rgba(255,255,255,0.04)", color: "#64748b" }}>
+            {a.proposedNodeId}
+          </span>
+          <span className="ml-auto text-[8px] text-slate-600">codifiability {a.proposedData.codifiability}</span>
+        </div>
+        <div className="text-[10px] text-slate-200 font-medium mb-2">{a.proposedNodeLabel}</div>
+
+        <div className="text-[8px] uppercase tracking-widest text-slate-700 mb-1">Proposed edge</div>
+        <div className="font-mono text-[8px] text-slate-500 mb-2 p-1.5 rounded"
+          style={{ background: "rgba(0,0,0,0.3)" }}>
+          {a.proposedEdge.source} → <span style={{ color: "#818cf8" }}>{a.proposedEdge.relation}</span> → {a.proposedEdge.target}
+        </div>
+
+        <div className="text-[8px] uppercase tracking-widest text-slate-700 mb-1">Provenance hash</div>
+        <div className="font-mono text-[8px] text-slate-600 p-1.5 rounded mb-3" style={{ background: "rgba(0,0,0,0.3)" }}>
+          {provenanceHash(a.proposedNodeId)}
+        </div>
+
+        <div className="text-[8px] uppercase tracking-widest text-slate-700 mb-1">Governance note</div>
+        <p className="text-[9px] text-slate-500 mb-3">
+          Human review required before commit. Tacit knowledge nodes carry epistemic risk — codifiability below 0.25 flagged for domain expert sign-off before production write.
+        </p>
+
+        {isCommitted ? (
+          <div className="rounded-lg px-3 py-2 text-center"
+            style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)" }}>
+            <div className="text-[10px] font-bold" style={{ color: "#4ade80" }}>✓ Committed to local substrate</div>
+            <div className="text-[8px] text-slate-600 mt-0.5">node visible in graph · count updated · localStorage persisted</div>
+          </div>
+        ) : (
+          <button
+            onClick={handleCommit}
+            disabled={confirming}
+            className="w-full rounded-lg px-3 py-2 text-[10px] font-bold transition-all"
+            style={{
+              background: confirming ? "rgba(34,197,94,0.06)" : "rgba(34,197,94,0.12)",
+              color: confirming ? "#64748b" : "#4ade80",
+              border: "1px solid rgba(34,197,94,0.25)",
+              cursor: confirming ? "wait" : "pointer",
+            }}>
+            {confirming ? "Writing to local substrate…" : "Approve into local substrate"}
+          </button>
+        )}
+      </div>
+
+      {/* Committed log */}
+      {localNodes.length > 0 && (
+        <div className="rounded-lg p-3" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="text-[8px] uppercase tracking-widest text-slate-600">
+              Local substrate — {localNodes.length} committed node{localNodes.length > 1 ? "s" : ""}
+            </div>
+            <button
+              onClick={onClear}
+              className="ml-auto text-[8px] text-slate-700 hover:text-red-400 transition-colors"
+              title="Clear all local commits (cannot be undone)">
+              clear all
+            </button>
+          </div>
+          {localNodes.map(n => (
+            <div key={n.id} className="flex items-center gap-2 py-1 border-t" style={{ borderColor: "rgba(255,255,255,0.04)" }}>
+              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#4ade80" }} />
+              <span className="text-[9px] text-slate-400 flex-1 truncate">{n.label}</span>
+              <span className="text-[8px] font-mono text-slate-700">{n.id.slice(0, 20)}…</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main component ────────────────────────────────────────────────────────────
 
 export function ResearchTraceView({ className = "" }: { className?: string }) {
   const [selectedRun, setSelectedRun] = useState<string>(DEMO_RUNS[0].id);
-  const [activeTab, setActiveTab] = useState<"pipeline" | "sources" | "claims" | "abstractions">("pipeline");
+  const [activeTab, setActiveTab] = useState<"pipeline" | "sources" | "claims" | "abstractions" | "commit">("pipeline");
 
   const run = DEMO_RUNS.find(r => r.id === selectedRun)!;
 
-  const tabs: Array<{ id: typeof activeTab; label: string; count?: number }> = [
+  const { localNodes, commitLocalNode, clearLocalNodes } = useGraphStore();
+  const committedIds = new Set(localNodes.map(n => n.id));
+
+  const tabs: Array<{ id: typeof activeTab; label: string; count?: number; highlight?: boolean }> = [
     { id: "pipeline",    label: "Pipeline" },
     { id: "sources",     label: "Sources",     count: run.sources.length },
     { id: "claims",      label: "Claims",      count: run.claims.length },
     { id: "abstractions",label: "Abstractions",count: run.abstractions.length + run.bridge_candidates },
+    { id: "commit",      label: "Commit",      count: localNodes.length || undefined, highlight: true },
   ];
 
   return (
@@ -549,23 +717,29 @@ export function ResearchTraceView({ className = "" }: { className?: string }) {
 
       {/* Tabs */}
       <div className="flex-shrink-0 flex border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-        {tabs.map(t => (
-          <button key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            className="px-3 py-2 text-[10px] font-medium transition-colors flex items-center gap-1"
-            style={{
-              color: activeTab === t.id ? "#818cf8" : "#334155",
-              borderBottom: activeTab === t.id ? "2px solid #6366f1" : "2px solid transparent",
-              background: "transparent",
-            }}>
-            {t.label}
-            {t.count !== undefined && (
-              <span className="text-[8px] px-1 rounded" style={{ background: "rgba(255,255,255,0.06)", color: "#475569" }}>
-                {t.count}
-              </span>
-            )}
-          </button>
-        ))}
+        {tabs.map(t => {
+          const isActive = activeTab === t.id;
+          const accent = t.highlight ? "#22c55e" : "#6366f1";
+          const accentText = t.highlight ? "#4ade80" : "#818cf8";
+          return (
+            <button key={t.id}
+              onClick={() => setActiveTab(t.id)}
+              className="px-3 py-2 text-[10px] font-medium transition-colors flex items-center gap-1"
+              style={{
+                color: isActive ? accentText : "#334155",
+                borderBottom: isActive ? `2px solid ${accent}` : "2px solid transparent",
+                background: "transparent",
+              }}>
+              {t.label}
+              {t.count !== undefined && (
+                <span className="text-[8px] px-1 rounded"
+                  style={{ background: t.highlight ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.06)", color: t.highlight ? "#4ade80" : "#475569" }}>
+                  {t.count}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Content */}
@@ -619,6 +793,15 @@ export function ResearchTraceView({ className = "" }: { className?: string }) {
           <div className="flex flex-col gap-2">
             {run.claims.map(c => <ClaimCard key={c.id} claim={c} sources={run.sources} />)}
           </div>
+        )}
+
+        {activeTab === "commit" && (
+          <SubstrateGrowthPanel
+            committedIds={committedIds}
+            onCommit={commitLocalNode}
+            onClear={clearLocalNodes}
+            localNodes={localNodes}
+          />
         )}
 
         {activeTab === "abstractions" && (
