@@ -14,7 +14,7 @@ import { CollectiveAssayView } from "./components/CollectiveAssayView";
 import { PermissionExplorer } from "./components/PermissionExplorer";
 import { NestedAgencyView } from "./components/NestedAgencyView";
 import { SerendipityPanel } from "./components/SerendipityPanel";
-import { LandingView } from "./components/LandingView";
+import { LandingView, CogniseeGlyph } from "./components/LandingView";
 import { TransferWorkbench } from "./components/TransferWorkbench";
 import { ConceptAtlasView } from "./components/ConceptAtlasView";
 import { ResearchTraceView } from "./components/ResearchTraceView";
@@ -25,8 +25,8 @@ import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas" | "research" | "theater";
-type CenterView = "graph" | "city" | "fabric";
+type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas" | "research";
+type CenterView = "graph" | "city" | "fabric" | "theater";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string; desc: string }[] = [
   { id: "replay",     label: "Replay",     icon: "▶", tip: "Decision Replay",      desc: "Step through any decision trace with actors, evidence, and policy gates" },
@@ -47,7 +47,6 @@ const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string; desc
   { id: "transfer",    label: "Transfer",    icon: "⇕", tip: "Transfer Workbench", desc: "Cross-domain transfer via abstraction — functor lab, abstraction elevator, structural loss accounting" },
   { id: "atlas",       label: "Atlas",       icon: "◈", tip: "Concept Atlas",      desc: "2D scatter of all concept nodes by abstraction level and substrate distance — click to inspect" },
   { id: "research",   label: "Research",    icon: "⊛", tip: "ARC Research Engine", desc: "AutoResearchClaw pipeline — sources, claims, contradictions, abstractions, transfer opportunities" },
-  { id: "theater",    label: "Theater",     icon: "⬡", tip: "Decision Theater",   desc: "Governed decision theater — scenario stress-test, decision matrix, next-best-question engine, substrate commit" },
 ];
 
 const DOMAIN_META: Record<string, { color: string; label: string; desc: string }> = {
@@ -272,17 +271,6 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
   );
 }
 
-// ── OmegaGlyph ────────────────────────────────────────────────────────────────
-
-function OmegaGlyph({ size = 26 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-      <polygon points="14,2 25,8 25,20 14,26 3,20 3,8" fill="none" stroke="#6366f1" strokeWidth="1.5" />
-      <polygon points="14,7 21,11 21,18 14,22 7,18 7,11" fill="#6366f110" stroke="#6366f1" strokeWidth="1" />
-      <circle cx="14" cy="14" r="2.5" fill="#6366f1" />
-    </svg>
-  );
-}
 
 // ── AnimatedStat ──────────────────────────────────────────────────────────────
 
@@ -432,6 +420,10 @@ export default function App() {
           setRightTab("transfer");
           setLanded(true);
         }}
+        onEnterTheater={() => {
+          setCenterView("theater");
+          setLanded(true);
+        }}
         demoMode={demoMode}
       />
     );
@@ -454,7 +446,7 @@ export default function App() {
       >
         {/* Brand */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
-          <OmegaGlyph />
+          <CogniseeGlyph size={26} />
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-bold tracking-tight text-white">Omega</span>
             <span className="text-[10px] text-slate-600">Knowledge Operating System</span>
@@ -487,16 +479,20 @@ export default function App() {
         {/* Center view toggle */}
         <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
           style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
-          {(["graph", "city", "fabric"] as CenterView[]).map(v => (
-            <button key={v} onClick={() => setCenterView(v)}
-              className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
-              style={{
-                backgroundColor: centerView === v ? "rgba(99,102,241,0.15)" : "transparent",
-                color: centerView === v ? "#818cf8" : "#334155",
-              }}>
-              {v === "graph" ? "⬡ Graph" : v === "city" ? "⬛ City" : "◈ Fabric"}
-            </button>
-          ))}
+          {(["graph", "city", "fabric", "theater"] as CenterView[]).map(v => {
+            const labels: Record<CenterView, string> = { graph: "⬡ Graph", city: "⬛ City", fabric: "◈ Fabric", theater: "⊛ Theater" };
+            const isTheater = v === "theater";
+            return (
+              <button key={v} onClick={() => setCenterView(v)}
+                className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
+                style={{
+                  backgroundColor: centerView === v ? (isTheater ? "rgba(34,197,94,0.12)" : "rgba(99,102,241,0.15)") : "transparent",
+                  color: centerView === v ? (isTheater ? "#4ade80" : "#818cf8") : "#334155",
+                }}>
+                {labels[v]}
+              </button>
+            );
+          })}
           <Tooltip
             title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : "Cognition Fabric"}
             body={centerView === "graph" ? "Multi-layer knowledge graph with Cytoscape — click any node to inspect" : centerView === "city" ? "3D city of knowledge domains — buildings are node clusters, arcs are cross-domain bridges" : "Distributed cognition fabric — knowledge vaults, shared intent channels, context fabric, collective innovation, cognition engines"}
@@ -572,6 +568,7 @@ export default function App() {
           {centerView === "graph"   && <GraphCanvas           className="w-full h-full" />}
           {centerView === "city"    && <CityOverview           className="w-full h-full" />}
           {centerView === "fabric"  && <CognitionFabricView    className="w-full h-full" />}
+          {centerView === "theater" && <DecisionTheaterView    className="w-full h-full" />}
         </main>
 
         {/* Right sidebar */}
@@ -598,7 +595,6 @@ export default function App() {
               {rightTab === "transfer"    && <TransferWorkbench       className="h-full" initialCase={defaultScenario === "fukushima" ? "transfer-dissent-governance" : undefined} />}
               {rightTab === "atlas"       && <ConceptAtlasView        className="h-full" />}
               {rightTab === "research"    && <ResearchTraceView       className="h-full" />}
-              {rightTab === "theater"    && <DecisionTheaterView     className="h-full" />}
             </div>
           </aside>
         )}

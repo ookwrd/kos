@@ -1,5 +1,19 @@
 import { useEffect, useState } from "react";
 
+export function CogniseeGlyph({ size = 28, color = "#6366f1", opacity = 1 }: { size?: number; color?: string; opacity?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 28 28" fill="none" style={{ opacity }}>
+      <circle cx="14" cy="14" r="12" stroke={color} strokeWidth="1.2" opacity="0.7" />
+      <path d="M 14,2 Q 14,14 4,20"  stroke={color} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      <path d="M 4,20 Q 14,14 24,20" stroke={color} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      <path d="M 24,20 Q 14,14 14,2" stroke={color} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      <circle cx="14" cy="2"  r="2.2" fill={color} />
+      <circle cx="4"  cy="20" r="2.2" fill={color} />
+      <circle cx="24" cy="20" r="2.2" fill={color} />
+    </svg>
+  );
+}
+
 const PILLARS = [
   { icon: "⬡", label: "Governed", desc: "Every claim is owned, contested, and revocable by design" },
   { icon: "⊕", label: "Traceable", desc: "Every output carries its full provenance chain" },
@@ -28,10 +42,11 @@ const THESIS_LINES = [
 interface Props {
   onEnter: () => void;
   onEnterDecision?: () => void;
+  onEnterTheater?: () => void;
   demoMode: boolean;
 }
 
-export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
+export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode }: Props) {
   const [lineIdx, setLineIdx] = useState(0);
   const [entered, setEntered] = useState(false);
 
@@ -50,6 +65,11 @@ export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
   const handleEnterDecision = () => {
     setEntered(true);
     setTimeout(() => onEnterDecision?.(), 600);
+  };
+
+  const handleEnterTheater = () => {
+    setEntered(true);
+    setTimeout(() => onEnterTheater?.(), 600);
   };
 
   return (
@@ -76,8 +96,8 @@ export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
       <div className="relative z-10 flex flex-col items-center text-center max-w-4xl px-8">
 
         {/* Logo mark */}
-        <div className="mb-8">
-          <OmegaGlyph />
+        <div className="mb-8" style={{ filter: "drop-shadow(0 0 24px rgba(99,102,241,0.35))" }}>
+          <CogniseeGlyph size={80} />
         </div>
 
         {/* Brand */}
@@ -161,43 +181,34 @@ export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
           {/* Primary: Decision Board */}
           <button
             onClick={handleEnterDecision}
-            className="group relative px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
-            style={{
-              backgroundColor: "rgba(249,115,22,0.15)",
-              border: "1px solid rgba(249,115,22,0.5)",
-              color: "#fb923c",
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.28)";
-              (e.currentTarget as HTMLButtonElement).style.color = "#fdba74";
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.15)";
-              (e.currentTarget as HTMLButtonElement).style.color = "#fb923c";
-            }}
+            className="px-7 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+            style={{ backgroundColor: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.5)", color: "#fb923c" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.28)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.15)"; }}
           >
-            ▶ Show me a hard decision
+            ▶ Hard decision
           </button>
 
-          {/* Secondary: Explore */}
+          {/* Theater */}
+          <button
+            onClick={handleEnterTheater}
+            className="px-7 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+            style={{ backgroundColor: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.35)", color: "#4ade80" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(34,197,94,0.22)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(34,197,94,0.10)"; }}
+          >
+            ⬡ Decision Theater
+          </button>
+
+          {/* Explore */}
           <button
             onClick={handleEnter}
-            className="group relative px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200"
-            style={{
-              backgroundColor: "rgba(99,102,241,0.08)",
-              border: "1px solid rgba(99,102,241,0.25)",
-              color: "#6366f1",
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.18)";
-              (e.currentTarget as HTMLButtonElement).style.color = "#818cf8";
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.08)";
-              (e.currentTarget as HTMLButtonElement).style.color = "#6366f1";
-            }}
+            className="px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{ backgroundColor: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.25)", color: "#6366f1" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.18)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.08)"; }}
           >
-            Explore the substrate →
+            Explore substrate →
           </button>
         </div>
 
@@ -227,34 +238,6 @@ export function LandingView({ onEnter, onEnterDecision, demoMode }: Props) {
   );
 }
 
-function OmegaGlyph() {
-  return (
-    <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-      {/* Outer ring */}
-      <circle cx="36" cy="36" r="34" stroke="#6366f1" strokeWidth="1" strokeDasharray="4 3" opacity={0.3} />
-      {/* Middle hexagon */}
-      <polygon
-        points="36,6 62,21 62,51 36,66 10,51 10,21"
-        fill="none" stroke="#6366f1" strokeWidth="1.5" opacity={0.6}
-      />
-      {/* Inner hexagon */}
-      <polygon
-        points="36,16 54,26 54,46 36,56 18,46 18,26"
-        fill="rgba(99,102,241,0.08)" stroke="#6366f1" strokeWidth="1"
-      />
-      {/* Core */}
-      <circle cx="36" cy="36" r="6" fill="#6366f1" opacity={0.9} />
-      <circle cx="36" cy="36" r="10" fill="none" stroke="#6366f1" strokeWidth="1" opacity={0.4} />
-      {/* Node connection dots */}
-      {[0, 60, 120, 180, 240, 300].map((angle, i) => {
-        const rad = (angle * Math.PI) / 180;
-        const x = 36 + 22 * Math.cos(rad);
-        const y = 36 + 22 * Math.sin(rad);
-        return <circle key={i} cx={x} cy={y} r="2" fill="#6366f1" opacity={0.7} />;
-      })}
-    </svg>
-  );
-}
 
 function StarField() {
   const stars = Array.from({ length: 120 }, (_, i) => ({
