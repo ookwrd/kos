@@ -19,12 +19,13 @@ import { TransferWorkbench } from "./components/TransferWorkbench";
 import { ConceptAtlasView } from "./components/ConceptAtlasView";
 import { ResearchTraceView } from "./components/ResearchTraceView";
 import { CognitionFabricView } from "./components/CognitionFabricView";
+import { DecisionTheaterView } from "./components/DecisionTheaterView";
 import { useGraphData, useDecisionReplay } from "./hooks/useGraphData";
 import { useGraphStore, LAYER_COLORS, type LayerKey } from "./store/graphStore";
 import { api } from "./api/client";
 
 type LeftTab = "replay" | "provenance" | "tacit" | "inference";
-type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas" | "research";
+type RightTab = "council" | "twin" | "assay" | "serendipity" | "alignment" | "evolution" | "permissions" | "agency" | "transfer" | "atlas" | "research" | "theater";
 type CenterView = "graph" | "city" | "fabric";
 
 const LEFT_TABS: { id: LeftTab; label: string; icon: string; tip: string; desc: string }[] = [
@@ -46,6 +47,7 @@ const RIGHT_TABS: { id: RightTab; label: string; icon: string; tip: string; desc
   { id: "transfer",    label: "Transfer",    icon: "⇕", tip: "Transfer Workbench", desc: "Cross-domain transfer via abstraction — functor lab, abstraction elevator, structural loss accounting" },
   { id: "atlas",       label: "Atlas",       icon: "◈", tip: "Concept Atlas",      desc: "2D scatter of all concept nodes by abstraction level and substrate distance — click to inspect" },
   { id: "research",   label: "Research",    icon: "⊛", tip: "ARC Research Engine", desc: "AutoResearchClaw pipeline — sources, claims, contradictions, abstractions, transfer opportunities" },
+  { id: "theater",    label: "Theater",     icon: "⬡", tip: "Decision Theater",   desc: "Governed decision theater — scenario stress-test, decision matrix, next-best-question engine, substrate commit" },
 ];
 
 const DOMAIN_META: Record<string, { color: string; label: string; desc: string }> = {
@@ -596,6 +598,7 @@ export default function App() {
               {rightTab === "transfer"    && <TransferWorkbench       className="h-full" initialCase={defaultScenario === "fukushima" ? "transfer-dissent-governance" : undefined} />}
               {rightTab === "atlas"       && <ConceptAtlasView        className="h-full" />}
               {rightTab === "research"    && <ResearchTraceView       className="h-full" />}
+              {rightTab === "theater"    && <DecisionTheaterView     className="h-full" />}
             </div>
           </aside>
         )}
