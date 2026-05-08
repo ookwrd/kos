@@ -173,11 +173,11 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
         width: 4,
         flexShrink: 0,
         cursor: "col-resize",
-        background: hovered ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.04)",
+        background: hovered ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.06)",
         transition: "background 0.15s",
         alignSelf: "stretch",
         zIndex: 10,
-        ...(side === "right" ? { borderRight: "1px solid rgba(255,255,255,0.04)" } : { borderLeft: "1px solid rgba(255,255,255,0.04)" }),
+        ...(side === "right" ? { borderRight: "1px solid rgba(255,255,255,0.06)" } : { borderLeft: "1px solid rgba(255,255,255,0.06)" }),
       }}
       title="Drag to resize"
     />
@@ -188,7 +188,7 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
 
 function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: LeftTab) => void }) {
   return (
-    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(2,6,16,0.8)", display: "flex", flexShrink: 0 }}>
+    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", background: "rgba(21,20,26,0.85)", display: "flex", flexShrink: 0 }}>
       {LEFT_TABS.map(t => {
         const { anchor, show, hide } = useTooltip();
         return (
@@ -231,8 +231,8 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
       flexShrink: 0,
       display: "flex",
       flexDirection: "column",
-      borderRight: "1px solid rgba(255,255,255,0.05)",
-      background: "rgba(2,6,16,0.9)",
+      borderRight: "1px solid rgba(255,255,255,0.07)",
+      background: "rgba(21,20,26,0.92)",
       overflowY: "auto",
     }}>
       {RIGHT_TABS.map(t => {
@@ -305,7 +305,7 @@ function DomainPip({ domain, active, onClick }: { domain: string; active: boolea
         style={{
           backgroundColor: active ? `${meta.color}18` : "rgba(255,255,255,0.02)",
           color: active ? meta.color : "#334155",
-          border: `1px solid ${active ? `${meta.color}35` : "rgba(255,255,255,0.04)"}`,
+          border: `1px solid ${active ? `${meta.color}35` : "rgba(255,255,255,0.06)"}`,
         }}
       >
         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.color, opacity: active ? 1 : 0.4 }} />
@@ -432,32 +432,32 @@ export default function App() {
   return (
     <div
       className="h-screen w-screen flex flex-col overflow-hidden"
-      style={{ background: "#020610", color: "#e2e8f0", userSelect: "none" }}
+      style={{ background: "#15141a", color: "#e8e3dc", userSelect: "none" }}
     >
       {/* ── Header ── */}
       <header
         className="flex-shrink-0 flex items-center gap-3 px-4"
         style={{
-          height: 48,
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
-          background: "rgba(2,6,16,0.98)",
-          backdropFilter: "blur(16px)",
+          height: 52,
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          background: "rgba(21,20,26,0.98)",
+          backdropFilter: "blur(20px)",
         }}
       >
         {/* Brand */}
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <CogniseeGlyph size={26} />
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold tracking-tight text-white">Omega</span>
-            <span className="text-[10px] text-slate-600">Knowledge Operating System</span>
+            <span className="text-sm font-bold tracking-tight" style={{ color: "#e8e3dc" }}>Omega</span>
+            <span className="text-[10px]" style={{ color: "#4a4640" }}>Knowledge Operating System</span>
           </div>
-          <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
-            style={{ backgroundColor: "#6366f115", color: "#6366f1", border: "1px solid #6366f125" }}>
-            v8
+          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-widest"
+            style={{ backgroundColor: "rgba(124,109,248,0.10)", color: "#9d8ff5", border: "1px solid rgba(124,109,248,0.18)" }}>
+            v9
           </span>
           {demoMode && (
             <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
-              style={{ backgroundColor: "#f9731615", color: "#fb923c", border: "1px solid #f9731625" }}
+              style={{ backgroundColor: "rgba(249,115,22,0.10)", color: "#c97a42", border: "1px solid rgba(249,115,22,0.18)" }}
               title="No live backend — graph loaded from embedded demo substrate">
               demo mode · embedded substrate
             </span>
@@ -478,16 +478,17 @@ export default function App() {
 
         {/* Center view toggle */}
         <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
-          style={{ border: "1px solid rgba(255,255,255,0.06)" }}>
+          style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
           {(["graph", "city", "fabric", "theater"] as CenterView[]).map(v => {
             const labels: Record<CenterView, string> = { graph: "⬡ Graph", city: "⬛ City", fabric: "◈ Fabric", theater: "⊛ Theater" };
             const isTheater = v === "theater";
+            const isActive = centerView === v;
             return (
               <button key={v} onClick={() => setCenterView(v)}
                 className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
                 style={{
-                  backgroundColor: centerView === v ? (isTheater ? "rgba(34,197,94,0.12)" : "rgba(99,102,241,0.15)") : "transparent",
-                  color: centerView === v ? (isTheater ? "#4ade80" : "#818cf8") : "#334155",
+                  backgroundColor: isActive ? (isTheater ? "rgba(34,197,94,0.10)" : "rgba(124,109,248,0.12)") : "transparent",
+                  color: isActive ? (isTheater ? "#5ecea0" : "#9d8ff5") : "#4a4640",
                 }}>
                 {labels[v]}
               </button>
@@ -548,7 +549,7 @@ export default function App() {
             display: "flex",
             overflow: "hidden",
             borderRight: "none",
-            background: "rgba(2,6,16,0.97)",
+            background: "rgba(21,20,26,0.97)",
           }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
               <LeftTabStrip active={leftTab} onChange={setLeftTab} />
@@ -578,8 +579,8 @@ export default function App() {
             flexShrink: 0,
             display: "flex",
             overflow: "hidden",
-            borderLeft: "1px solid rgba(255,255,255,0.05)",
-            background: "rgba(2,6,16,0.97)",
+            borderLeft: "1px solid rgba(255,255,255,0.07)",
+            background: "rgba(21,20,26,0.97)",
           }}>
             <ResizeHandle onMouseDown={rightResize.onMouseDown} side="left" />
             <RightTabStrip active={rightTab} onChange={setRightTab} />
@@ -615,7 +616,7 @@ export default function App() {
       {/* ── Status bar ── */}
       <footer
         className="flex-shrink-0 flex items-center justify-between px-4 gap-4 overflow-hidden"
-        style={{ height: 26, borderTop: "1px solid rgba(255,255,255,0.04)", background: "rgba(2,6,16,0.99)" }}>
+        style={{ height: 26, borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(21,20,26,0.99)" }}>
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="flex items-center gap-1.5">
             <span className={`w-1.5 h-1.5 rounded-full ${wsConnected ? "animate-pulse" : ""}`}
