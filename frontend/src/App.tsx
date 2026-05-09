@@ -104,14 +104,14 @@ function Tooltip({ title, body, anchor, side = "right" }: {
   return createPortal(
     <div style={style}>
       <div style={{
-        backgroundColor: "rgba(8,14,30,0.97)",
-        border: "1px solid rgba(255,255,255,0.12)",
+        backgroundColor: "rgba(7,18,11,0.97)",
+        border: "1px solid rgba(244,237,225,0.20)",
         borderRadius: 8,
         padding: "6px 10px",
         boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
         maxWidth: 220,
       }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#e2e8f0", whiteSpace: "nowrap" }}>{title}</div>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "#f4ede1", whiteSpace: "nowrap" }}>{title}</div>
         {body && <div style={{ fontSize: 10, color: "#64748b", marginTop: 2, lineHeight: 1.4 }}>{body}</div>}
       </div>
     </div>,
@@ -173,11 +173,11 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
         width: 4,
         flexShrink: 0,
         cursor: "col-resize",
-        background: hovered ? "rgba(99,102,241,0.35)" : "rgba(255,255,255,0.06)",
+        background: hovered ? "rgba(166,212,189,0.35)" : "rgba(244,237,225,0.10)",
         transition: "background 0.15s",
         alignSelf: "stretch",
         zIndex: 10,
-        ...(side === "right" ? { borderRight: "1px solid rgba(255,255,255,0.06)" } : { borderLeft: "1px solid rgba(255,255,255,0.06)" }),
+        ...(side === "right" ? { borderRight: "1px solid rgba(244,237,225,0.10)" } : { borderLeft: "1px solid rgba(244,237,225,0.10)" }),
       }}
       title="Drag to resize"
     />
@@ -188,7 +188,7 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
 
 function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: LeftTab) => void }) {
   return (
-    <div style={{ borderBottom: "1px solid rgba(255,255,255,0.07)", background: "rgba(21,20,26,0.85)", display: "flex", flexShrink: 0 }}>
+    <div style={{ borderBottom: "1px solid rgba(244,237,225,0.12)", background: "rgba(9,26,17,0.90)", display: "flex", flexShrink: 0 }}>
       {LEFT_TABS.map(t => {
         const { anchor, show, hide } = useTooltip();
         return (
@@ -202,9 +202,9 @@ function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: Lef
                 alignItems: "center",
                 justifyContent: "center",
                 padding: "8px 4px",
-                color: active === t.id ? "#e2e8f0" : "#334155",
-                borderBottom: active === t.id ? "2px solid #6366f1" : "2px solid transparent",
-                background: active === t.id ? "rgba(99,102,241,0.05)" : "transparent",
+                color: active === t.id ? "#f4ede1" : "rgba(244,237,225,0.28)",
+                borderBottom: active === t.id ? "2px solid #a6d4bd" : "2px solid transparent",
+                background: active === t.id ? "rgba(166,212,189,0.06)" : "transparent",
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
@@ -231,8 +231,8 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
       flexShrink: 0,
       display: "flex",
       flexDirection: "column",
-      borderRight: "1px solid rgba(255,255,255,0.07)",
-      background: "rgba(21,20,26,0.92)",
+      borderRight: "1px solid rgba(244,237,225,0.12)",
+      background: "rgba(9,26,17,0.92)",
       overflowY: "auto",
     }}>
       {RIGHT_TABS.map(t => {
@@ -253,9 +253,9 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
-                background: isActive ? "rgba(99,102,241,0.10)" : "transparent",
-                borderLeft: isActive ? "2px solid #6366f1" : "2px solid transparent",
-                color: isActive ? "#e2e8f0" : "#334155",
+                background: isActive ? "rgba(166,212,189,0.10)" : "transparent",
+                borderLeft: isActive ? "2px solid #a6d4bd" : "2px solid transparent",
+                color: isActive ? "#f4ede1" : "rgba(244,237,225,0.28)",
                 transition: "color 0.15s, background 0.15s",
                 flexShrink: 0,
               }}
@@ -281,7 +281,7 @@ function AnimatedStat({ value, label, color, tip }: { value: number | null; labe
   useEffect(() => { if (value != null) prev.current = value; }, [value]);
   return (
     <div className="flex items-baseline gap-1" onMouseEnter={show} onMouseLeave={hide}>
-      <span className="text-sm font-bold tabular-nums font-mono" style={{ color: value ? (color ?? "#e2e8f0") : "#1e293b" }}>
+      <span className="text-sm font-bold tabular-nums font-mono" style={{ color: value ? (color ?? "#f4ede1") : "rgba(9,26,17,0.5)" }}>
         {display}
       </span>
       <span className="text-[9px] text-slate-700 uppercase tracking-widest">{label}</span>
@@ -294,8 +294,8 @@ function AnimatedStat({ value, label, color, tip }: { value: number | null; labe
 
 function DomainPip({ domain, active, onClick }: { domain: string; active: boolean; onClick: () => void }) {
   const meta = domain === "all"
-    ? { color: "#6366f1", label: "All", desc: "Show all domains" }
-    : (DOMAIN_META[domain] ?? { color: "#6366f1", label: domain.replace(/_/g, " "), desc: "" });
+    ? { color: "#a6d4bd", label: "All", desc: "Show all domains" }
+    : (DOMAIN_META[domain] ?? { color: "#a6d4bd", label: domain.replace(/_/g, " "), desc: "" });
   const { anchor, show, hide } = useTooltip();
   return (
     <div onMouseEnter={show} onMouseLeave={hide}>
@@ -304,8 +304,8 @@ function DomainPip({ domain, active, onClick }: { domain: string; active: boolea
         className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
         style={{
           backgroundColor: active ? `${meta.color}18` : "rgba(255,255,255,0.02)",
-          color: active ? meta.color : "#334155",
-          border: `1px solid ${active ? `${meta.color}35` : "rgba(255,255,255,0.06)"}`,
+          color: active ? meta.color : "rgba(244,237,225,0.28)",
+          border: `1px solid ${active ? `${meta.color}35` : "rgba(244,237,225,0.10)"}`,
         }}
       >
         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.color, opacity: active ? 1 : 0.4 }} />
@@ -432,15 +432,15 @@ export default function App() {
   return (
     <div
       className="h-screen w-screen flex flex-col overflow-hidden"
-      style={{ background: "#15141a", color: "#e8e3dc", userSelect: "none" }}
+      style={{ background: "#091a11", color: "#f4ede1", userSelect: "none" }}
     >
       {/* ── Header ── */}
       <header
         className="flex-shrink-0 flex items-center gap-3 px-4"
         style={{
           height: 52,
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
-          background: "rgba(21,20,26,0.98)",
+          borderBottom: "1px solid rgba(244,237,225,0.12)",
+          background: "rgba(9,26,17,0.98)",
           backdropFilter: "blur(20px)",
         }}
       >
@@ -448,11 +448,11 @@ export default function App() {
         <div className="flex items-center gap-2.5 flex-shrink-0">
           <CogniseeGlyph size={26} />
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold tracking-tight" style={{ color: "#e8e3dc" }}>Omega</span>
-            <span className="text-[10px]" style={{ color: "#4a4640" }}>Knowledge Operating System</span>
+            <span className="text-sm font-bold tracking-tight" style={{ color: "#f4ede1" }}>Omega</span>
+            <span className="text-[10px]" style={{ color: "rgba(244,237,225,0.45)" }}>Knowledge Operating System</span>
           </div>
           <span className="text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-widest"
-            style={{ backgroundColor: "rgba(124,109,248,0.10)", color: "#9d8ff5", border: "1px solid rgba(124,109,248,0.18)" }}>
+            style={{ backgroundColor: "rgba(166,212,189,0.10)", color: "#a6d4bd", border: "1px solid rgba(166,212,189,0.20)" }}>
             v9
           </span>
           {demoMode && (
@@ -478,7 +478,7 @@ export default function App() {
 
         {/* Center view toggle */}
         <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
-          style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
+          style={{ border: "1px solid rgba(244,237,225,0.14)" }}>
           {(["graph", "city", "fabric", "theater"] as CenterView[]).map(v => {
             const labels: Record<CenterView, string> = { graph: "⬡ Graph", city: "⬛ City", fabric: "◈ Fabric", theater: "⊛ Theater" };
             const isTheater = v === "theater";
@@ -488,7 +488,7 @@ export default function App() {
                 className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
                 style={{
                   backgroundColor: isActive ? (isTheater ? "rgba(34,197,94,0.10)" : "rgba(124,109,248,0.12)") : "transparent",
-                  color: isActive ? (isTheater ? "#5ecea0" : "#9d8ff5") : "#4a4640",
+                  color: isActive ? (isTheater ? "#5ecea0" : "#a6d4bd") : "rgba(244,237,225,0.45)",
                 }}>
                 {labels[v]}
               </button>
@@ -502,7 +502,7 @@ export default function App() {
 
         {/* Stats */}
         <div className="flex items-center gap-3 flex-shrink-0">
-          {loading && <div className="w-3 h-3 rounded-full border border-t-indigo-400 border-indigo-900/50 animate-spin" />}
+          {loading && <div className="w-3 h-3 rounded-full border border-t-green-400/60 border-green-900/40 animate-spin" />}
           <AnimatedStat value={totalNodes} label="nodes" tip="Total graph nodes across all six layers" />
           <AnimatedStat value={totalEdges} label="edges" tip="Total typed relations in the knowledge graph" />
 
@@ -512,9 +512,9 @@ export default function App() {
           <div onMouseEnter={alignShow} onMouseLeave={alignHide}>
             <button onClick={handleComputeAlignment}
               className="px-2.5 py-1 text-[10px] rounded-lg font-medium transition-all duration-150"
-              style={{ border: "1px solid rgba(99,102,241,0.25)", color: "#6366f1", backgroundColor: "rgba(99,102,241,0.06)" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.15)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.06)"; }}>
+              style={{ border: "1px solid rgba(166,212,189,0.25)", color: "#a6d4bd", backgroundColor: "rgba(166,212,189,0.08)" }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.18)"; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.08)"; }}>
               ≡ Bridge
             </button>
             <Tooltip title="Ontology Bridge"
@@ -535,10 +535,10 @@ export default function App() {
           style={{
             left: leftOpen ? leftResize.width : 0,
             width: 10, height: 40,
-            background: "rgba(99,102,241,0.12)",
+            background: "rgba(166,212,189,0.12)",
             borderRight: "1px solid rgba(99,102,241,0.2)",
           }}>
-          <span style={{ fontSize: 8, color: "#6366f1" }}>{leftOpen ? "‹" : "›"}</span>
+          <span style={{ fontSize: 8, color: "#a6d4bd" }}>{leftOpen ? "‹" : "›"}</span>
         </button>
 
         {/* Left sidebar */}
@@ -549,7 +549,7 @@ export default function App() {
             display: "flex",
             overflow: "hidden",
             borderRight: "none",
-            background: "rgba(21,20,26,0.97)",
+            background: "rgba(9,26,17,0.97)",
           }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
               <LeftTabStrip active={leftTab} onChange={setLeftTab} />
@@ -579,8 +579,8 @@ export default function App() {
             flexShrink: 0,
             display: "flex",
             overflow: "hidden",
-            borderLeft: "1px solid rgba(255,255,255,0.07)",
-            background: "rgba(21,20,26,0.97)",
+            borderLeft: "1px solid rgba(244,237,225,0.12)",
+            background: "rgba(9,26,17,0.97)",
           }}>
             <ResizeHandle onMouseDown={rightResize.onMouseDown} side="left" />
             <RightTabStrip active={rightTab} onChange={setRightTab} />
@@ -606,17 +606,17 @@ export default function App() {
           style={{
             right: rightOpen ? rightResize.width : 0,
             width: 10, height: 40,
-            background: "rgba(99,102,241,0.12)",
+            background: "rgba(166,212,189,0.12)",
             borderLeft: "1px solid rgba(99,102,241,0.2)",
           }}>
-          <span style={{ fontSize: 8, color: "#6366f1" }}>{rightOpen ? "›" : "‹"}</span>
+          <span style={{ fontSize: 8, color: "#a6d4bd" }}>{rightOpen ? "›" : "‹"}</span>
         </button>
       </div>
 
       {/* ── Status bar ── */}
       <footer
         className="flex-shrink-0 flex items-center justify-between px-4 gap-4 overflow-hidden"
-        style={{ height: 26, borderTop: "1px solid rgba(255,255,255,0.06)", background: "rgba(21,20,26,0.99)" }}>
+        style={{ height: 26, borderTop: "1px solid rgba(244,237,225,0.10)", background: "rgba(9,26,17,0.99)" }}>
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <span className="flex items-center gap-1.5">
             <span className={`w-1.5 h-1.5 rounded-full ${wsConnected ? "animate-pulse" : ""}`}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function CogniseeGlyph({ size = 28, color = "#6366f1", opacity = 1 }: { size?: number; color?: string; opacity?: number }) {
+export function CogniseeGlyph({ size = 28, color = "#a6d4bd", opacity = 1 }: { size?: number; color?: string; opacity?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" fill="none" style={{ opacity }}>
       <circle cx="14" cy="14" r="12" stroke={color} strokeWidth="1.2" opacity="0.7" />
@@ -76,7 +76,7 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
     <div
       className="fixed inset-0 z-50 flex flex-col items-center justify-center overflow-hidden"
       style={{
-        background: "#020610",
+        background: "#091a11",
         opacity: entered ? 0 : 1,
         transition: "opacity 0.6s ease-out",
       }}
@@ -88,7 +88,7 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(99,102,241,0.12) 0%, rgba(99,102,241,0.04) 40%, transparent 70%)",
+          background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(112,143,115,0.22) 0%, rgba(31,64,43,0.12) 40%, transparent 70%)",
         }}
       />
 
@@ -96,7 +96,7 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
       <div className="relative z-10 flex flex-col items-center text-center max-w-4xl px-8">
 
         {/* Logo mark */}
-        <div className="mb-8" style={{ filter: "drop-shadow(0 0 24px rgba(99,102,241,0.35))" }}>
+        <div className="mb-8" style={{ filter: "drop-shadow(0 0 28px rgba(166,212,189,0.30))" }}>
           <CogniseeGlyph size={80} />
         </div>
 
@@ -104,14 +104,14 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
         <div className="mb-2">
           <span
             className="text-[11px] font-bold uppercase tracking-[0.3em]"
-            style={{ color: "#6366f1" }}
+            style={{ color: "#a6d4bd", fontFamily: '"IBM Plex Mono", monospace' }}
           >
             Collective Intelligence Substrate
           </span>
         </div>
         <h1
           className="text-6xl font-bold tracking-tight mb-8"
-          style={{ color: "#f8fafc", letterSpacing: "-0.02em" }}
+          style={{ color: "#f6efe5", letterSpacing: "-0.032em", fontFamily: '"Newsreader", Georgia, serif', fontWeight: 400 }}
         >
           Omega
         </h1>
@@ -133,14 +133,14 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
               key={p.label}
               className="rounded-xl p-4 transition-all duration-500"
               style={{
-                backgroundColor: "rgba(255,255,255,0.02)",
-                border: "1px solid rgba(255,255,255,0.06)",
+                backgroundColor: "rgba(166,212,189,0.03)",
+                border: "1px solid rgba(244,237,225,0.12)",
                 opacity: lineIdx >= 2 + i * 0.3 ? 1 : 0,
                 transform: lineIdx >= 2 ? "translateY(0)" : "translateY(8px)",
                 transition: `opacity 0.5s ${i * 0.1}s, transform 0.5s ${i * 0.1}s`,
               }}
             >
-              <div className="text-2xl mb-2" style={{ color: "#6366f1" }}>{p.icon}</div>
+              <div className="text-2xl mb-2" style={{ color: "#a6d4bd" }}>{p.icon}</div>
               <div className="text-xs font-semibold text-slate-200 mb-1">{p.label}</div>
               <div className="text-[10px] text-slate-500 leading-relaxed">{p.desc}</div>
             </div>
@@ -181,10 +181,10 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
           {/* Primary: Decision Board */}
           <button
             onClick={handleEnterDecision}
-            className="px-7 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
-            style={{ backgroundColor: "rgba(249,115,22,0.15)", border: "1px solid rgba(249,115,22,0.5)", color: "#fb923c" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.28)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(249,115,22,0.15)"; }}
+            className="px-7 py-3 text-sm font-semibold transition-all duration-200"
+            style={{ backgroundColor: "rgba(241,190,115,0.12)", border: "1px solid rgba(241,190,115,0.45)", color: "#f1be73", fontFamily: '"IBM Plex Mono", monospace', letterSpacing: "0.01em" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(241,190,115,0.22)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(241,190,115,0.12)"; }}
           >
             ▶ Hard decision
           </button>
@@ -192,10 +192,10 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
           {/* Theater */}
           <button
             onClick={handleEnterTheater}
-            className="px-7 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
-            style={{ backgroundColor: "rgba(34,197,94,0.10)", border: "1px solid rgba(34,197,94,0.35)", color: "#4ade80" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(34,197,94,0.22)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(34,197,94,0.10)"; }}
+            className="px-7 py-3 text-sm font-semibold transition-all duration-200"
+            style={{ backgroundColor: "rgba(166,212,189,0.10)", border: "1px solid rgba(166,212,189,0.40)", color: "#a6d4bd", fontFamily: '"IBM Plex Mono", monospace', letterSpacing: "0.01em" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.20)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.10)"; }}
           >
             ⬡ Decision Theater
           </button>
@@ -203,10 +203,10 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
           {/* Explore */}
           <button
             onClick={handleEnter}
-            className="px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200"
-            style={{ backgroundColor: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.25)", color: "#6366f1" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.18)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(99,102,241,0.08)"; }}
+            className="px-6 py-3 text-sm font-medium transition-all duration-200"
+            style={{ backgroundColor: "rgba(166,212,189,0.06)", border: "1px solid rgba(99,102,241,0.25)", color: "#a6d4bd" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.12)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.06)"; }}
           >
             Explore substrate →
           </button>
@@ -221,18 +221,18 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
         {/* Research attribution */}
         <div className="mt-8 flex items-center gap-2"
           style={{ opacity: lineIdx >= 4 ? 0.4 : 0, transition: "opacity 0.6s 0.5s" }}>
-          <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
+          <div className="h-px w-8" style={{ backgroundColor: "rgba(244,237,225,0.10)" }} />
           <span className="text-[10px] text-slate-700 tracking-widest uppercase">
             Knowledge Operating System · research prototype
           </span>
-          <div className="h-px w-8" style={{ backgroundColor: "rgba(255,255,255,0.06)" }} />
+          <div className="h-px w-8" style={{ backgroundColor: "rgba(244,237,225,0.10)" }} />
         </div>
       </div>
 
       {/* Bottom gradient */}
       <div
         className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-        style={{ background: "linear-gradient(transparent, #020610)" }}
+        style={{ background: "linear-gradient(transparent, #091a11)" }}
       />
     </div>
   );

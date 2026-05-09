@@ -2,16 +2,16 @@ import { useState, useCallback } from "react";
 import { useGraphStore } from "../store/graphStore";
 
 // ── Design tokens (Anthropic-inspired warm dark) ──────────────────────────────
-const BG       = "#15141a";
-const SURFACE  = "rgba(255,255,255,0.035)";
-const SURFACE2 = "rgba(255,255,255,0.055)";
-const BORDER   = "rgba(255,255,255,0.08)";
-const BORDER2  = "rgba(255,255,255,0.12)";
-const TXT      = "#e8e3dc";    // primary text
-const TXT2     = "#8b8479";    // secondary
-const TXT3     = "#4a4640";    // dimmed
-const ACCENT   = "#9d8ff5";    // indigo (warm)
-const ACCENTBG = "rgba(157,143,245,0.10)";
+const BG       = "#091a11";
+const SURFACE  = "rgba(166,212,189,0.04)";
+const SURFACE2 = "rgba(166,212,189,0.07)";
+const BORDER   = "rgba(244,237,225,0.14)";
+const BORDER2  = "rgba(244,237,225,0.22)";
+const TXT      = "#f4ede1";    // primary text
+const TXT2     = "rgba(244,237,225,0.62)"; // secondary
+const TXT3     = "rgba(244,237,225,0.38)"; // dimmed
+const ACCENT   = "#a6d4bd";    // sage green
+const ACCENTBG = "rgba(166,212,189,0.12)";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -197,7 +197,7 @@ function FoodSecurityPanel({ scenario, setScenario, onCommit, localNodeCount }: 
               padding: "5px 13px", borderRadius: 7, fontSize: 12, fontWeight: 500, cursor: "pointer",
               background: isActive ? (isRisk ? "rgba(224,82,82,0.12)" : ACCENTBG) : SURFACE,
               color: isActive ? (isRisk ? "#e08080" : ACCENT) : TXT2,
-              border: `1px solid ${isActive ? (isRisk ? "rgba(224,82,82,0.28)" : "rgba(157,143,245,0.28)") : BORDER}`,
+              border: `1px solid ${isActive ? (isRisk ? "rgba(224,82,82,0.28)" : "rgba(166,212,189,0.28)") : BORDER}`,
               transition: "all 0.15s",
             }}>
               {SCENARIO_LABELS[s]}
@@ -441,7 +441,7 @@ function GovernancePanel() {
               title: "Governed distributed substrate",
               titleColor: ACCENT,
               bg: ACCENTBG,
-              border: "rgba(157,143,245,0.18)",
+              border: "rgba(166,212,189,0.18)",
               desc: "Each function has a local vault. Data is classified and bounded. KOS provides the provenance substrate.",
               items: ["Data residency enforced per vault", "Permission boundaries per function", "Full provenance + revocation chain", "Graceful degradation if one agent fails"],
               icon: "✓", iconColor: ACCENT,
@@ -528,7 +528,7 @@ export function DecisionTheaterView({ className = "" }: { className?: string }) 
       {/* Header */}
       <div style={{
         height: 48, flexShrink: 0, display: "flex", alignItems: "center", gap: 16, padding: "0 20px",
-        borderBottom: `1px solid ${BORDER}`, background: "rgba(21,20,26,0.98)", backdropFilter: "blur(16px)",
+        borderBottom: `1px solid ${BORDER}`, background: "rgba(9,26,17,0.98)", backdropFilter: "blur(16px)",
       }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: TXT, letterSpacing: "0.01em" }}>Decision Theater</span>
@@ -543,7 +543,7 @@ export function DecisionTheaterView({ className = "" }: { className?: string }) 
               padding: "5px 14px", fontSize: 12, fontWeight: 500, cursor: "pointer", borderRadius: 7,
               background: mode === m ? ACCENTBG : "transparent",
               color: mode === m ? ACCENT : TXT3,
-              border: `1px solid ${mode === m ? "rgba(157,143,245,0.25)" : BORDER}`,
+              border: `1px solid ${mode === m ? "rgba(166,212,189,0.25)" : BORDER}`,
               transition: "all 0.15s",
             }}>
               {label}
