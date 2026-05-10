@@ -104,15 +104,14 @@ function Tooltip({ title, body, anchor, side = "right" }: {
   return createPortal(
     <div style={style}>
       <div style={{
-        backgroundColor: "rgba(7,18,11,0.97)",
-        border: "1px solid rgba(244,237,225,0.20)",
-        borderRadius: 8,
+        background: "var(--bg-panel)",
+        border: "1px solid var(--line-strong)",
         padding: "6px 10px",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.6)",
-        maxWidth: 220,
+        boxShadow: "var(--shadow)",
+        maxWidth: 240,
       }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#f4ede1", whiteSpace: "nowrap" }}>{title}</div>
-        {body && <div style={{ fontSize: 10, color: "#64748b", marginTop: 2, lineHeight: 1.4 }}>{body}</div>}
+        <div style={{ fontSize: 11, fontWeight: 500, color: "var(--text)", fontFamily: '"IBM Plex Sans", sans-serif', whiteSpace: "nowrap" }}>{title}</div>
+        {body && <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 3, lineHeight: 1.45, fontFamily: '"IBM Plex Sans", sans-serif' }}>{body}</div>}
       </div>
     </div>,
     document.body,
@@ -162,7 +161,7 @@ function useResizable(initial: number, min = 180, max = 520, direction: "right" 
 
 // ── ResizeHandle ──────────────────────────────────────────────────────────────
 
-function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent) => void; side: "right" | "left" }) {
+function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void; side: "right" | "left" }) {
   const [hovered, setHovered] = useState(false);
   return (
     <div
@@ -170,16 +169,14 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        width: 4,
+        width: 3,
         flexShrink: 0,
         cursor: "col-resize",
-        background: hovered ? "rgba(166,212,189,0.35)" : "rgba(244,237,225,0.10)",
-        transition: "background 0.15s",
+        background: hovered ? "var(--accent)" : "var(--line)",
+        transition: "background 0.18s",
         alignSelf: "stretch",
         zIndex: 10,
-        ...(side === "right" ? { borderRight: "1px solid rgba(244,237,225,0.10)" } : { borderLeft: "1px solid rgba(244,237,225,0.10)" }),
       }}
-      title="Drag to resize"
     />
   );
 }
@@ -188,8 +185,9 @@ function ResizeHandle({ onMouseDown, side }: { onMouseDown: (e: React.MouseEvent
 
 function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: LeftTab) => void }) {
   return (
-    <div style={{ borderBottom: "1px solid rgba(244,237,225,0.12)", background: "rgba(9,26,17,0.90)", display: "flex", flexShrink: 0 }}>
+    <div style={{ borderBottom: "1px solid var(--line)", background: "var(--bg-panel)", display: "flex", flexShrink: 0 }}>
       {LEFT_TABS.map(t => {
+        const isActive = active === t.id;
         const { anchor, show, hide } = useTooltip();
         return (
           <div key={t.id} style={{ flex: 1 }} onMouseEnter={show} onMouseLeave={hide}>
@@ -197,22 +195,22 @@ function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: Lef
               onClick={() => onChange(t.id)}
               style={{
                 width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "8px 4px",
-                color: active === t.id ? "#f4ede1" : "rgba(244,237,225,0.28)",
-                borderBottom: active === t.id ? "2px solid #a6d4bd" : "2px solid transparent",
-                background: active === t.id ? "rgba(166,212,189,0.06)" : "transparent",
+                padding: "10px 6px 8px",
+                color: isActive ? "var(--text)" : "var(--text-quiet)",
+                boxShadow: isActive ? "inset 0 -1.5px 0 var(--accent)" : "none",
+                background: "transparent",
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
-                transition: "color 0.15s, background 0.15s",
+                fontSize: 9,
+                fontFamily: '"IBM Plex Mono", monospace',
+                fontWeight: 500,
+                textTransform: "uppercase" as const,
+                letterSpacing: "0.1em",
+                transition: "color 0.15s",
               }}
             >
-              <span style={{ fontSize: 12, lineHeight: 1 }}>{t.icon}</span>
-              <span style={{ fontSize: 8, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 3, lineHeight: 1 }}>{t.label}</span>
+              {t.label}
             </button>
             <Tooltip title={t.tip} body={t.desc} anchor={anchor} side="bottom" />
           </div>
@@ -227,12 +225,12 @@ function LeftTabStrip({ active, onChange }: { active: LeftTab; onChange: (t: Lef
 function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: RightTab) => void }) {
   return (
     <div style={{
-      width: 36,
+      width: 40,
       flexShrink: 0,
       display: "flex",
       flexDirection: "column",
-      borderRight: "1px solid rgba(244,237,225,0.12)",
-      background: "rgba(9,26,17,0.92)",
+      borderRight: "1px solid var(--line)",
+      background: "var(--bg-panel)",
       overflowY: "auto",
     }}>
       {RIGHT_TABS.map(t => {
@@ -243,25 +241,23 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
             <button
               onClick={() => onChange(t.id)}
               style={{
-                width: 36,
-                height: 40,
+                width: 40,
+                height: 42,
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 2,
                 cursor: "pointer",
                 border: "none",
                 outline: "none",
-                background: isActive ? "rgba(166,212,189,0.10)" : "transparent",
-                borderLeft: isActive ? "2px solid #a6d4bd" : "2px solid transparent",
-                color: isActive ? "#f4ede1" : "rgba(244,237,225,0.28)",
-                transition: "color 0.15s, background 0.15s",
+                background: "transparent",
+                borderLeft: isActive ? "1.5px solid var(--accent)" : "1.5px solid transparent",
+                color: isActive ? "var(--accent)" : "var(--text-quiet)",
+                transition: "color 0.15s",
                 flexShrink: 0,
               }}
               title={t.tip}
             >
-              <span style={{ fontSize: 13, lineHeight: 1 }}>{t.icon}</span>
+              <span style={{ fontSize: 14, lineHeight: 1 }}>{t.icon}</span>
             </button>
             <Tooltip title={t.tip} body={t.desc} anchor={anchor} side="left" />
           </div>
@@ -274,17 +270,17 @@ function RightTabStrip({ active, onChange }: { active: RightTab; onChange: (t: R
 
 // ── AnimatedStat ──────────────────────────────────────────────────────────────
 
-function AnimatedStat({ value, label, color, tip }: { value: number | null; label: string; color?: string; tip?: string }) {
+function AnimatedStat({ value, label, tip }: { value: number | null; label: string; color?: string; tip?: string }) {
   const prev = useRef(0);
   const display = value ?? prev.current;
   const { anchor, show, hide } = useTooltip();
   useEffect(() => { if (value != null) prev.current = value; }, [value]);
   return (
-    <div className="flex items-baseline gap-1" onMouseEnter={show} onMouseLeave={hide}>
-      <span className="text-sm font-bold tabular-nums font-mono" style={{ color: value ? (color ?? "#f4ede1") : "rgba(9,26,17,0.5)" }}>
-        {display}
+    <div style={{ display: "flex", alignItems: "baseline", gap: 4 }} onMouseEnter={show} onMouseLeave={hide}>
+      <span style={{ fontSize: 12, fontWeight: 600, fontFamily: '"IBM Plex Mono", monospace', color: value ? "var(--text)" : "var(--line-strong)", fontVariantNumeric: "tabular-nums" }}>
+        {display.toLocaleString()}
       </span>
-      <span className="text-[9px] text-slate-700 uppercase tracking-widest">{label}</span>
+      <span style={{ fontSize: 9, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{label}</span>
       {tip && <Tooltip title={label} body={tip} anchor={anchor} side="bottom" />}
     </div>
   );
@@ -328,6 +324,14 @@ export default function App() {
   const [rightOpen, setRightOpen] = useState(true);
   const [wsConnected, setWsConnected] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() =>
+    (localStorage.getItem("omega-theme") as "dark" | "light") ?? "dark"
+  );
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("omega-theme", theme);
+  }, [theme]);
 
   const leftResize  = useResizable(296, 200, 520, "right");
   const rightResize = useResizable(300, 200, 540, "left");
@@ -430,126 +434,139 @@ export default function App() {
   }
 
   return (
-    <div
-      className="h-screen w-screen flex flex-col overflow-hidden"
-      style={{ background: "#091a11", color: "#f4ede1", userSelect: "none" }}
-    >
+    <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg)", color: "var(--text)", userSelect: "none" }}>
+
       {/* ── Header ── */}
-      <header
-        className="flex-shrink-0 flex items-center gap-3 px-4"
-        style={{
-          height: 52,
-          borderBottom: "1px solid rgba(244,237,225,0.12)",
-          background: "rgba(9,26,17,0.98)",
-          backdropFilter: "blur(20px)",
-        }}
-      >
+      <header style={{
+        height: 56,
+        flexShrink: 0,
+        display: "flex",
+        alignItems: "center",
+        padding: "0 20px",
+        gap: 0,
+        borderBottom: "1px solid var(--line)",
+        background: "var(--bg-panel)",
+        backdropFilter: "blur(20px)",
+      }}>
+
         {/* Brand */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
-          <CogniseeGlyph size={26} />
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-bold tracking-tight" style={{ color: "#f4ede1" }}>Omega</span>
-            <span className="text-[10px]" style={{ color: "rgba(244,237,225,0.45)" }}>Knowledge Operating System</span>
-          </div>
-          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-md uppercase tracking-widest"
-            style={{ backgroundColor: "rgba(166,212,189,0.10)", color: "#a6d4bd", border: "1px solid rgba(166,212,189,0.20)" }}>
-            v9
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, marginRight: 20 }}>
+          <CogniseeGlyph size={20} color="var(--accent)" />
+          <span style={{ fontSize: 16, fontFamily: '"Newsreader", Georgia, serif', color: "var(--text)", fontWeight: 400, letterSpacing: "-0.02em" }}>
+            Omega
+          </span>
+          <span style={{ width: 1, height: 14, background: "var(--line-strong)", margin: "0 2px" }} />
+          <span style={{ fontSize: 9, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)", letterSpacing: "0.14em", textTransform: "uppercase" }}>
+            KOS
           </span>
           {demoMode && (
-            <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-widest"
-              style={{ backgroundColor: "rgba(249,115,22,0.10)", color: "#c97a42", border: "1px solid rgba(249,115,22,0.18)" }}
+            <span style={{ fontSize: 8, fontFamily: '"IBM Plex Mono", monospace', color: "var(--accent-strong)", border: "1px solid var(--line-strong)", padding: "1px 6px", letterSpacing: "0.1em", textTransform: "uppercase" }}
               title="No live backend — graph loaded from embedded demo substrate">
-              demo mode · embedded substrate
+              demo
             </span>
           )}
         </div>
 
-        {/* Domain filter — scrollable strip */}
-        <div className="flex items-center gap-1 min-w-0" style={{ flex: "1 1 0", overflow: "hidden" }}>
-          <span className="text-[8px] text-slate-700 uppercase tracking-widest mr-1 flex-shrink-0">Domain</span>
-          <div className="flex items-center gap-1 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-            <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
-            {(domains.length > 0 ? domains : Object.keys(DOMAIN_META)).map(d => (
-              <DomainPip key={d} domain={d} active={domainFilter === d}
-                onClick={() => setDomainFilter(domainFilter === d ? null : d)} />
-            ))}
-          </div>
-        </div>
-
-        {/* Center view toggle */}
-        <div className="flex rounded-lg overflow-hidden flex-shrink-0" onMouseEnter={centerShow} onMouseLeave={centerHide}
-          style={{ border: "1px solid rgba(244,237,225,0.14)" }}>
+        {/* View toggle — spans full header height */}
+        <div style={{ display: "flex", alignItems: "stretch", height: "100%", marginRight: "auto" }} onMouseEnter={centerShow} onMouseLeave={centerHide}>
           {(["graph", "city", "fabric", "theater"] as CenterView[]).map(v => {
-            const labels: Record<CenterView, string> = { graph: "⬡ Graph", city: "⬛ City", fabric: "◈ Fabric", theater: "⊛ Theater" };
-            const isTheater = v === "theater";
+            const labels: Record<CenterView, string> = { graph: "Graph", city: "City", fabric: "Fabric", theater: "Theater" };
             const isActive = centerView === v;
             return (
-              <button key={v} onClick={() => setCenterView(v)}
-                className="px-3 py-1 text-[10px] font-medium transition-all duration-150"
-                style={{
-                  backgroundColor: isActive ? (isTheater ? "rgba(34,197,94,0.10)" : "rgba(124,109,248,0.12)") : "transparent",
-                  color: isActive ? (isTheater ? "#5ecea0" : "#a6d4bd") : "rgba(244,237,225,0.45)",
-                }}>
+              <button key={v} onClick={() => setCenterView(v)} style={{
+                padding: "0 16px",
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: isActive ? "var(--text)" : "var(--text-quiet)",
+                boxShadow: isActive ? "inset 0 -1.5px 0 var(--accent)" : "none",
+                fontSize: 11,
+                fontFamily: '"IBM Plex Mono", monospace',
+                fontWeight: isActive ? 500 : 400,
+                letterSpacing: "0.04em",
+                transition: "color 0.15s",
+                outline: "none",
+              }}>
                 {labels[v]}
               </button>
             );
           })}
           <Tooltip
-            title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : "Cognition Fabric"}
-            body={centerView === "graph" ? "Multi-layer knowledge graph with Cytoscape — click any node to inspect" : centerView === "city" ? "3D city of knowledge domains — buildings are node clusters, arcs are cross-domain bridges" : "Distributed cognition fabric — knowledge vaults, shared intent channels, context fabric, collective innovation, cognition engines"}
+            title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : centerView === "fabric" ? "Cognition Fabric" : "Decision Theater"}
+            body={centerView === "graph" ? "Multi-layer knowledge graph — click any node to inspect" : centerView === "city" ? "3D city of knowledge domains" : centerView === "fabric" ? "Distributed cognition fabric" : "Structured decision environment with scenario analysis"}
             anchor={centerAnchor} side="bottom" />
         </div>
 
+        {/* Domain dots */}
+        <div style={{ display: "flex", alignItems: "center", gap: 5, marginRight: 20, overflow: "hidden" }}>
+          <span style={{ fontSize: 8, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)", letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0, marginRight: 2 }}>
+            Domain
+          </span>
+          <DomainPip domain="all" active={domainFilter === null} onClick={() => setDomainFilter(null)} />
+          {(domains.length > 0 ? domains : Object.keys(DOMAIN_META)).slice(0, 16).map(d => (
+            <DomainPip key={d} domain={d} active={domainFilter === d}
+              onClick={() => setDomainFilter(domainFilter === d ? null : d)} />
+          ))}
+        </div>
+
         {/* Stats */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          {loading && <div className="w-3 h-3 rounded-full border border-t-green-400/60 border-green-900/40 animate-spin" />}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginRight: 16, flexShrink: 0 }}>
+          {loading && <div style={{ width: 12, height: 12, borderRadius: "50%", border: "1.5px solid var(--line-strong)", borderTopColor: "var(--accent)", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />}
           <AnimatedStat value={totalNodes} label="nodes" tip="Total graph nodes across all six layers" />
           <AnimatedStat value={totalEdges} label="edges" tip="Total typed relations in the knowledge graph" />
-
-          {/* Layer bar chart */}
           <LayerBars breakdown={layerBreakdown} />
-
-          <div onMouseEnter={alignShow} onMouseLeave={alignHide}>
-            <button onClick={handleComputeAlignment}
-              className="px-2.5 py-1 text-[10px] rounded-lg font-medium transition-all duration-150"
-              style={{ border: "1px solid rgba(166,212,189,0.25)", color: "#a6d4bd", backgroundColor: "rgba(166,212,189,0.08)" }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.18)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(166,212,189,0.08)"; }}>
-              ≡ Bridge
-            </button>
-            <Tooltip title="Ontology Bridge"
-              body="Opens the Bridge tab showing functor alignment between two domains — structural parallels, gap nodes, and loss accounting. Click repeatedly to cycle through domain pairs."
-              anchor={alignAnchor} side="bottom" />
-          </div>
-
-          {error && <span className="text-[10px] text-red-400 max-w-[140px] truncate" title={error}>⚠ {error}</span>}
         </div>
+
+        {/* Bridge */}
+        <div onMouseEnter={alignShow} onMouseLeave={alignHide} style={{ marginRight: 10 }}>
+          <button onClick={handleComputeAlignment}
+            style={{ padding: "5px 12px", background: "transparent", border: "1px solid var(--line-strong)", color: "var(--text-muted)", cursor: "pointer", fontSize: 11, fontFamily: '"IBM Plex Mono", monospace', letterSpacing: "0.04em", transition: "border-color 0.15s, color 0.15s", outline: "none" }}
+            onMouseEnter={e => { const b = e.currentTarget; b.style.borderColor = "var(--accent)"; b.style.color = "var(--accent)"; }}
+            onMouseLeave={e => { const b = e.currentTarget; b.style.borderColor = "var(--line-strong)"; b.style.color = "var(--text-muted)"; }}>
+            ≡ Bridge
+          </button>
+          <Tooltip title="Ontology Bridge" body="Functor alignment between two domains — structural parallels, gap nodes, loss accounting. Click to cycle pairs." anchor={alignAnchor} side="bottom" />
+        </div>
+
+        {error && <span style={{ fontSize: 10, color: "#f87171", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", marginRight: 10 }} title={error}>⚠ {error}</span>}
+
+        {/* Theme toggle */}
+        <button onClick={() => setTheme((t: "dark" | "light") => t === "dark" ? "light" : "dark")}
+          style={{ padding: "5px 10px", background: "transparent", border: "1px solid var(--line)", color: "var(--text-quiet)", cursor: "pointer", fontSize: 13, fontFamily: '"IBM Plex Mono", monospace', transition: "border-color 0.15s, color 0.15s", outline: "none" }}
+          onMouseEnter={e => { const b = e.currentTarget; b.style.borderColor = "var(--line-strong)"; b.style.color = "var(--text)"; }}
+          onMouseLeave={e => { const b = e.currentTarget; b.style.borderColor = "var(--line)"; b.style.color = "var(--text-quiet)"; }}
+          title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
+          {theme === "dark" ? "○" : "●"}
+        </button>
       </header>
 
       {/* ── Main ── */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div style={{ flex: 1, display: "flex", overflow: "hidden", position: "relative" }}>
 
         {/* Left sidebar toggle */}
         <button onClick={() => setLeftOpen(o => !o)}
-          className="absolute z-30 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-r transition-all"
           style={{
+            position: "absolute", zIndex: 30,
             left: leftOpen ? leftResize.width : 0,
-            width: 10, height: 40,
-            background: "rgba(166,212,189,0.12)",
-            borderRight: "1px solid rgba(99,102,241,0.2)",
-          }}>
-          <span style={{ fontSize: 8, color: "#a6d4bd" }}>{leftOpen ? "‹" : "›"}</span>
+            top: "50%", transform: "translateY(-50%)",
+            width: 8, height: 36,
+            background: "var(--line)",
+            border: "none", cursor: "pointer", outline: "none",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--line)"; }}>
+          <span style={{ fontSize: 7, color: "var(--bg)", fontWeight: "bold" }}>{leftOpen ? "‹" : "›"}</span>
         </button>
 
         {/* Left sidebar */}
         {leftOpen && (
           <aside style={{
-            width: leftResize.width,
-            flexShrink: 0,
-            display: "flex",
-            overflow: "hidden",
-            borderRight: "none",
-            background: "rgba(9,26,17,0.97)",
+            width: leftResize.width, flexShrink: 0,
+            display: "flex", overflow: "hidden",
+            borderRight: "1px solid var(--line)",
+            background: "var(--bg-panel)",
           }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
               <LeftTabStrip active={leftTab} onChange={setLeftTab} />
@@ -565,7 +582,7 @@ export default function App() {
         )}
 
         {/* Center */}
-        <main className="flex-1 overflow-hidden p-2 relative">
+        <main style={{ flex: 1, overflow: "hidden", padding: 8, position: "relative" }}>
           {centerView === "graph"   && <GraphCanvas           className="w-full h-full" />}
           {centerView === "city"    && <CityOverview           className="w-full h-full" />}
           {centerView === "fabric"  && <CognitionFabricView    className="w-full h-full" />}
@@ -575,12 +592,10 @@ export default function App() {
         {/* Right sidebar */}
         {rightOpen && (
           <aside style={{
-            width: rightResize.width,
-            flexShrink: 0,
-            display: "flex",
-            overflow: "hidden",
-            borderLeft: "1px solid rgba(244,237,225,0.12)",
-            background: "rgba(9,26,17,0.97)",
+            width: rightResize.width, flexShrink: 0,
+            display: "flex", overflow: "hidden",
+            borderLeft: "1px solid var(--line)",
+            background: "var(--bg-panel)",
           }}>
             <ResizeHandle onMouseDown={rightResize.onMouseDown} side="left" />
             <RightTabStrip active={rightTab} onChange={setRightTab} />
@@ -602,48 +617,50 @@ export default function App() {
 
         {/* Right sidebar toggle */}
         <button onClick={() => setRightOpen(o => !o)}
-          className="absolute z-30 top-1/2 -translate-y-1/2 flex items-center justify-center rounded-l transition-all"
           style={{
+            position: "absolute", zIndex: 30,
             right: rightOpen ? rightResize.width : 0,
-            width: 10, height: 40,
-            background: "rgba(166,212,189,0.12)",
-            borderLeft: "1px solid rgba(99,102,241,0.2)",
-          }}>
-          <span style={{ fontSize: 8, color: "#a6d4bd" }}>{rightOpen ? "›" : "‹"}</span>
+            top: "50%", transform: "translateY(-50%)",
+            width: 8, height: 36,
+            background: "var(--line)",
+            border: "none", cursor: "pointer", outline: "none",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "background 0.15s",
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--accent)"; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "var(--line)"; }}>
+          <span style={{ fontSize: 7, color: "var(--bg)", fontWeight: "bold" }}>{rightOpen ? "›" : "‹"}</span>
         </button>
       </div>
 
-      {/* ── Status bar ── */}
-      <footer
-        className="flex-shrink-0 flex items-center justify-between px-4 gap-4 overflow-hidden"
-        style={{ height: 26, borderTop: "1px solid rgba(244,237,225,0.10)", background: "rgba(9,26,17,0.99)" }}>
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <span className="flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${wsConnected ? "animate-pulse" : ""}`}
-              style={{ backgroundColor: wsConnected ? "#22c55e" : "#ef444460" }} />
-            <span className="text-[9px] text-slate-700">{wsConnected ? "live" : "demo"}</span>
+      {/* ── Footer ── */}
+      <footer style={{
+        height: 22, flexShrink: 0,
+        display: "flex", alignItems: "center",
+        padding: "0 20px", gap: 16,
+        borderTop: "1px solid var(--line)",
+        background: "var(--bg-panel)",
+        overflow: "hidden",
+      }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+          <span style={{ width: 6, height: 6, borderRadius: "50%", background: wsConnected ? "#22c55e" : "var(--line-strong)", flexShrink: 0 }} />
+          <span style={{ fontSize: 9, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)" }}>
+            {wsConnected ? "live" : "demo"}
           </span>
-          {liveEvents.length > 0 && (
-            <span className="text-[9px] text-slate-700 truncate">
-              {String((liveEvents[0] as Record<string, unknown>)?.type ?? "event")}
-            </span>
-          )}
-        </div>
+        </span>
 
         {selectedNode && (
-          <div className="flex items-center gap-1.5 text-[9px] flex-shrink-0">
-            <span className="w-1.5 h-1.5 rounded-full"
-              style={{ backgroundColor: LAYER_COLORS[selectedNode.layer as LayerKey] ?? "#94a3b8" }} />
-            <span className="text-slate-600">{selectedNode.layer}</span>
-            <span className="text-slate-700">/</span>
-            <span className="text-slate-400 max-w-[200px] truncate">{selectedNode.label}</span>
-          </div>
+          <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 9, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)", flex: 1, overflow: "hidden" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: LAYER_COLORS[selectedNode.layer as LayerKey] ?? "var(--accent)", flexShrink: 0 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {selectedNode.layer} · {selectedNode.label}
+            </span>
+          </span>
         )}
 
-        <div className="flex items-center gap-4 flex-shrink-0 text-[9px] text-slate-800">
-          <span>24 knowledge cities · 6 metro regions · 50+ bridges</span>
-          <span>Omega v8.0</span>
-        </div>
+        <span style={{ fontSize: 9, fontFamily: '"IBM Plex Mono", monospace', color: "var(--text-quiet)", marginLeft: "auto", flexShrink: 0 }}>
+          Omega v9
+        </span>
       </footer>
     </div>
   );
@@ -653,7 +670,7 @@ export default function App() {
 
 function LayerBars({ breakdown }: { breakdown: { layer: LayerKey; count: number }[] }) {
   return (
-    <div className="flex items-end gap-0.5 h-5">
+    <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 20 }}>
       {breakdown.map(({ layer, count }) => (
         <LayerBar key={layer} layer={layer} count={count} />
       ))}
@@ -665,15 +682,12 @@ function LayerBar({ layer, count }: { layer: LayerKey; count: number }) {
   const { anchor, show, hide } = useTooltip();
   return (
     <div onMouseEnter={show} onMouseLeave={hide}>
-      <div
-        className="rounded-sm"
-        style={{
-          width: 4,
-          height: Math.max(3, Math.min(20, count * 2.2)),
-          backgroundColor: LAYER_COLORS[layer],
-          opacity: 0.75,
-        }}
-      />
+      <div style={{
+        width: 3,
+        height: Math.max(2, Math.min(18, count * 2)),
+        backgroundColor: LAYER_COLORS[layer],
+        opacity: 0.7,
+      }} />
       <Tooltip title={layer} body={`${count} nodes in the ${layer} layer`} anchor={anchor} side="bottom" />
     </div>
   );

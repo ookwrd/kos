@@ -1,17 +1,17 @@
 import { useState, useCallback } from "react";
 import { useGraphStore } from "../store/graphStore";
 
-// ── Design tokens (Anthropic-inspired warm dark) ──────────────────────────────
-const BG       = "#091a11";
-const SURFACE  = "rgba(166,212,189,0.04)";
-const SURFACE2 = "rgba(166,212,189,0.07)";
-const BORDER   = "rgba(244,237,225,0.14)";
-const BORDER2  = "rgba(244,237,225,0.22)";
-const TXT      = "#f4ede1";    // primary text
-const TXT2     = "rgba(244,237,225,0.62)"; // secondary
-const TXT3     = "rgba(244,237,225,0.38)"; // dimmed
-const ACCENT   = "#a6d4bd";    // sage green
-const ACCENTBG = "rgba(166,212,189,0.12)";
+// ── Design tokens — CSS custom properties (theme-aware) ───────────────────────
+const BG       = "var(--bg)";
+const SURFACE  = "var(--bg-surface)";
+const SURFACE2 = "var(--bg-surface)";
+const BORDER   = "var(--line)";
+const BORDER2  = "var(--line-strong)";
+const TXT      = "var(--text)";
+const TXT2     = "var(--text-muted)";
+const TXT3     = "var(--text-quiet)";
+const ACCENT   = "var(--accent)";
+const ACCENTBG = "var(--bg-surface)";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

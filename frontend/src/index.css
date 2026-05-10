@@ -2,44 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #091a11;
+  --bg-field:
+    radial-gradient(ellipse 1180px 760px at 50% 3%, rgba(112,143,115,.18) 0%, rgba(31,64,43,.31) 34%, transparent 70%),
+    radial-gradient(ellipse 900px 420px at 50% -18%, rgba(244,237,225,.08) 0%, rgba(183,222,157,.04) 38%, transparent 68%),
+    linear-gradient(180deg, #13231a 0%, #0b1a12 44%, #07140e 100%);
+  --bg-panel:   rgba(7, 18, 11, 0.98);
+  --bg-surface: rgba(166, 212, 189, 0.05);
+  --text:       #f4ede1;
+  --text-body:  rgba(244, 237, 225, 0.82);
+  --text-muted: rgba(244, 237, 225, 0.62);
+  --text-quiet: rgba(244, 237, 225, 0.40);
+  --accent:       #a6d4bd;
+  --accent-strong: #f1be73;
+  --line:        rgba(244, 237, 225, 0.12);
+  --line-strong: rgba(244, 237, 225, 0.26);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f5eb;
+  --bg-field:
+    radial-gradient(circle at 50% -9%, rgba(255,255,250,.98) 0%, rgba(255,253,243,.92) 19%, rgba(246,250,235,.74) 38%, rgba(222,236,216,.3) 62%, transparent 79%),
+    linear-gradient(180deg, #fbf9ef 0%, #f6f5eb 46%, #eef2e4 100%);
+  --bg-panel:   rgba(248, 246, 238, 0.98);
+  --bg-surface: rgba(40, 111, 97, 0.05);
+  --text:       #1c2922;
+  --text-body:  rgba(28, 41, 34, 0.82);
+  --text-muted: rgba(28, 41, 34, 0.66);
+  --text-quiet: rgba(28, 41, 34, 0.42);
+  --accent:       #286f61;
+  --accent-strong: #9d6619;
+  --line:        rgba(28, 41, 34, 0.12);
+  --line-strong: rgba(28, 41, 34, 0.26);
+  --shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+
 @layer base {
   html, body, #root {
     height: 100%;
     margin: 0;
     padding: 0;
     font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-    background-color: #091a11;
-    background: radial-gradient(
-        ellipse 1180px 760px at 50% 3%,
-        rgba(112, 143, 115, 0.18) 0%,
-        rgba(31, 64, 43, 0.31) 34%,
-        transparent 70%
-      ),
-      radial-gradient(
-        ellipse 900px 420px at 50% -18%,
-        rgba(244, 237, 225, 0.08) 0%,
-        rgba(183, 222, 157, 0.04) 38%,
-        transparent 68%
-      ),
-      linear-gradient(180deg, #13231a 0%, #0b1a12 44%, #07140e 100%);
-    color: #f4ede1;
+    background-color: var(--bg);
+    background: var(--bg-field);
+    background-attachment: fixed;
+    color: var(--text);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.22s ease, color 0.22s ease;
   }
 
   * { box-sizing: border-box; }
 
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(166,212,189,0.18); border-radius: 2px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(166,212,189,0.32); }
+  ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 }
 
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+
 @layer utilities {
+  .bg-panel { background-color: var(--bg-panel); }
   .bg-slate-850 { background-color: #0d1e15; }
 }
 
-/* Cytoscape container must be sized explicitly */
+/* ── Star field: hide in light mode ───────────────────────────────────────── */
+
+[data-theme="light"] .star-field {
+  display: none;
+}
+
+/* ── Landing radial glow ──────────────────────────────────────────────────── */
+
+.landing-glow {
+  background: radial-gradient(ellipse 70% 55% at 50% 45%, rgba(112,143,115,0.20) 0%, rgba(31,64,43,0.10) 40%, transparent 70%);
+}
+
+[data-theme="light"] .landing-glow {
+  background: radial-gradient(ellipse 70% 55% at 50% 45%, rgba(40,111,97,0.08) 0%, rgba(40,111,97,0.03) 40%, transparent 70%);
+}
+
+/* ── Spin keyframe ────────────────────────────────────────────────────────── */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Cytoscape container ──────────────────────────────────────────────────── */
+
 .cy-container {
   width: 100%;
   height: 100%;
