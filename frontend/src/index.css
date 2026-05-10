@@ -7,18 +7,18 @@
 :root,
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #091a11;
+  --bg: #0d2118;
   --bg-field:
-    radial-gradient(ellipse 1180px 760px at 50% 3%, rgba(112,143,115,.18) 0%, rgba(31,64,43,.31) 34%, transparent 70%),
-    radial-gradient(ellipse 900px 420px at 50% -18%, rgba(244,237,225,.08) 0%, rgba(183,222,157,.04) 38%, transparent 68%),
-    linear-gradient(180deg, #13231a 0%, #0b1a12 44%, #07140e 100%);
-  --bg-panel:   rgba(7, 18, 11, 0.98);
-  --bg-surface: rgba(166, 212, 189, 0.05);
+    radial-gradient(ellipse 1180px 760px at 50% 3%, rgba(100,168,130,.22) 0%, rgba(24,72,44,.38) 34%, transparent 70%),
+    radial-gradient(ellipse 900px 420px at 50% -18%, rgba(244,237,225,.07) 0%, rgba(141,212,176,.06) 38%, transparent 68%),
+    linear-gradient(180deg, #152c1e 0%, #0f2018 44%, #0a1912 100%);
+  --bg-panel:   rgba(10, 22, 15, 0.95);
+  --bg-surface: rgba(141, 212, 176, 0.06);
   --text:       #f4ede1;
   --text-body:  rgba(244, 237, 225, 0.82);
   --text-muted: rgba(244, 237, 225, 0.62);
   --text-quiet: rgba(244, 237, 225, 0.40);
-  --accent:       #a6d4bd;
+  --accent:       #8dd4b0;
   --accent-strong: #f1be73;
   --line:        rgba(244, 237, 225, 0.12);
   --line-strong: rgba(244, 237, 225, 0.26);
