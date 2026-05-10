@@ -110,7 +110,7 @@ export function GraphCanvas({ className = "" }: Props) {
             "text-valign": "bottom",
             "text-halign": "center",
             "text-margin-y": 7,
-            "text-background-color": "#020610",
+            "text-background-color": "#091a12",
             "text-background-opacity": 0.85,
             "text-background-padding": "2.5px",
             "text-background-shape": "roundrectangle",
@@ -166,7 +166,7 @@ export function GraphCanvas({ className = "" }: Props) {
             "font-family": "'SF Mono', 'Fira Code', monospace",
             color: "#475569",
             "text-rotation": "autorotate",
-            "text-background-color": "#020610",
+            "text-background-color": "#091a12",
             "text-background-opacity": 0.9,
             "text-background-padding": "2px",
             "overlay-opacity": 0,
@@ -231,25 +231,25 @@ export function GraphCanvas({ className = "" }: Props) {
   }, [buildElements, layoutMode]);
 
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "#020610" }}>
-      {/* Deep space background */}
+    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "var(--bg)" }}>
+      {/* Background overlay */}
       <div className="absolute inset-0 pointer-events-none">
-        <svg className="w-full h-full" style={{ opacity: 0.4 }}>
+        <svg className="w-full h-full" style={{ opacity: 0.35 }}>
           <defs>
             <radialGradient id="glow-center" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+              <stop offset="0%" style={{ stopColor: "var(--accent)", stopOpacity: 0.07 }} />
+              <stop offset="100%" style={{ stopColor: "var(--accent)", stopOpacity: 0 }} />
             </radialGradient>
           </defs>
           <rect width="100%" height="100%" fill="url(#glow-center)" />
           {/* Grid lines */}
           {Array.from({ length: 20 }, (_, i) => (
             <line key={`h${i}`} x1="0" y1={`${i * 5}%`} x2="100%" y2={`${i * 5}%`}
-              stroke="#1e293b" strokeWidth="0.5" strokeOpacity="0.5" />
+              style={{ stroke: "var(--line)" }} strokeWidth="0.5" />
           ))}
           {Array.from({ length: 20 }, (_, i) => (
             <line key={`v${i}`} x1={`${i * 5}%`} y1="0" x2={`${i * 5}%`} y2="100%"
-              stroke="#1e293b" strokeWidth="0.5" strokeOpacity="0.5" />
+              style={{ stroke: "var(--line)" }} strokeWidth="0.5" />
           ))}
           {/* Star field */}
           {Array.from({ length: 80 }, (_, i) => (
@@ -274,10 +274,10 @@ export function GraphCanvas({ className = "" }: Props) {
       {!overview && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
           <div className="relative w-12 h-12">
-            <div className="absolute inset-0 rounded-full border border-indigo-500/20 animate-ping" />
-            <div className="absolute inset-1 rounded-full border-2 border-indigo-500/30 border-t-indigo-500 animate-spin" />
+            <div className="absolute inset-0 rounded-full animate-ping" style={{ border: "1px solid var(--accent)", opacity: 0.2 }} />
+            <div className="absolute inset-1 rounded-full animate-spin" style={{ borderWidth: 2, borderStyle: "solid", borderColor: "var(--line-strong)", borderTopColor: "var(--accent)" }} />
           </div>
-          <p className="text-slate-500 text-xs tracking-widest uppercase">Connecting to substrate…</p>
+          <p className="text-xs tracking-widest uppercase" style={{ color: "var(--text-quiet)" }}>Connecting to substrate…</p>
         </div>
       )}
 
@@ -296,7 +296,7 @@ function LayerToggleBar({ layoutMode, onLayoutChange }: { layoutMode: LayoutMode
   return (
     <div
       className="absolute top-3 left-3 z-10 flex flex-wrap gap-1.5 rounded-xl p-2"
-      style={{ background: "rgba(2,6,16,0.9)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.05)" }}
+      style={{ background: "var(--bg-panel)", backdropFilter: "blur(12px)", border: "1px solid var(--line)" }}
     >
       {ALL_LAYERS.map(layer => {
         const active = visibleLayers.has(layer);
@@ -309,17 +309,16 @@ function LayerToggleBar({ layoutMode, onLayoutChange }: { layoutMode: LayoutMode
             title={`${LAYER_LABELS[layer]} (${count} nodes)`}
             className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
             style={{
-              backgroundColor: active ? `${color}18` : "rgba(255,255,255,0.02)",
-              color: active ? color : "#334155",
-              border: `1px solid ${active ? `${color}35` : "rgba(255,255,255,0.04)"}`,
-              boxShadow: active ? `0 0 10px ${color}20` : "none",
+              backgroundColor: active ? `${color}18` : "transparent",
+              color: active ? color : "var(--text-quiet)",
+              border: `1px solid ${active ? `${color}35` : "var(--line)"}`,
             }}
           >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: active ? color : "#334155" }} />
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: active ? color : "var(--line-strong)" }} />
             {LAYER_LABELS[layer]}
             {count > 0 && (
               <span className="text-[8px] font-mono px-1 rounded"
-                style={{ backgroundColor: active ? `${color}25` : "rgba(255,255,255,0.04)", color: active ? color : "#334155" }}>
+                style={{ backgroundColor: active ? `${color}25` : "transparent", color: active ? color : "var(--text-quiet)" }}>
                 {count}
               </span>
             )}
@@ -334,9 +333,9 @@ function LayerToggleBar({ layoutMode, onLayoutChange }: { layoutMode: LayoutMode
             onClick={() => onLayoutChange(mode)}
             className="px-2 py-1 rounded text-[9px] font-medium transition-all"
             style={{
-              backgroundColor: layoutMode === mode ? "rgba(99,102,241,0.15)" : "rgba(255,255,255,0.02)",
-              color: layoutMode === mode ? "#818cf8" : "#334155",
-              border: `1px solid ${layoutMode === mode ? "rgba(99,102,241,0.3)" : "transparent"}`,
+              backgroundColor: layoutMode === mode ? "var(--bg-surface)" : "transparent",
+              color: layoutMode === mode ? "var(--accent)" : "var(--text-quiet)",
+              border: `1px solid ${layoutMode === mode ? "var(--line-strong)" : "transparent"}`,
             }}
           >
             {mode === "dagre" ? "→" : mode === "concentric" ? "◎" : "⊞"}
@@ -344,7 +343,7 @@ function LayerToggleBar({ layoutMode, onLayoutChange }: { layoutMode: LayoutMode
         ))}
         <button
           onClick={() => setAllLayers(true)}
-          className="px-2 py-1 rounded text-[9px] text-slate-600 hover:text-slate-400 transition-colors"
+          className="px-2 py-1 rounded text-[9px] transition-colors" style={{ color: "var(--text-quiet)" }}
         >
           all
         </button>

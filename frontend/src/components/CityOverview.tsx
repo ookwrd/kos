@@ -726,7 +726,7 @@ function Building({ dx, dz, h, color, cx, cz, selected, onGroupClick }: {
 
       <mesh position={[0, -0.08, 0]}>
         <boxGeometry args={[1.6, 0.16, 1.6]} />
-        <meshStandardMaterial color="#0a1628" roughness={0.9} />
+        <meshStandardMaterial color="#0a1a10" roughness={0.9} />
       </mesh>
     </group>
   );
@@ -1093,9 +1093,9 @@ export function CityOverview({ className = "" }: Props) {
           padding: size === "large" ? "5px 10px" : size === "medium" ? "4px 8px" : "3px 7px",
           fontSize: size === "large" ? 10 : size === "medium" ? 9 : 8,
           fontWeight: 500,
-          background: isActive ? `${color}18` : "rgba(2,6,16,0.88)",
-          border: `1px solid ${isActive ? `${color}45` : "rgba(255,255,255,0.05)"}`,
-          color: isActive ? color : "#475569",
+          background: isActive ? `${color}18` : "var(--bg-panel)",
+          border: `1px solid ${isActive ? `${color}45` : "var(--line)"}`,
+          color: isActive ? color : "var(--text-quiet)",
           backdropFilter: "blur(8px)",
           boxShadow: isActive ? `0 0 12px ${color}20` : "none",
         }}
@@ -1110,7 +1110,7 @@ export function CityOverview({ className = "" }: Props) {
   }
 
   return (
-    <div className={`relative rounded-lg overflow-hidden ${className}`} style={{ background: "#020610" }}>
+    <div className={`relative rounded-lg overflow-hidden ${className}`} style={{ background: "var(--bg)" }}>
       {/* Selected domain info */}
       {selected && selectedCluster && (() => {
         const grounding: Grounding = DOMAIN_GROUNDING[selected] ?? "speculative";
@@ -1121,13 +1121,13 @@ export function CityOverview({ className = "" }: Props) {
         return (
           <div className="absolute top-3 left-3 z-10 rounded-xl p-3 min-w-[200px]"
             style={{
-              background: "rgba(2,6,16,0.96)",
+              background: "var(--bg-panel)",
               backdropFilter: "blur(12px)",
-              border: `1px solid ${DOMAIN_COLORS[selected] ?? "#6366f1"}30`,
+              border: `1px solid ${DOMAIN_COLORS[selected] ?? "var(--accent)"}30`,
               maxWidth: 240,
             }}>
             <div className="flex items-center justify-between mb-1">
-              <p className="text-[9px] uppercase tracking-widest" style={{ color: "#475569" }}>
+              <p className="text-[9px] uppercase tracking-widest" style={{ color: "var(--text-quiet)" }}>
                 {size} knowledge city
               </p>
               <span className="text-[8px] font-bold px-1.5 py-0.5 rounded-full"
@@ -1136,22 +1136,22 @@ export function CityOverview({ className = "" }: Props) {
                 {gLabel}
               </span>
             </div>
-            <p className="text-sm text-slate-100 font-semibold mb-0.5">{DOMAIN_LABELS[selected] ?? selected}</p>
-            <p className="text-[10px] text-slate-500 italic mb-2">{DOMAIN_SUBLABELS[selected]}</p>
+            <p className="text-sm font-semibold mb-0.5" style={{ color: "var(--text)" }}>{DOMAIN_LABELS[selected] ?? selected}</p>
+            <p className="text-[10px] italic mb-2" style={{ color: "var(--text-muted)" }}>{DOMAIN_SUBLABELS[selected]}</p>
 
             {/* Stats row */}
             <div className="flex gap-3 mb-2">
               <div>
                 <div className="text-sm font-bold font-mono" style={{ color: DOMAIN_COLORS[selected] }}>~{selectedCluster.totalNodes}</div>
-                <div className="text-[9px] text-slate-600">nodes</div>
+                <div className="text-[9px]" style={{ color: "var(--text-quiet)" }}>nodes</div>
               </div>
               <div>
                 <div className="text-sm font-bold font-mono" style={{ color: DOMAIN_COLORS[selected] }}>{selectedCluster.layers.length}</div>
-                <div className="text-[9px] text-slate-600">layers</div>
+                <div className="text-[9px]" style={{ color: "var(--text-quiet)" }}>layers</div>
               </div>
               <div>
                 <div className="text-sm font-bold font-mono" style={{ color: DOMAIN_COLORS[selected] }}>{districts.length}</div>
-                <div className="text-[9px] text-slate-600">districts</div>
+                <div className="text-[9px]" style={{ color: "var(--text-quiet)" }}>districts</div>
               </div>
             </div>
 
@@ -1165,7 +1165,7 @@ export function CityOverview({ className = "" }: Props) {
               ))}
             </div>
 
-            <button className="text-[9px] text-slate-600 hover:text-slate-400 transition-colors"
+            <button className="text-[9px] transition-colors" style={{ color: "var(--text-quiet)" }}
               onClick={() => { setSelected(null); setDomainFilter(null); }}>
               ✕ deselect
             </button>
@@ -1177,7 +1177,7 @@ export function CityOverview({ className = "" }: Props) {
       <div className="absolute top-3 right-3 z-10 flex flex-col gap-2.5" style={{ maxHeight: "calc(100% - 24px)", overflowY: "auto" }}>
         {largeCities.length > 0 && (
           <div>
-            <div className="text-[7px] uppercase tracking-[0.15em] text-slate-700 mb-1 px-1">Large</div>
+            <div className="text-[7px] uppercase tracking-[0.15em] mb-1 px-1" style={{ color: "var(--text-quiet)" }}>Large</div>
             <div className="flex flex-col gap-1">
               {largeCities.map(c => <NavChip key={c.domain} c={c} />)}
             </div>
@@ -1185,7 +1185,7 @@ export function CityOverview({ className = "" }: Props) {
         )}
         {mediumCities.length > 0 && (
           <div>
-            <div className="text-[7px] uppercase tracking-[0.15em] text-slate-700 mb-1 px-1">Medium</div>
+            <div className="text-[7px] uppercase tracking-[0.15em] mb-1 px-1" style={{ color: "var(--text-quiet)" }}>Medium</div>
             <div className="flex flex-col gap-1">
               {mediumCities.map(c => <NavChip key={c.domain} c={c} />)}
             </div>
@@ -1193,7 +1193,7 @@ export function CityOverview({ className = "" }: Props) {
         )}
         {smallCities.length > 0 && (
           <div>
-            <div className="text-[7px] uppercase tracking-[0.15em] text-slate-700 mb-1 px-1">Small</div>
+            <div className="text-[7px] uppercase tracking-[0.15em] mb-1 px-1" style={{ color: "var(--text-quiet)" }}>Small</div>
             <div className="flex flex-col gap-1">
               {smallCities.map(c => <NavChip key={c.domain} c={c} />)}
             </div>
@@ -1208,14 +1208,14 @@ export function CityOverview({ className = "" }: Props) {
           return (
             <div key={b.id} className="flex items-center gap-1.5 rounded px-2 py-1 transition-all"
               style={{
-                background: isHighlighted ? `${b.color}18` : "rgba(2,6,16,0.88)",
+                background: isHighlighted ? `${b.color}18` : "var(--bg-panel)",
                 border: `1px solid ${isHighlighted ? b.color : `${b.color}30`}`,
                 backdropFilter: "blur(6px)",
                 boxShadow: isHighlighted ? `0 0 10px ${b.color}30` : "none",
               }}>
               <div className="w-4 border-t" style={{ borderColor: b.color, borderStyle: isHighlighted ? "solid" : "dashed" }} />
               <span className="text-[9px] font-medium" style={{ color: b.color }}>{b.label}</span>
-              <span className="text-[8px] font-mono" style={{ color: "#475569" }}>{Math.round(b.strength * 100)}%</span>
+              <span className="text-[8px] font-mono" style={{ color: "var(--text-quiet)" }}>{Math.round(b.strength * 100)}%</span>
             </div>
           );
         })}
@@ -1224,13 +1224,13 @@ export function CityOverview({ className = "" }: Props) {
       {/* Grounding legend — always visible */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3">
         {!overview && (
-          <span className="text-[9px] text-slate-700 italic whitespace-nowrap">
+          <span className="text-[9px] italic whitespace-nowrap" style={{ color: "var(--text-quiet)" }}>
             24 cities · 6 metro regions · 50+ bridges
           </span>
         )}
         <div className="flex items-center gap-2 px-2 py-1 rounded"
-          style={{ background: "rgba(2,6,16,0.82)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <span className="text-[8px] text-slate-600 uppercase tracking-widest">grounding:</span>
+          style={{ background: "var(--bg-panel)", border: "1px solid var(--line)" }}>
+          <span className="text-[8px] uppercase tracking-widest" style={{ color: "var(--text-quiet)" }}>grounding:</span>
           {(["source_grounded", "hybrid", "speculative"] as Grounding[]).map(g => (
             <div key={g} className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full" style={{ background: GROUNDING_COLOR[g] }} />
@@ -1258,14 +1258,14 @@ export function CityOverview({ className = "" }: Props) {
         <pointLight position={[0, 16, 36]} intensity={0.45} color="#8b5cf6" />
         {/* Climate policy — top far */}
         <pointLight position={[0, 14, -32]} intensity={0.35} color="#06b6d4" />
-        <hemisphereLight args={["#0f172a", "#020610", 0.48]} />
+        <hemisphereLight args={["#0d2118", "#060f08", 0.48]} />
 
         {/* Ground */}
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.22, 9]} receiveShadow>
           <planeGeometry args={[300, 300]} />
-          <meshStandardMaterial color="#040c1a" roughness={0.98} metalness={0.02} />
+          <meshStandardMaterial color="#060f08" roughness={0.98} metalness={0.02} />
         </mesh>
-        <gridHelper args={[200, 100, "#0a1628", "#060e1c"]} position={[0, -0.19, 9]} />
+        <gridHelper args={[200, 100, "#0d2118", "#0a1912"]} position={[0, -0.19, 9]} />
 
         {/* Metro region halos — faint colored ellipses, brighten at far zoom */}
         {METRO_REGIONS.map(region => (

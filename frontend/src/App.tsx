@@ -290,24 +290,27 @@ function AnimatedStat({ value, label, tip }: { value: number | null; label: stri
 
 function DomainPip({ domain, active, onClick }: { domain: string; active: boolean; onClick: () => void }) {
   const meta = domain === "all"
-    ? { color: "#a6d4bd", label: "All", desc: "Show all domains" }
-    : (DOMAIN_META[domain] ?? { color: "#a6d4bd", label: domain.replace(/_/g, " "), desc: "" });
+    ? { color: "var(--accent)", label: "All", desc: "Show all domains" }
+    : (DOMAIN_META[domain] ?? { color: "var(--accent)", label: domain.replace(/_/g, " "), desc: "" });
   const { anchor, show, hide } = useTooltip();
   return (
     <div onMouseEnter={show} onMouseLeave={hide}>
       <button
         onClick={onClick}
-        className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[10px] font-medium transition-all duration-150"
         style={{
-          backgroundColor: active ? `${meta.color}18` : "rgba(255,255,255,0.02)",
-          color: active ? meta.color : "rgba(244,237,225,0.28)",
-          border: `1px solid ${active ? `${meta.color}35` : "rgba(244,237,225,0.10)"}`,
+          width: 12, height: 12,
+          borderRadius: "50%",
+          background: meta.color,
+          opacity: active ? 1 : 0.28,
+          border: active ? "1.5px solid var(--text)" : "none",
+          outline: "none",
+          cursor: "pointer",
+          flexShrink: 0,
+          padding: 0,
+          transition: "opacity 0.15s",
         }}
-      >
-        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: meta.color, opacity: active ? 1 : 0.4 }} />
-        {meta.label}
-      </button>
-      <Tooltip title={domain === "all" ? "All Domains" : domain.replace(/_/g, " ")} body={meta.desc} anchor={anchor} side="bottom" />
+      />
+      <Tooltip title={domain === "all" ? "All Domains" : (meta.label ?? domain.replace(/_/g, " "))} body={meta.desc} anchor={anchor} side="bottom" />
     </div>
   );
 }
@@ -478,7 +481,7 @@ export default function App() {
                 background: "transparent",
                 border: "none",
                 cursor: "pointer",
-                color: isActive ? "var(--text)" : "var(--text-quiet)",
+                color: isActive ? "var(--text)" : "var(--text-muted)",
                 boxShadow: isActive ? "inset 0 -1.5px 0 var(--accent)" : "none",
                 fontSize: 11,
                 fontFamily: '"IBM Plex Mono", monospace',
