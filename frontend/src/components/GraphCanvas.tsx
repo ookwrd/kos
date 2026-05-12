@@ -231,7 +231,7 @@ export function GraphCanvas({ className = "" }: Props) {
   }, [buildElements, layoutMode]);
 
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "var(--bg)" }}>
+    <div className={`relative overflow-hidden rounded-xl ${className}`} style={{ background: "transparent" }}>
       {/* Background overlay */}
       <div className="absolute inset-0 pointer-events-none">
         <svg className="w-full h-full" style={{ opacity: 0.35 }}>

@@ -1110,7 +1110,7 @@ export function CityOverview({ className = "" }: Props) {
   }
 
   return (
-    <div className={`relative rounded-lg overflow-hidden ${className}`} style={{ background: "var(--bg)" }}>
+    <div className={`relative rounded-lg overflow-hidden ${className}`} style={{ background: "transparent" }}>
       {/* Selected domain info */}
       {selected && selectedCluster && (() => {
         const grounding: Grounding = DOMAIN_GROUNDING[selected] ?? "speculative";
