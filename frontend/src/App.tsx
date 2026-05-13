@@ -437,7 +437,7 @@ export default function App() {
   }
 
   return (
-    <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column", overflow: "hidden", color: "var(--text)", userSelect: "none" }}>
+    <div style={{ height: "100vh", width: "100vw", display: "flex", flexDirection: "column", overflow: "hidden", background: "var(--bg-field)", backgroundAttachment: "fixed", backgroundColor: "var(--bg)", color: "var(--text)", userSelect: "none" }}>
 
       {/* ── Header ── */}
       <header style={{
