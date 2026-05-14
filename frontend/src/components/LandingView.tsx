@@ -179,7 +179,7 @@ export function LandingView({ onEnter, onEnterDecision, onEnterTheater, demoMode
           <LandingButton
             onClick={handleEnterTheater}
             color="var(--accent)"
-            label="⬡ Decision Theater"
+            label="⬡ Decision Board"
           />
           <LandingButton
             onClick={handleEnter}

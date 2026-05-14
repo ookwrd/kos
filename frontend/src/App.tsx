@@ -473,7 +473,7 @@ export default function App() {
         {/* View toggle — spans full header height */}
         <div style={{ display: "flex", alignItems: "stretch", height: "100%", marginRight: "auto" }} onMouseEnter={centerShow} onMouseLeave={centerHide}>
           {(["graph", "city", "fabric", "theater"] as CenterView[]).map(v => {
-            const labels: Record<CenterView, string> = { graph: "Graph", city: "City", fabric: "Fabric", theater: "Theater" };
+            const labels: Record<CenterView, string> = { graph: "Graph", city: "City", fabric: "Fabric", theater: "Board" };
             const isActive = centerView === v;
             return (
               <button key={v} onClick={() => setCenterView(v)} style={{
@@ -495,7 +495,7 @@ export default function App() {
             );
           })}
           <Tooltip
-            title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : centerView === "fabric" ? "Cognition Fabric" : "Decision Theater"}
+            title={centerView === "graph" ? "Graph View" : centerView === "city" ? "City View" : centerView === "fabric" ? "Cognition Fabric" : "Decision Board"}
             body={centerView === "graph" ? "Multi-layer knowledge graph — click any node to inspect" : centerView === "city" ? "3D city of knowledge domains" : centerView === "fabric" ? "Distributed cognition fabric" : "Structured decision environment with scenario analysis"}
             anchor={centerAnchor} side="bottom" />
         </div>

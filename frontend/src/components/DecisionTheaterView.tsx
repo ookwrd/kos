@@ -531,7 +531,7 @@ export function DecisionTheaterView({ className = "" }: { className?: string }) 
         borderBottom: `1px solid ${BORDER}`, background: "rgba(9,26,17,0.98)", backdropFilter: "blur(16px)",
       }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: 600, color: TXT, letterSpacing: "0.01em" }}>Decision Theater</span>
+          <span style={{ fontSize: 13, fontWeight: 600, color: TXT, letterSpacing: "0.01em" }}>Decision Board</span>
           <span style={{ fontSize: 12, color: TXT3 }}>
             {mode === "food" ? "Food Security · UAE / GCC" : "Governance Architecture"}
           </span>
