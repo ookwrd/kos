@@ -9,9 +9,9 @@
   color-scheme: dark;
   --bg: #0d2118;
   --bg-field:
-    radial-gradient(ellipse 1180px 760px at 50% 3%, rgba(100,168,130,.22) 0%, rgba(24,72,44,.38) 34%, transparent 70%),
+    radial-gradient(ellipse 1180px 760px at 50% 3%, rgba(100,168,130,.26) 0%, rgba(24,72,44,.40) 34%, transparent 70%),
     radial-gradient(ellipse 900px 420px at 50% -18%, rgba(244,237,225,.07) 0%, rgba(141,212,176,.06) 38%, transparent 68%),
-    linear-gradient(180deg, #152c1e 0%, #0f2018 44%, #0a1912 100%);
+    linear-gradient(180deg, #172e20 0%, #0d2118 44%, #0b1e16 100%);
   --bg-panel:   rgba(10, 22, 15, 0.95);
   --bg-surface: rgba(141, 212, 176, 0.06);
   --text:       #f4ede1;
